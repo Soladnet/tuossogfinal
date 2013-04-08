@@ -62,7 +62,7 @@ if (isset($_COOKIE['user_auth'])) {
                     <div class="clear"></div>
                     <hr>
 <!--                    <div class="success">
-                        <p><span class="icon-16-asterisk"></span>While you were away, <a href="all-notifications.php">700 of your friends</a> 
+                        <p><span class="icon-16-asterisk"></span>While you were away, <a href="notifications">700 of your friends</a> 
                             posted new stuffs in  <a href="sample-community.php">Sample Community Name</a>
                         </p>
                     </div>-->

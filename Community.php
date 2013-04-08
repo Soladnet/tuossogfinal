@@ -146,13 +146,13 @@ class Community {
      * @return Array An array with keys <strong>status</strong> and <strong>com_mem</strong> is returned. <strong>com_mem</strong> contains array of community members with the following keys: id, firstname, lastname, location, and gender while <strong>status</strong> holds the success status of the result i.e FALSE or TRUE
      * @throws Exception 
      */
-    public function getMembers($start, $limit) {
+    public function getMembers($com,$start, $limit) {
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
         $arr = array();
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "SELECT cs.user as id,username,p.firstname, p.lastname,p.location,p.gender FROM community_subscribers AS cs JOIN user_personal_info as p ON p.id=cs.`user` WHERE cs.community_id=$this->id order by p.firstname LIMIT $start,$limit";
+            $sql = "SELECT cs.user as id,username,p.firstname, p.lastname,p.location,p.gender FROM community_subscribers AS cs JOIN user_personal_info as p ON p.id=cs.`user` JOIN community as c ON cs.community_id=c.id WHERE cs.community_id='$com' OR c.unique_name='$com' order by p.firstname LIMIT $start,$limit";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     include_once './GossoutUser.php';
@@ -363,8 +363,37 @@ class Community {
         throw new Exception("Method not supported");
     }
 
-    public function leave($commId) {
-        throw new Exception("Method not supported");
+    public function leave() {
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        $arr = array();
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "DELETE FROM community_subscribers WHERE `user`=$this->uid AND community_id=$this->id";
+            if ($mysql->query($sql)) {
+                $arr['status'] = TRUE;
+            } else {
+                $arr['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arr;
+    }
+    public function join() {
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        $arr = array();
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "INSERT INTO community_subscribers(`user`,community_id) VALUES($this->uid,$this->id)";
+            if ($mysql->query($sql)) {
+                $arr['status'] = TRUE;
+            } else {
+                $arr['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arr;
     }
 
 }

@@ -40,7 +40,8 @@ class Post {
         $mysql->close();
         return $arrFetch;
     }
-    public function post($comid,$uid,$post) {
+
+    public function post($comid, $uid, $post) {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
         if ($mysql->connect_errno > 0) {
@@ -75,6 +76,24 @@ class Post {
         $mysql->close();
         return $arrFetch;
     }
+
+    public function postImage($post_id, $community_id, $sender_id, $original, $thumbnail100) {
+        $arrFetch = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "INSERT INTO post_image(post_id,community_id,sender_id,original,thumbnail100) VALUES('$post_id','$community_id','$sender_id','$original','$thumbnail100')";
+            if ($mysql->query($sql)) {
+                $arrFetch['status'] = TRUE;
+            } else {
+                $arrFetch['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arrFetch;
+    }
+
     public function loadPost() {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
@@ -93,6 +112,10 @@ class Post {
                         } else {
                             $row['numComnt'] = 0;
                         }
+                        $post_image = $this->loadPostImage($row['id']);
+                        if($post_image['status']){
+                            $row['post_photo'] = $post_image['photo'];
+                        }
                         $arrFetch['post'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
@@ -107,7 +130,29 @@ class Post {
         $mysql->close();
         return $arrFetch;
     }
-
+    public function loadPostImage($postId) {
+        $arrFetch = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        //$count = 0;
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "SELECT original,thumbnail100 as thumbnail FROM `post_image` WHERE `post_id` =$postId";
+            if ($result = $mysql->query($sql)) {
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $arrFetch['photo'][] = $row;
+                    }
+                    $arrFetch['status'] = TRUE;
+                }else{
+                    $arrFetch['status'] = FALSE;
+                }
+                $result->free();
+            }
+        }
+        $mysql->close();
+        return $arrFetch;
+    }
     public function getCommentCountFor($postId) {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);

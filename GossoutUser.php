@@ -364,8 +364,8 @@ class GossoutUser {
             $myCom = $com->userComm(0, 1000);
             if ($myCom['status']) {
                 foreach ($myCom['community_list'] as $userComm) {
-                    $com->setCommunityId($userComm['id']);
-                    $comMem = $com->getMembers(0, 1000);
+                    
+                    $comMem = $com->getMembers($userComm['id'],0, 1000);
                     foreach ($comMem['com_mem'] as $mem) {
                         $arr[$mem['id']] = $mem;
                     }

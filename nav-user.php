@@ -61,7 +61,7 @@
                         <div class="clear"></div>
                     </div>
 
-                    <a href="all-notifications"> See all</a>
+                    <a href="notifications"> See all</a>
                 </div>
             </div>
             

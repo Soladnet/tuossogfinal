@@ -14,7 +14,7 @@
         </div>
         <div class="clear"></div>
 
-        <button class=" button profile-button" id="joinleave"><span class="icon-16-star"></span> Join</button>
+        <button class=" button profile-button" id="joinleave"><span class="icon-16-star"></span> <span id="joinleave-text">Join</span><input type="hidden" id="joinleave-comid" value="0"/></button>
         <button class=" button profile-button" id="loadCommore">More<span class="icon-16-arrow-down"></span>
             <div class="more-container" id="pop-up-community-more">
                 <div class="more">
@@ -37,15 +37,16 @@
 
     <div class="aside-wrapper">
         <h3>Members</h3>
-        <img class= "friends-thumbnails" src="images/1.jpg">
-        <img class= "friends-thumbnails" src="images/2.jpg">
-        <img class= "friends-thumbnails" src="images/3.jpg">
-        <img class= "friends-thumbnails" src="images/snip.jpg">
-        <img class= "friends-thumbnails" src="images/1.jpg">
+        <span id="commember-aside">
+        </span>
+        <script>
+            $(document).ready(function() {
+                sendData("loadCommunityMembers", {target: "#commember-aside", comname: '<?php echo $_GET['param'] ?>'});
+            });
+        </script>
         <p class="community-listing">
             <span>
                 <span><span class="icon-16-dot"></span><a href="friends">Show all</a></span>
-                <span><span class="icon-16-dot"></span><a id="show-suggested-friends" href="javascript:toggle('suggested-friends', 'show-suggested-friends');" >Suggested Friends</a></span>
             </span>
         </p>
     </div>

@@ -81,12 +81,11 @@ if (isset($_POST['param'])) {
             } else {
                 displayError(400, "The request cannot be fulfilled due to bad syntax");
             }
-        } else if (isset($_POST['m']) && is_numeric($_POST['m'])) {
+        } else if (isset($_POST['m'])) {
             $comm = new Community();
-            $comm->setUser($_POST['m']);
 
             $start = 0;
-            $limit = 20;
+            $limit = 12;
 
             if (isset($_POST['start']) && is_numeric($_POST['start'])) {
                 $start = $_POST['start'];
@@ -95,7 +94,7 @@ if (isset($_POST['param'])) {
                 $limit = $_POST['limit'];
             }
 
-            $com_mem = $comm->getMembers($start, $limit);
+            $com_mem = $comm->getMembers(clean($_POST['m']),$start, $limit);
             if ($com_mem['status']) {
                 header('Content-type: application/json');
                 echo json_encode($com_mem['com_mem']);
@@ -367,7 +366,79 @@ if (isset($_POST['param'])) {
             if (is_numeric($id) && trim($_POST['post']) != "") {
                 include_once './Post.php';
                 $post = new Post();
-                $load = $post->post($_POST['comid'], $id, clean($_POST['post']));
+                if (isset($_FILES['photo'])) {
+                    $allowedExts = array("jpeg", "jpg", "png", "JPEG", "JPG", "PNG");
+                    $status = FALSE;
+                    $err = "";
+                    foreach ($_FILES as $file) {
+                        foreach ($file['name'] as $name) {
+                            $arr = explode(".", $name);
+                            $ext = end($arr);
+                            if (in_array($ext, $allowedExts)) {
+                                $status = TRUE;
+                            } else {
+                                $err = "Image must be of either the following extention .jpg, .jpeg, or .png";
+                                $status = FALSE;
+                                break;
+                            }
+                        }
+                        if ($status) {
+                            foreach ($file['type'] as $type) {
+                                if ((($type == "image/jpeg") || ($type == "image/jpg") || ($type == "image/png"))) {
+                                    $status = TRUE;
+                                } else {
+                                    $status = FALSE;
+                                    $err = "Image must be of either the following type .jpg, .jpeg, and .png";
+                                    break;
+                                }
+                            }
+                        } else {
+                            break;
+                        }
+
+                        if ($status) {
+                            foreach ($file['size'] as $size) {
+                                if ($size <= 2048000) {
+                                    $status = TRUE;
+                                } else {
+                                    $status = FALSE;
+                                    $err = "Image must be less than or equals 2MB";
+                                    break;
+                                }
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                    if ($status) {
+                        $load = $post->post($_POST['comid'], $id, clean($_POST['post']));
+                        if ($load['status']) {
+                            include_once './SimpleImage.php';
+                            foreach ($_FILES as $file) {
+                                $i = 0;
+                                foreach ($file['tmp_name'] as $temp) {
+                                    $arr = explode(".", $file['name'][$i]);
+                                    $ext = end($arr);
+                                    $original = "upload/images/community/" . time() . "-" . $_POST['comid'] . "-" . $i . ".$ext";
+                                    $thumbnail100 = "upload/images/community/" . time() . "-" . $_POST['comid'] . "-" . $i . "_thumb.$ext";
+                                    $load['post']['post_photo'][] = array("original" => $original, "thumbnail" => $thumbnail100);
+                                    $image = new SimpleImage();
+                                    $image->load($temp);
+                                    $image->resizeToHeight(100);
+                                    $image->save($thumbnail100);
+                                    move_uploaded_file($temp, $original);
+                                    $imagePost = $post->postImage($load['post']['id'], $_POST['comid'], $id, $original, $thumbnail100);
+                                    $i++;
+                                }
+                            }
+                        }
+                    } else {
+                        displayError(400, $err);
+                        exit;
+                    }
+                } else {
+                    $load = $post->post($_POST['comid'], $id, clean($_POST['post']));
+                }
                 if ($load['status']) {
                     header('Content-type: application/json');
                     echo json_encode($load['post']);
@@ -428,8 +499,37 @@ if (isset($_POST['param'])) {
         } else {
             displayError(400, "The request cannot be fulfilled due to bad syntax");
         }
+    } else if ($_POST['param'] == "Leave" || $_POST['param'] == "Join") {
+        if (isset($_POST['uid']) && isset($_POST['comid'])) {
+            $id = decodeText($_POST['uid']);
+            if (is_numeric($id) && is_numeric($_POST['comid'])) {
+                include_once './Community.php';
+                $com = new Community();
+                $com->setCommunityId($_POST['comid']);
+                $com->setUser($id);
+                if ($_POST['param'] == "Leave") {
+                    $response = $com->leave();
+                } else if ($_POST['param'] == "Join") {
+                    $response = $com->join();
+                } else {
+                    displayError(400, "The request cannot be fulfilled due to bad syntax");
+                    exit;
+                }
+
+                header('Content-type: application/json');
+                if ($response['status']) {
+                    echo json_encode(array(TRUE));
+                } else {
+                    echo json_encode(array(FALSE));
+                }
+            } else {
+                displayError(400, "The request cannot be fulfilled due to bad syntax");
+            }
+        } else {
+            displayError(400, "The request cannot be fulfilled due to bad syntax");
+        }
     } else {
-        displayError(406, "The request is not acceptable");
+        displayError(400, "The request cannot be fulfilled due to bad syntax");
     }
 } else {
     displayError(400, "The request cannot be fulfilled due to bad syntax");

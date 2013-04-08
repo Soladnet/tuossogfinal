@@ -28,6 +28,19 @@ function sendData(callback, target) {
                 uid: target.uid
             }
         };
+    } else if (callback === "loadCommunityMembers") {
+        option = {
+            beforeSend: function() {
+                showuidfeedback({target: target});
+            },
+            success: function(response, statusText, xhr) {
+                loadCommunityMembers(response, statusText, target);
+            },
+            data: {
+                param: "community",
+                m: target.comname
+            }
+        };
     } else if (callback === "loadSuggestFriends") {
         option = {
             beforeSend: function() {
@@ -120,6 +133,20 @@ function sendData(callback, target) {
                 param: "loadComment",
                 uid: target.uid,
                 pid: target.post_id
+            }
+        };
+    } else if (callback === "leaveJoinCommunity") {
+        option = {
+            beforeSend: function() {
+//                showuidfeedback(target);
+            },
+            success: function(response, statusText, xhr) {
+                leaveJoinCommunity(response, statusText, target);
+            },
+            data: {
+                param: target.param,
+                uid: target.uid,
+                comid: target.comid
             }
         };
     } else if (callback === "logError") {
@@ -233,6 +260,26 @@ function loadNotificationCount(response, statusText, target) {
         sendData("loadNotificationCount", target);
     }, 30000);
 }
+function loadCommunityMembers(response, statusText, target) {
+    var htmlstr = "";
+    if (!response.error) {
+        $.each(response, function(i,response) {
+            htmlstr += '<a class= "fancybox " id="inline" href="#' + response.username + '">' +
+                    '<img class= "friends-thumbnails" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail) + '">' +
+                    '<div style="display:none"><div id="' + response.username + '"><div class="aside-wrapper">' +
+                    '<img class="profile-pic" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail) + '"><table><tr><td></td><td>' +
+                    '<h3>' + response.firstname.concat(" ", response.lastname) + '</h3></td></tr><tr><td><span class="icon-16-map"></span></td><td class="profile-meta">' + response.location + '</td></tr>' +
+                    '<tr><td><span class="icon-16-' + (response.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta">' + (response.gender === "M" ? "Male" : "Female") + '</td></tr>' +
+                    '<tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a href="">See Profile</a> </td></tr></table>' +
+                    '<div class="clear"></div><button class="profile-meta-functions button"><span class="icon-16-eye"></span> Wink</button>' +
+                    '<button class="profile-meta-functions button"><span class="icon-16-mail"></span> Send Message</button>' +
+                    '<button class="profile-meta-functions button"><span class="icon-16-checkmark"></span> Accept Friendship</button>' +
+                    '<div class="clear"></div></div></div></div></a>';
+        });
+        $(target.target).html(htmlstr);
+
+    }
+}
 function loadCommunity(response, statusText, target) {
     if (!response.error) {
         var htmlstr = "";
@@ -243,7 +290,7 @@ function loadCommunity(response, statusText, target) {
                 $("#commTitle").html(response.name);
                 $("#commDesc").html(response.description);
                 $("#comType").html((response.type === "Private" ? '<span class="icon-16-lock"></span>' : '') + response.type);
-                $("#joinleave").html(response.isAmember === "true" ? '<span class="icon-16-star"></span> Leave' : '<span class="icon-16-star"></span> Join');
+                $("#joinleave").html(response.isAmember === "true" ? '<span class="icon-16-star-empty"></span> <span id="joinleave-text">Leave</span><input type="hidden" id="joinleave-comid" value="' + response.id + '"/>' : '<span class="icon-16-star"></span> <span id="joinleave-text">Join</span><input type="hidden" id="joinleave-comid" value="' + response.id + '"/>');
                 $("#mem_count").html(response.mem_count);
                 $("#post_count").html(response.post_count);
                 document.getElementById("commPix").src = response.pix;
@@ -252,11 +299,11 @@ function loadCommunity(response, statusText, target) {
                     isAmember = "true";
                     comid = response.id;
                     htmlstr += '<div class="posts"><h1>' + response.name + '</h1><div class="post-box">' +
-                            '<form method="POST" action="tuossog-api-json.php" id="com-' + response.id + '"><textarea required placeholder="Post to a community" name="post" id="post' + response.id + '"></textarea><div class="group-1 button">' +
-                            '</div><input type="submit" class="submit button float-right" value="Post">' +
-                            '<input type="file" name="photo[]" multiple/>' +
-                            '<div class="button hint hint--left  float-right" data-hint="Upload image"><span class="icon-16-camera"></span></div></form>' +
-                            '<div class="clear"></div></div><span id="loadPost"></span></div><script>sendData("loadPost",{target:"#loadPost",uid:readCookie("user_auth"),comid:"' + response.id + '"})</script>';
+                            '<form method="POST" action="tuossog-api-json.php" id="com-' + response.id + '" enctype="multipart/form-data"><textarea required placeholder="Post to a community" name="post" id="post' + response.id + '"></textarea>' +
+                            '<input type="submit" class="submit button float-right" value="Post">' +
+                            '<input type="file" name="photo[]" multiple style="position: absolute;left: -9999px;" id="uploadInput"/>' +
+                            '<div class="button hint hint--left  float-right" data-hint="Upload image" id="uploadImagePost"><span class="icon-16-camera"></span></div></form>' +
+                            '<div class="clear"></div></div><span id="loadPost"></span></div><script>sendData("loadPost",{target:"#loadPost",uid:readCookie("user_auth"),comid:"' + response.id + '"});</script>';
                 } else {
                     htmlstr += '<div class="posts"><h1>' + response.name + '</h1><hr/><span id="loadPost"></span></div><script>sendData("loadPost",{target:"#loadPost",uid:readCookie("user_auth"),comid:"' + response.id + '"})</script>';
                 }
@@ -265,6 +312,10 @@ function loadCommunity(response, statusText, target) {
             if (htmlstr !== "") {
                 $(target.target).html(htmlstr);
                 if (isAmember === "true") {
+                    $("#uploadImagePost").click(function() {
+//                        alert("yes?");
+                        $("#uploadInput").focus().trigger('click');
+                    });
                     $("#com-" + comid).ajaxForm({
                         beforeSubmit: function(formData, jqForm, options) {
 //                            var postIdPos = (jqForm.attr('id')).lastIndexOf("-") + 1;
@@ -274,7 +325,13 @@ function loadCommunity(response, statusText, target) {
                         success: function(responseText, statusText, xhr, $form) {
                             if (responseText.id !== 0) {
                                 var msg = $('#post' + comid).val();
-                                var str = '<div class="post"><div class="post-content"><pre><p>' + (htmlencode(msg)) + '</p></pre><hr><h3 class="name">' + responseText.name +
+                                var str = '<div class="post"><div class="post-content"><pre><p>' + (htmlencode(msg)) + '</p></pre>';
+                                if (responseText.post_photo) {
+                                    $.each(responseText.post_photo, function(k, photo) {
+                                        str += '<a class="fancybox" rel="gallery1"  href="' + photo.original + '" rel="group"><img src="' + photo.thumbnail + '"></a>';
+                                    });
+                                }
+                                str += '<hr><h3 class="name">' + responseText.name +
                                         '<div class="float-right"><span class="post-time"><span class="icon-16-comment"></span>0 </span>' +
 //                    '<span class="post-time"><span class="icon-16-share"></span>24</span>' +
                                         '<span class="post-time"><span class="icon-16-clock"></span><span class="timeago" title="' + responseText.time + '">' + responseText.time + '</span></span>' +
@@ -342,6 +399,19 @@ function loadCommunity(response, statusText, target) {
         }
     }
 }
+function leaveJoinCommunity(response, statusText, target) {
+    if (!response.error) {
+        if (target.param === "Join") {
+            humane.log("You have successfully joined this community", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-info'});
+            location.reload();
+        } else {
+            humane.log("You have successfully left this community", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-info'});
+            location.reload();
+        }
+    } else {
+        humane.log(response.error.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+    }
+}
 function loadSuggestCommunity(response, statusText, target) {
     if (!response.error) {
         var htmlstr = "";
@@ -377,7 +447,13 @@ function loadPost(response, statusText, target) {
         var htmlstr = "";
         var toggleId = "", formBox = "";
         $.each(response, function(i, responseItem) {
-            htmlstr += '<div class="post"><div class="post-content"><p>' + responseItem.post + '</p><hr><h3 class="name">' + responseItem.firstname.concat(' ', responseItem.lastname) +
+            htmlstr += '<div class="post"><div class="post-content"><p>' + responseItem.post + '</p>';
+            if (responseItem.post_photo) {
+                $.each(responseItem.post_photo, function(k, photo) {
+                    htmlstr += '<a class="fancybox" rel="gallery' + responseItem.id + '"  href="' + photo.original + '" rel="group"><img src="' + photo.thumbnail + '"></a>';
+                });
+            }
+            htmlstr += '<hr><h3 class="name">' + responseItem.firstname.concat(' ', responseItem.lastname) +
                     '<div class="float-right"><span class="post-time"><span class="icon-16-comment"></span>' + responseItem.numComnt + ' </span>' +
 //                    '<span class="post-time"><span class="icon-16-share"></span>24</span>' +
                     '<span class="post-time"><span class="icon-16-clock"></span><span class="timeago" title="' + responseItem.time + '">' + responseItem.time + '</span></span>' +
@@ -388,7 +464,7 @@ function loadPost(response, statusText, target) {
                     '<div class="post-comments" id="post-comments-' + responseItem.id + '">' +
                     '</div><div class="post-new-comment" id="post-new-comment-' + responseItem.id + '">' +
                     '<form method="POST" action="tuossog-api-json.php?pid=' + responseItem.id + '" id="post-new-comment-form-' + responseItem.id + '"><!--<img class="post-thumb" src="images/snip.jpg">--><span><textarea type="text" class="comment-field" required placeholder="Add comment..." name="comment" id="input-' + responseItem.id + '"></textarea></span>' +
-                    '<input type="submit" class="submit" value="Comment"><div class="clear"></div></form></div></div></div>';
+                    '<input type="submit" class="submit" value="Comment"><div class="clear"></div></form></div></div></div><script>$(document).ready(function() {$(".fancybox").fancybox({openEffect: "none",closeEffect: "none"});});</script>';
             if (i > 0) {
                 toggleId += ",";
                 formBox += ",";
@@ -698,6 +774,8 @@ function showOption(obj) {
         }
         $("#post-comments-" + postId).toggle(option);
         $("#post-new-comment-" + postId).toggle();
+    } else if (obj.id === "joinleave") {
+        sendData("leaveJoinCommunity", {target: "", uid: readCookie("user_auth"), comid: $("#joinleave-comid").val(), param: $("#joinleave-text").html()})
     }
 }
 
