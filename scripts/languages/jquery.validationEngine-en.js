@@ -132,13 +132,13 @@
                     "alertText": "* No special characters allowed"
                 },
                 // --- CUSTOM RULES -- Those are specific to the demos, they can be removed or changed to your likings
-                "ajaxUserCall": {
-                    "url": "ajaxValidateFieldUser",
-                    // you may want to pass extra data on the ajax call
-//                    "extraData": "name=eric",
-                    "alertText": "* This username is already taken",
-                    "alertTextLoad": "* Validating, please wait"
-                },
+//                "ajaxUserCall": {
+//                    "url": "ajaxValidateFieldUser",
+//                    // you may want to pass extra data on the ajax call
+////                    "extraData": "name=eric",
+//                    "alertText": "* This username is already taken",
+//                    "alertTextLoad": "* Validating, please wait"
+//                },
                 "ajaxUserCallPhp": {
                     "url": "ajaxValidateFieldUser.php",
                     // you may want to pass extra data on the ajax call
@@ -147,6 +147,15 @@
                     "alertTextOk": "* This username is available",
                     "alertText": "* This username is already taken",
                     "alertTextLoad": "* Validating, please wait"
+                },
+                "ajaxCommunityNameCallPhp": {
+                    "url": "ajaxCommunityNameCallPhp.php",
+                    // you may want to pass extra data on the ajax call
+//                    "extraData": "name=eric",
+                    // if you provide an "alertTextOk", it will show as a green prompt when the field validates
+                    "alertTextOk": "* This helve is available",
+                    "alertText": "* This helve is already taken",
+                    "alertTextLoad": "* Validating community helve, please wait"
                 },
                 "ajaxNameCall": {
                     // remote json service location

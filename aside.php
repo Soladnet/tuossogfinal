@@ -10,12 +10,12 @@ $countStat = isset($user) ? $user->getMiniStat() : array("fc" => 0, "cc" => 0, "
             <!--<tr><td><span class="icon-16-calendar"></span></td><td class="profile-meta">Joined on Feb 18, 2013 </td></tr>-->
             <tr><td><span class="icon-16-male"></span></td><td class="profile-meta"><?php echo isset($user) ? $user->getGender() == "M" ? "Male" : "Female"  : "N/A"; ?></td></tr>
             <!--<tr><td><span class="icon-16-female"></span></td><td class="profile-meta">Female</td></tr>-->
-            <tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a id="show-full-profile" href="javascript:toggle('full-profile-data', 'show-full-profile');" > View Full Profile</a> </td></tr>
+            <tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a id="show-full-profile"> View Full Profile</a> </td></tr>
         </table>
         <div class="clear"></div>
         <div class="profile-summary">
-            <div class="profile-summary-wrapper"><a href=""><p class="number"><?php echo isset($user) ? $user->getMiniStat("pc") : "0" ?></p> <p class="type">Posts</p></a></div>
-            <div class="profile-summary-wrapper"><a href="communities"><p class="number"><?php echo isset($user) ? $user->getMiniStat("cc") : "0" ?></p> <p class="type">Communities</p></a></div>
+            <div class="profile-summary-wrapper"><a><p class="number"><?php echo isset($user) ? $user->getMiniStat("pc") : "0" ?></p> <p class="type">Posts</p></a></div>
+            <div class="profile-summary-wrapper"><a href="communities"><p class="number" id="cc"><?php echo isset($user) ? $user->getMiniStat("cc") : "0" ?></p> <p class="type">Communities</p></a></div>
             <div class="profile-summary-wrapper"><a href="friends"><p class="number"><?php echo isset($user) ? $user->getMiniStat("fc") : "0" ?></p> <p class="type">Friends</p></a></div>
             <div class="clear"></div>
         </div>
@@ -66,10 +66,9 @@ $countStat = isset($user) ? $user->getMiniStat() : array("fc" => 0, "cc" => 0, "
     <div class="aside-wrapper"><h3><a href="friends">Friends</a></h3>
         <script>
             $(document).ready(function() {
-                sendData("loadFriends", {target: "#aside-friends-list", uid: readCookie('user_auth'), loadImage: true});
+                sendData("loadFriends", {target: "#aside-friends-list", uid: readCookie('user_auth'), loadImage: true <?php if ($_GET['page'] == "friends") {echo ",friendPage:'#individual-friend-box'";} ?>});
                 sendData("loadCommunity", {target: "#aside-community-list", uid: readCookie('user_auth'), loadImage: false, max: ""});
             });
-
         </script>
         <span id="aside-friends-list"></span>
         <p class="community-listing">
@@ -89,19 +88,19 @@ $countStat = isset($user) ? $user->getMiniStat() : array("fc" => 0, "cc" => 0, "
     <?php
     include("suggested-friends.php");
     ?>
-    <div class="aside-wrapper">
-        <h3>Trends</h3>
-        <p><a>#newGossout</a></p>
-        <p><a>#newGossout</a></p>
-        <p><a>#newGossout</a></p>
-        <p><a>#newGossout</a></p>
-        <p><a>#newGossout</a></p>
-        <p class="community-listing">
-            <span>
-                <span><span class="icon-16-dot"></span><a href="">Show all</a></span>
-            </span>
-        </p>
-    </div>
+    <!--    <div class="aside-wrapper">
+            <h3>Trends</h3>
+            <p><a>#newGossout</a></p>
+            <p><a>#newGossout</a></p>
+            <p><a>#newGossout</a></p>
+            <p><a>#newGossout</a></p>
+            <p><a>#newGossout</a></p>
+            <p class="community-listing">
+                <span>
+                    <span><span class="icon-16-dot"></span><a href="">Show all</a></span>
+                </span>
+            </p>
+        </div>-->
 
 </div>	
 <div class="clear"></div>

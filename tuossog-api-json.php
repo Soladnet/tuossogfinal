@@ -81,9 +81,8 @@ if (isset($_POST['param'])) {
             } else {
                 displayError(400, "The request cannot be fulfilled due to bad syntax");
             }
-        } else if (isset($_POST['m'])) {
+        } else if (isset($_POST['m']) && isset($_POST['user'])) {
             $comm = new Community();
-
             $start = 0;
             $limit = 12;
 
@@ -93,8 +92,12 @@ if (isset($_POST['param'])) {
             if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
                 $limit = $_POST['limit'];
             }
-
-            $com_mem = $comm->getMembers(clean($_POST['m']),$start, $limit);
+            $id = decodeText($_POST['user']);
+            if (is_numeric($id)) {
+                $com_mem = $comm->getMembers(clean($_POST['m']), $id, $start, $limit);
+            } else {
+                $com_mem = $comm->getMembers(clean($_POST['m']), "", $start, $limit);
+            }
             if ($com_mem['status']) {
                 header('Content-type: application/json');
                 echo json_encode($com_mem['com_mem']);
@@ -141,8 +144,10 @@ if (isset($_POST['param'])) {
                         header('Content-type: application/json');
                         echo json_encode($SortedArray);
                     } else {
-                        $SMA = new SortMultiArray($user_msg['message']['conversation'], "time", 1);
-                        $user_msg['message']['conversation'] = $SMA->GetSortedArray($start, $limit);
+                        if (isset($user_msg['message']['conversation'])) {
+                            $SMA = new SortMultiArray($user_msg['message']['conversation'], "time", 1);
+                            $user_msg['message']['conversation'] = $SMA->GetSortedArray($start, $limit);
+                        }
                         header('Content-type: application/json');
                         echo json_encode($user_msg['message']);
                     }
@@ -162,14 +167,13 @@ if (isset($_POST['param'])) {
             if (is_numeric($id)) {
                 $bag = new GossoutUser($id);
                 $start = 0;
-                $limit = 10;
+                $limit = 3;
                 if (isset($_POST['start']) && is_numeric($_POST['start'])) {
                     $start = $_POST['start'];
                 }
                 if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
                     $limit = $_POST['limit'];
                 }
-
                 $user_bag = $bag->getGossbag();
                 if ($user_bag['status']) {
                     include_once("./sortArray_$.php");
@@ -367,7 +371,7 @@ if (isset($_POST['param'])) {
                 include_once './Post.php';
                 $post = new Post();
                 if (isset($_FILES['photo'])) {
-                    $allowedExts = array("jpeg", "jpg", "png", "JPEG", "JPG", "PNG");
+                    $allowedExts = array("jpeg", "jpg", "png", "gif", "JPEG", "JPG", "PNG");
                     $status = FALSE;
                     $err = "";
                     foreach ($_FILES as $file) {
@@ -384,7 +388,7 @@ if (isset($_POST['param'])) {
                         }
                         if ($status) {
                             foreach ($file['type'] as $type) {
-                                if ((($type == "image/jpeg") || ($type == "image/jpg") || ($type == "image/png"))) {
+                                if ((($type == "image/jpeg") || ($type == "image/jpg") || ($type == "image/png") || ($type == "image/gif"))) {
                                     $status = TRUE;
                                 } else {
                                     $status = FALSE;
@@ -521,6 +525,108 @@ if (isset($_POST['param'])) {
                     echo json_encode(array(TRUE));
                 } else {
                     echo json_encode(array(FALSE));
+                }
+            } else {
+                displayError(400, "The request cannot be fulfilled due to bad syntax");
+            }
+        } else {
+            displayError(400, "The request cannot be fulfilled due to bad syntax");
+        }
+    } else if ($_POST['param'] == "Unfriend" || $_POST['param'] == "Send Friend Request" || $_POST['param'] == "Cancel Request" || $_POST['param'] == "Accept Request" || $_POST['param'] == "Ignore" || $_POST['param'] == "wink" || $_POST['param'] == "ignoreWink") {
+        if (isset($_POST['uid']) && isset($_POST['user'])) {
+            $id = decodeText($_POST['uid']);
+            $userId = decodeText($_POST['user']);
+            if (is_numeric($id) && is_numeric($userId)) {
+                include_once './GossoutUser.php';
+                $user = new GossoutUser($id);
+                if ($_POST['param'] == "Unfriend" || $_POST['param'] == "Cancel Request" || $_POST['param'] == "Ignore") {
+                    $response = $user->unfriend($userId);
+                } else if ($_POST['param'] == "Send Friend Request") {
+                    $response = $user->sendFriendRequest($userId);
+                } else if ($_POST['param'] == "Accept Request") {
+                    $response = $user->acceptFriendRequest($userId);
+                } else if ($_POST['param'] == "wink" || $_POST['param'] == "ignoreWink") {
+                    if ($_POST['param'] == "wink") {
+                        $response = $user->wink($userId, $_POST['resp'] != "" ? TRUE : FALSE);
+                    } else {
+                        $response = $user->responseToWink($userId, "I");
+                    }
+                } else {
+                    displayError(400, "The request cannot be fulfilled due to bad syntax");
+                    exit;
+                }
+
+                header('Content-type: application/json');
+                if ($response['status']) {
+                    echo json_encode(array(TRUE));
+                } else {
+                    echo json_encode(array(FALSE));
+                }
+            } else {
+                displayError(400, "The request cannot be fulfilled due to bad syntax - $userId $id");
+            }
+        } else {
+            displayError(400, "The request cannot be fulfilled due to bad syntax");
+        }
+    } else if ($_POST['param'] == "creatCommunity") {
+        if (isset($_POST['helve']) && isset($_POST['name']) && isset($_POST['uid'])) {
+            $creatorId = decodeText($_POST['uid']);
+            if (is_numeric($creatorId)) {
+                include_once 'Community.php';
+                $com = new Community();
+                if (isset($_FILES)) {
+                    if (isset($_FILES['img']['tmp_name'])) {
+                        include_once './SimpleImage.php';
+                        $allowedExts = array("jpeg", "jpg", "png", "JPEG", "JPG", "PNG");
+                        $arr = explode(".", $_FILES['img']['name']);
+                        $ext = end($arr);
+                        if ((($_FILES['img']['type'] == "image/jpeg") || ($_FILES['img']['type'] == "image/jpg") || ($_FILES['img']['type'] == "image/png")) && in_array($ext, $allowedExts) && $_FILES['img']['size'] < 2048000) {
+                            $original = "upload/images/community_photo/" . time() . "-" . $_POST['uid'] . "-" . 0 . ".$ext";
+                            $thumbnail100 = "upload/images/community_photo/" . time() . "-" . $_POST['uid'] . "-" . 1 . "_thumb.$ext";
+                            $thumbnail150 = "upload/images/community_photo/" . time() . "-" . $_POST['uid'] . "-" . 2 . "_thumb.$ext";
+//                            $status['com_photo'] = array("original" => $original, "thumbnail150" => $thumbnail150, "thumbnail100" => $thumbnail100);
+                            $image = new SimpleImage();
+                            $image->load($_FILES['img']['tmp_name']);
+                            $image->resizeToHeight(100);
+                            $image->save($thumbnail100);
+                            $image->resizeToHeight(150);
+                            $image->save($thumbnail150);
+                            move_uploaded_file($_FILES['img']['tmp_name'], $original);
+                            $status = $com->create(clean($_POST['helve']), clean($_POST['name']), clean($_POST['desc']), $creatorId, $original, $thumbnail150, $thumbnail100);
+                            header('Content-type: application/json');
+                            if ($status['status']) {
+                                echo json_encode(array("status" => "success", "name" => $_POST['name'], "unique_name" => $_POST['helve']));
+                            } else {
+                                echo json_encode(array("status" => "failed"));
+                            }
+                        } else {
+                            displayError(404, "The request cannot be fulfilled due wrong image format");
+                        }
+                    } else {
+                        if (isset($_POST['privacy'])) {
+                            $status = $com->create(clean($_POST['helve']), clean($_POST['name']), clean($_POST['desc']), $creatorId, "images/no-pic.png", "images/no-pic.png", "images/no-pic.png", "Private");
+                        } else {
+                            $status = $com->create(clean($_POST['helve']), clean($_POST['name']), clean($_POST['desc']), $creatorId);
+                        }
+                        header('Content-type: application/json');
+                        if ($status['status']) {
+                            echo json_encode(array("status" => "success"));
+                        } else {
+                            echo json_encode(array("status" => "failed"));
+                        }
+                    }
+                } else {
+                    if (isset($_POST['privacy'])) {
+                        $status = $com->create(clean($_POST['helve']), clean($_POST['name']), clean($_POST['desc']), $creatorId, "images/no-pic.png", "images/no-pic.png", "images/no-pic.png", "Private");
+                    } else {
+                        $status = $com->create(clean($_POST['helve']), clean($_POST['name']), clean($_POST['desc']), $creatorId);
+                    }
+                    header('Content-type: application/json');
+                    if ($status['status']) {
+                        echo json_encode(array("status" => "success"));
+                    } else {
+                        echo json_encode(array("status" => "failed"));
+                    }
                 }
             } else {
                 displayError(400, "The request cannot be fulfilled due to bad syntax");

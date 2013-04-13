@@ -20,11 +20,11 @@ if (isset($_COOKIE['user_auth'])) {
         include_once './webbase.php';
         ?>
         <title>Gossout</title>
-        <link rel="stylesheet" href="css/jackedup.css">
         <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
         <?php
         include ("head.php");
         ?>
+        <link rel="stylesheet" href="css/jackedup.css">
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
         <script src="scripts/test_helpers.js" type="text/javascript"></script>
         <script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
@@ -34,7 +34,8 @@ if (isset($_COOKIE['user_auth'])) {
                 sendData("loadNotificationCount",{uid: readCookie("user_auth"),title:document.title});
                 $(".fancybox").fancybox({
                     openEffect: 'none',
-                    closeEffect: 'none'
+                    closeEffect: 'none',
+                    minWidth: 250
                 });
             });
         </script>

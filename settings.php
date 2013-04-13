@@ -1,71 +1,108 @@
+<?php
+//session_start();
+if (isset($_COOKIE['user_auth'])) {
+    include_once './encryptionClass.php';
+    include_once './GossoutUser.php';
+    $encrypt = new Encryption();
+    $uid = $encrypt->safe_b64decode($_COOKIE['user_auth']);
+    if (is_numeric($uid)) {
+        $user = new GossoutUser($uid);
+        $userProfile = $user->getProfile();
+    }
+} else {
+    header("Location: login");
+}
+?>
 <!doctype html>
 <html>
-<head>
-	<?php
-	include ("head.php");
-	?>
-</head>
-<body>
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$(".fancybox").fancybox({
-				openEffect	: 'none',
-				closeEffect	: 'none'
-				
-			});
-		});
-	</script>
-	<div class="page-wrapper">
-		<?php
-		include ("nav.php");
-		include ("nav-user.php");
-		?>
-		<div class="logo"><img src="images/gossout-logo-text-svg.svg" alt=""></div>
+    <head>
+        <?php
+        include_once './webbase.php';
+        ?>
+        <title>Gossout - Settings</title>
+        <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
+        <?php
+        include ("head.php");
+        ?>
+        <link rel="stylesheet" href="css/jackedup.css">
+        <script type="text/javascript" src="scripts/humane.min.js"></script>
+        <script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
+        <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
+        <script src="scripts/test_helpers.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $(".fancybox").fancybox({
+                    openEffect: 'none',
+                    closeEffect: 'none'
 
-		<div class="content">
-			<script type="text/javascript">
-			function showHide(shID) {
-				if (document.getElementById(shID)) {
-					if (document.getElementById(shID+'-show').style.display != 'none') {
-						document.getElementById(shID+'-show').style.display = 'none';
-						document.getElementById(shID).style.display = 'block';
-					}
-					else {
-						document.getElementById(shID+'-show').style.display = 'inline';
-						document.getElementById(shID).style.display = 'none';
-					}
-				}
-			}
-			</script>
-			<div class="settings-list">
-				<h1>Settings</h1>
-				<hr>
-				<hr>
-				<div class="individual-setting">
-					<h2>Basic Settings</h2>
-					<p>Name</p>
-					<p>Email</p>
-					<p>Password</p>
-				</div>
-				<div class="individual-setting">
-					<h2>Privacy</h2>
-					<p> <input type="checkbox"> Make my account private</p>
-				</div>
-				<div class="individual-setting">
-					<h2>Notifications</h2>
-					<p> <input type="checkbox"> Receive notifications through e-mail</p>
-				</div>
-				<input type="button" class="button submit" value="Save Changes">	
-			</div>
-			
-		<?php
-			include("aside.php");
-		?>			
-		</div>
-		<?php
-			include("footer.php");
-		?>
-	</div>
+                });
+            });
+        </script>
+        <div class="page-wrapper">
+            <?php
+            include ("nav.php");
+            include ("nav-user.php");
+            ?>
+            <div class="logo"><img src="images/gossout-logo-text-svg.svg" alt=""></div>
 
-</body>
+            <div class="content">
+                <div class="settings-list">
+                    <h1>Settings</h1>
+                    <hr>
+                    <hr>
+                    <div class="individual-setting">
+                        <h2>Profile Photo</h2>
+                        <div class="pic-user">
+                            <img src="images/no-pic.svg" id="user-img">
+                        </div>
+                        <hr>
+                        <label>Select an image: </label>
+                        <input type="file" name="img" class="input-fields">
+                        <p></p>
+                        <input type="submit" class="button" value="Upload photo">
+                        <hr>
+                    </div>
+                    <div class="individual-setting" >
+                        <h2>First Name</h2>
+                        <input type="text" placeholder="<?php echo $user->getFirstname() ?>" value="<?php echo $user->getFirstname() ?>">
+                    </div>
+                    <div class="individual-setting" >
+                        <h2>Last Name</h2>
+                        <input type="text" placeholder="<?php echo $user->getLastname() ?>" value="<?php echo $user->getLastname() ?>">
+                    </div>
+                    <div class="individual-setting">
+                        <h2>Email</h2>
+                        <input type="text" placeholder="<?php echo $user->getEmail() ?>" value="<?php echo $user->getEmail() ?>">
+                    </div>
+                    <div class="individual-setting">
+                        <h2>Password</h2>
+                        <input type="password">
+                    </div>
+                    <div class="individual-setting">
+                        <h2>Confirm Password</h2>
+                        <input type="password">
+                    </div>
+<!--                    <div class="individual-setting">
+                        <h2>Privacy</h2>
+                        <p> <input type="checkbox"> Make my account private</p>
+                    </div>
+                    <div class="individual-setting">
+                        <h2>Notifications</h2>
+                        <p> <input type="checkbox"> Receive notifications through e-mail</p>
+                    </div>-->
+                    <input type="button" class="button submit" value="Save Changes">	
+                </div>
+
+                <?php
+                include("aside.php");
+                ?>			
+            </div>
+            <?php
+            include("footer.php");
+            ?>
+        </div>
+
+    </body>
 </html>

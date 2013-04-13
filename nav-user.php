@@ -12,55 +12,7 @@
                         <span class="icon-16-cross"></span>Close 
                     </a>
                     <div class="clear"></div>
-                    <div class="individual-notification">
-                        <p> 
-                            <span class="icon-16-user-add"></span> 
-                            <span class="float-right"> 17 hrs </span>
-                        </p>
-                        <img class= "notification-icon" src="images/1.jpg">
-                        <div class="notification-text"> 
-                            <p class="name">Chiroma Chukwuma Adekunle </p>
-                            <p>wants to add you</p>
-                        </div>
-                        <div class="clear"></div>
-                        <hr>
-                        <a class="notification-actions">View</a>
-                        <a class="notification-actions">Accept</a>
-                        <div class="clear"></div>
-                    </div>
-
-                    <div class="individual-notification">
-                        <p> <span class="icon-16-comment"></span> <span class="float-right"> 17 hrs </span></p>
-
-                        <img class= "notification-icon" src="images/1.jpg">
-                        <div class="notification-text"> 
-                            <p class="name">Chiroma Chukwuma Adekunle </p>
-                            <p>commented on your post</p>
-                            <p>"Ahmadu Bello University is..."</p>
-                        </div>
-                        <div class="clear"></div>
-                        <hr>
-                        <a class="notification-actions">View</a>
-                        <div class="clear"></div>
-                    </div>
-
-                    <div class="individual-notification viewed-notification">
-                        <p> <span class="icon-16-earth"></span> 
-                            <span class="float-right"> 17 hrs </span>
-                        </p>
-                        <img class= "notification-icon" src="images/1.jpg">
-                        <div class="notification-text"> 
-                            <p class="name">Chiroma Chukwuma Adekunle </p>
-                            <p>invites you to join community</p>
-                            <p>"Ahmadu Bello University Zaria..."</p>
-                        </div>
-                        <div class="clear"></div>
-                        <hr>
-                        <a class="notification-actions">View</a>
-                        <a class="notification-actions">Accept</a>
-                        <div class="clear"></div>
-                    </div>
-
+                    <span id="gossbag-individual-notification"></span>
                     <a href="notifications"> See all</a>
                 </div>
             </div>

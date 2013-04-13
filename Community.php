@@ -20,8 +20,23 @@ class Community {
         
     }
 
-    function create() {
-        throw new Exception("Method not supported");
+    function create($unique_name, $comm_name, $comm_desc, $creator_id, $pix = "images/no-pic.png", $thum150 = "images/no-pic.png", $thum100 = "images/no-pic.png", $comm_privacy = "Public") {
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        $arr = array();
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "INSERT INTO community (creator_id, unique_name, name, description, type,pix,thumbnail150,thumbnail100) values ($creator_id,'$unique_name','$comm_name', '$comm_desc', '$comm_privacy','$pix','$thum150','$thum100')";
+            if ($mysql->query($sql)) {
+                $id = $mysql->insert_id;
+                $mysql->query("INSERT INTO community_subscribers(`user`,community_id) VALUES($creator_id,$id)");
+                $arr['status'] = TRUE;
+            } else {
+                $arr['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arr;
     }
 
     /**
@@ -41,13 +56,13 @@ class Community {
                 if ($comname) {
                     $sql = "SELECT id,unique_name,`name`,`pix`,`type`,description FROM community WHERE unique_name='$comname'";
                 } else {
-                    $sql = "SELECT cs.`community_id` as id,c.unique_name,c.`name`,c.`pix`,c.`type`,c.description FROM community_subscribers as cs JOIN community as c ON cs.community_id=c.id  WHERE cs.`user`=$this->uid order by c.name asc LIMIT $start,$limit";
+                    $sql = "SELECT cs.`community_id` as id,c.unique_name,c.`name`,c.`pix`,c.`type`,c.description FROM community_subscribers as cs JOIN community as c ON cs.community_id=c.id  WHERE cs.`user`=$this->uid AND cs.leave_status=0 order by c.name asc LIMIT $start,$limit";
                 }
             } else {
                 if ($comname) {
                     $sql = "SELECT id,unique_name,`name` FROM community WHERE unique_name='$comname'";
                 } else {
-                    $sql = "SELECT cs.`community_id` as id,c.unique_name,c.`name` FROM community_subscribers as cs JOIN community as c ON cs.community_id=c.id  WHERE cs.`user`=$this->uid order by c.name asc LIMIT $start,$limit";
+                    $sql = "SELECT cs.`community_id` as id,c.unique_name,c.`name` FROM community_subscribers as cs JOIN community as c ON cs.community_id=c.id  WHERE cs.`user`=$this->uid AND cs.leave_status=0 order by c.name asc LIMIT $start,$limit";
                 }
             }
             if ($result = $mysql->query($sql)) {
@@ -99,7 +114,7 @@ class Community {
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "SELECT * FROM community_subscribers WHERE `user`=$uid AND community_id=$this->id";
+            $sql = "SELECT * FROM community_subscribers WHERE `user`=$uid AND leave_status=0 AND community_id=$this->id";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     $arr['status'] = TRUE;
@@ -121,7 +136,7 @@ class Community {
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "SELECT count(cs.`community_id`) as count FROM `community_subscribers` as cs WHERE cs.`user`=$this->uid";
+            $sql = "SELECT count(`community_id`) as count FROM `community_subscribers` WHERE `user`=$this->uid AND leave_status=0";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     $row = $result->fetch_assoc();
@@ -146,16 +161,18 @@ class Community {
      * @return Array An array with keys <strong>status</strong> and <strong>com_mem</strong> is returned. <strong>com_mem</strong> contains array of community members with the following keys: id, firstname, lastname, location, and gender while <strong>status</strong> holds the success status of the result i.e FALSE or TRUE
      * @throws Exception 
      */
-    public function getMembers($com,$start, $limit) {
+    public function getMembers($com, $myId, $start, $limit) {
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
         $arr = array();
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "SELECT cs.user as id,username,p.firstname, p.lastname,p.location,p.gender FROM community_subscribers AS cs JOIN user_personal_info as p ON p.id=cs.`user` JOIN community as c ON cs.community_id=c.id WHERE cs.community_id='$com' OR c.unique_name='$com' order by p.firstname LIMIT $start,$limit";
+            $sql = "SELECT cs.user as id,username,p.firstname, p.lastname,p.location,p.gender FROM community_subscribers AS cs JOIN user_personal_info as p ON p.id=cs.`user` JOIN community as c ON cs.community_id=c.id WHERE (cs.community_id='$com' OR c.unique_name='$com') AND cs.leave_status=0 order by p.firstname LIMIT $start,$limit";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
+                    include_once './encryptionClass.php';
                     include_once './GossoutUser.php';
+                    $encrytp = new Encryption();
                     $user = new GossoutUser(0);
                     while ($row = $result->fetch_assoc()) {
                         $user->setUserId($row['id']);
@@ -165,8 +182,17 @@ class Community {
                         } else {
                             $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
                         }
+                        if (is_numeric($myId)) {
+                            $temp = $user->isAfriend($myId);
+                            $row['isAfriend'] = $temp['status'];
+                        } else {
+                            $row['isAfriend'] = FALSE;
+                        }
+                        $row['ministat'] = $user->getMiniStat();
+                        $row['id'] = $encrytp->safe_b64encode($row['id']);
                         $arr['com_mem'][] = $row;
                     }
+                    shuffle($arr['com_mem']);
                     $arr['status'] = true;
                 } else {
                     $arr['status'] = false;
@@ -186,7 +212,7 @@ class Community {
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "SELECT count(user) as count FROM community_subscribers WHERE community_id=$this->id";
+            $sql = "SELECT count(user) as count FROM community_subscribers WHERE community_id=$this->id AND leave_status=0";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     $row = $result->fetch_assoc();
@@ -303,7 +329,21 @@ class Community {
                 $sql = "SELECT id,unique_name,`name`,category,`type`,description,pix FROM community WHERE `type`='Public'";
                 if ($result = $mysql->query($sql)) {
                     if ($result->num_rows > 0) {
+                        $comInfo = new Community();
                         while ($row = $result->fetch_assoc()) {
+                            $comInfo->setCommunityId($row['id']);
+                            $mem_count = $comInfo->getMemberCount();
+                            if ($mem_count['status']) {
+                                $row['mem_count'] = $mem_count['count'];
+                            } else {
+                                $row['mem_count'] = 0;
+                            }
+                            $post_count = $comInfo->getPostCount();
+                            if ($post_count['status']) {
+                                $row['post_count'] = $post_count['count'];
+                            } else {
+                                $row['post_count'] = 0;
+                            }
                             $arr[$row['id']] = $row;
                         }
                         $response['status'] = TRUE;
@@ -331,6 +371,8 @@ class Community {
                 }
             }
         }
+        echo json_encode($arr);
+        exit;
         return $response;
     }
 
@@ -369,7 +411,7 @@ class Community {
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "DELETE FROM community_subscribers WHERE `user`=$this->uid AND community_id=$this->id";
+            $sql = "UPDATE community_subscribers SET leave_status=1,datejoined=NOW() WHERE `user`=$this->uid AND community_id=$this->id";
             if ($mysql->query($sql)) {
                 $arr['status'] = TRUE;
             } else {
@@ -379,17 +421,30 @@ class Community {
         $mysql->close();
         return $arr;
     }
+
     public function join() {
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
         $arr = array();
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "INSERT INTO community_subscribers(`user`,community_id) VALUES($this->uid,$this->id)";
-            if ($mysql->query($sql)) {
-                $arr['status'] = TRUE;
-            } else {
-                $arr['status'] = FALSE;
+            $sql = "SELECT * FROM community_subscribers WHERE `user`=$this->uid AND community_id=$this->id";
+            if ($result = $mysql->query($sql)) {
+                if ($result->num_rows > 0) {
+                    $sql = "UPDATE community_subscribers SET leave_status=0,datejoined=NOW() WHERE `user`=$this->uid AND community_id=$this->id";
+                    if ($mysql->query($sql)) {
+                        $arr['status'] = TRUE;
+                    } else {
+                        $arr['status'] = FALSE;
+                    }
+                } else {
+                    $sql = "INSERT INTO community_subscribers(`user`,community_id) VALUES($this->uid,$this->id)";
+                    if ($mysql->query($sql)) {
+                        $arr['status'] = TRUE;
+                    } else {
+                        $arr['status'] = FALSE;
+                    }
+                }
             }
         }
         $mysql->close();

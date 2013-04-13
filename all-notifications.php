@@ -1,108 +1,81 @@
+<?php
+//session_start();
+if (isset($_COOKIE['user_auth'])) {
+    include_once './encryptionClass.php';
+    include_once './GossoutUser.php';
+    $encrypt = new Encryption();
+    $uid = $encrypt->safe_b64decode($_COOKIE['user_auth']);
+    if (is_numeric($uid)) {
+        $user = new GossoutUser($uid);
+        $userProfile = $user->getProfile();
+    }
+} else {
+    header("Location: login");
+}
+?>
 <!doctype html>
 <html>
-<head>
-	<?php
-	include ("head.php");
-	?>
-	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-	<!-- <link rel="stylesheet" href="css/jquery.fancybox.css?v=2.1.4" type="text/css" media="screen" /> -->
-	<script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
-</head>
-<body>
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$(".fancybox").fancybox({
-				openEffect	: 'none',
-				closeEffect	: 'none'
-				
-			});
-		});
-	</script>
-	<div class="page-wrapper">
-		<?php
-		include ("nav.php");
-		include ("nav-user.php");
-		?>
-		<div class="logo"><img src="images/gossout-logo-text-svg.svg" alt=""></div>
+    <head>
+        <?php
+        include_once './webbase.php';
+        ?>
+        <title>Gossout - All notification</title>
+        <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
+        <?php
+        include ("head.php");
+        ?>
+        <link rel="stylesheet" href="css/jackedup.css">
+        <script type="text/javascript" src="scripts/humane.min.js"></script>
+        <script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
+        <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
+        <script src="scripts/test_helpers.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $(".fancybox").fancybox({
+                    openEffect: 'none',
+                    closeEffect: 'none'
 
-		<div class="content">
-			<script type="text/javascript">
-			function showHide(shID) {
-				if (document.getElementById(shID)) {
-					if (document.getElementById(shID+'-show').style.display != 'none') {
-						document.getElementById(shID+'-show').style.display = 'none';
-						document.getElementById(shID).style.display = 'block';
-					}
-					else {
-						document.getElementById(shID+'-show').style.display = 'inline';
-						document.getElementById(shID).style.display = 'none';
-					}
-				}
-			}
+                });
+                sendData("loadNotificationCount", {uid: readCookie("user_auth"), title: document.title});
+            });
+        </script>
+    </head>
+    <body>
+        <div class="page-wrapper">
+            <?php
+            include ("nav.php");
+            include ("nav-user.php");
+            ?>
+            <div class="logo"><img src="images/gossout-logo-text-svg.svg" alt=""></div>
 
-			</script>
-			<div class="all-notifications-list">
-				<h1>Notifications</h1>
-				<div class="timeline-filter">
-					<ul>
-						<li><span class="icon-16-list"></span></li>
-						<li class="active"><a href="">All</a></li>
-						<li><a href=""><p>Requests</p> </a></li>
-						<li><a href=""><p>Interactions</p></a></li>
-					</ul>
-				</div>
-				<div class="clear"></div>
-				<div class="individual-notification-box">
-                        <p> 
-                            <span class="icon-16-user-add"></span> 
-                            <span class="all-notifications-time"> 17 hrs </span>
-                        </p>
-                        <img class= "all-notification-image" src="images/1.jpg">
-                        <div class="all-notification-text"> 
-                            <a href=""><h3>Chiroma Chukwuma Adekunle </h3></a>
-                            <div class="all-notifications-message">Wants To Add You</div>
-                        </div> 
-                        <hr>
-                        <p>
-	                        <a class="all-notifications-actions"><span class="icon-16-cross"></span>Decline</a>
-	                        <a class="all-notifications-actions"><span class="icon-16-checkmark"></span>Accept</a>
-	                        <a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>
-                        </p>
-                        
-                 </div>
-                 <div class="individual-notification-box">
-                        <p> 
-                            <span class="icon-16-user-add"></span> 
-                            <span class="all-notifications-time"> 17 hrs </span>
-                        </p>
-                        <img class= "all-notification-image" src="images/1.jpg">
-                        <div class="all-notification-text"> 
-                            <a href=""><h3>Chiroma Chukwuma Adekunle</h3></a>
-                            <div class="all-notifications-message">Commented on Your Post</div>
-                            <div class="all-notifications-comment"> "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                            quis nostrud exercitation ......."</div>
-                        </div> 
-                        <hr>
-                        <p>
-	                        <a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>
-                        </p>
-                        
-                 </div>
+            <div class="content">
+                <div class="all-notifications-list">
+                    <h1>Notifications</h1>
+                    <div class="timeline-filter">
+                        <ul>
+                            <li><span class="icon-16-list"></span></li>
+                            <li class="active"><a href="notifications">All</a></li>
+<!--                            <li><a href=""><p>Requests</p> </a></li>
+                            <li><a href=""><p>Interactions</p></a></li>-->
+                        </ul>
+                    </div>
+                    <div class="clear"></div>
+                    <span id="individual-notification-box"></span>
+                    <script>
+                        $(document).ready(function() {
+                            sendData("loadGossbag", {uid: readCookie("user_auth"), target: "#individual-notification-box", loadImage: true});
+                        });
+                    </script>
+                </div>
 
+                <?php
+                include("aside.php");
+                ?>
+            </div>
+            <?php
+            include("footer.php");
+            ?>
+        </div>
 
-
-          
-			</div>
-			
-		<?php
-			include("aside.php");
-		?>
-		</div>
-		<?php
-			include("footer.php");
-		?>
-	</div>
-
-</body>
+    </body>
 </html>

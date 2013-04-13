@@ -2,7 +2,8 @@
 
 require_once 'Config.php';
 include_once './encryptionClass.php';
-
+include_once './Community.php';
+include_once './Post.php';
 class GossoutUser {
 
     var $id, $fname, $lname, $fullname, $location, $gender, $url, $tel, $email, $screenName = "", $dob;
@@ -276,10 +277,11 @@ class GossoutUser {
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $str = "Select if(uc.username1=$this->id,uc.username2,uc.username1) as id,username,firstname, lastname,location,gender From user_personal_info, usercontacts as uc Where (username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id) AND status ='$status' LIMIT $start,$limit";
+            $str = "Select if(uc.username1=$this->id,uc.username2,uc.username1) as id,username,firstname, lastname,location,gender From user_personal_info, usercontacts as uc Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='$status' LIMIT $start,$limit";
             if ($result = $mysql->query($str)) {
                 if ($result->num_rows > 0) {
                     $user = new GossoutUser(0);
+                    $encrypt = new Encryption();
                     while ($row = $result->fetch_assoc()) {
                         $user->setUserId($row['id']);
                         $pix = $user->getProfilePix();
@@ -288,7 +290,8 @@ class GossoutUser {
                         } else {
                             $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
                         }
-
+                        $row['ministat'] = $user->getMiniStat();
+                        $row['id'] = $encrypt->safe_b64encode($row['id']);
                         $arrFetch['friends'][] = $row;
                     }
                     if ($shuffle) {
@@ -305,6 +308,33 @@ class GossoutUser {
         }
         $mysql->close();
         return $arrFetch;
+    }
+
+    public function isAfriend($uid) {
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        $arr = array();
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            if ($this->id == $uid) {
+                $arr['status'] = "me";
+            } else {
+                $sql = "SELECT * FROM usercontacts WHERE ((username1=$uid AND username2=$this->id) OR (username2='$uid' AND username1='$this->id')) AND status='Y'";
+                if ($result = $mysql->query($sql)) {
+                    if ($result->num_rows > 0) {
+                        $arr['status'] = TRUE;
+                    } else {
+                        $arr['status'] = FALSE;
+                    }
+                    $result->free();
+                } else {
+                    $arr['status'] = FALSE;
+                }
+                $mysql->close();
+            }
+        }
+
+        return $arr;
     }
 
     public function countUserFriends() {
@@ -340,12 +370,15 @@ class GossoutUser {
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
+            $encrypt = new Encryption();
             //suggest frinds of my friends
             $my = $this->getFriends(0, 1000);
             $arr = array();
             if ($my['status']) {
+                $user = new GossoutUser(0);
                 foreach ($my['friends'] as $friend) {
-                    $user = new GossoutUser($friend['id']);
+                    $fid = $encrypt->safe_b64decode($friend['id']);
+                    $user->setUserId($fid);
                     $userFriend = $user->getFriends(0, 1000);
                     if ($userFriend['status']) {
                         foreach ($userFriend['friends'] as $userFrnd) {
@@ -357,15 +390,13 @@ class GossoutUser {
             } else {
                 $arrfetch['status'] = FALSE;
             }
-            include_once './Community.php';
             $com = new Community();
             $com->setUser($this->id);
             //suggest people from community i belong
             $myCom = $com->userComm(0, 1000);
             if ($myCom['status']) {
                 foreach ($myCom['community_list'] as $userComm) {
-                    
-                    $comMem = $com->getMembers($userComm['id'],0, 1000);
+                    $comMem = $com->getMembers($userComm['id'], $this->id, 0, 1000);
                     foreach ($comMem['com_mem'] as $mem) {
                         $arr[$mem['id']] = $mem;
                     }
@@ -377,19 +408,23 @@ class GossoutUser {
                 }
             }
             if ($arrfetch['status']) {
-                unset($arr[$this->id]);
+                unset($arr[$encrypt->safe_b64encode($this->id)]);
+//                unset($arr[$this->id]);
                 if ($my['status']) {
                     foreach ($my['friends'] as $friend) {
                         if (array_key_exists($friend['id'], $arr)) {
                             unset($arr[$friend['id']]);
                         }
                     }
-                    if (count($arr) == 0) {
-                        $arrfetch['status'] = FALSE;
-                    }
                 }
-                $arrfetch['suggest'] = array_values($arr);
-                shuffle($arrfetch['suggest']);
+                if (count($arr) == 0) {
+                    $arrfetch['status'] = FALSE;
+                } else {
+                    $arrfetch['suggest'] = array_values($arr);
+                    shuffle($arrfetch['suggest']);
+                }
+            } else {
+                $arrfetch['status'] = FALSE;
             }
         }
 
@@ -423,7 +458,6 @@ class GossoutUser {
                         } else {
                             $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
                         }
-//                        $row['time'] = date('c', strtotime($row['time']));
                         $temp[$row['sender_id']] = $row;
                         if ($row['status'] == "N") {
                             $mysql->query("UPDATE `privatemessae` SET `status`='D' WHERE `id`=$row[id]");
@@ -501,6 +535,7 @@ class GossoutUser {
                 if ($result->num_rows > 0) {
                     $user->setScreenName("");
                     $i = 0;
+                    $encrypt = new Encryption();
                     while ($row = $result->fetch_assoc()) {
                         if ($i == 0) {
                             $user->setUserId($row['sender_id']);
@@ -522,20 +557,19 @@ class GossoutUser {
                             }
                             $i++;
                         }
-                        $encrypt = new Encryption();
+                        if ($row['status'] == "N" || $row['status'] == "D") {
+                            $mysql->query("UPDATE `privatemessae` SET `status`='R' WHERE (sender_id='$row[sender_id]' AND receiver_id='$row[receiver_id]')");
+                        }
                         $row['message'] = nl2br($row['message']);
                         $row['id'] = $encrypt->safe_b64encode($row['id']);
                         $row['sender_id'] = $encrypt->safe_b64encode($row['sender_id']);
                         $row['receiver_id'] = $encrypt->safe_b64encode($row['receiver_id']);
 
                         $arrFetch['message']['conversation'][] = $row;
-                        if ($row['status'] == "N" || $row['status'] == "D") {
-                            $mysql->query("UPDATE `privatemessae` SET `status`='R' WHERE `id`=$row[id]");
-                        }
                     }
                     $arrFetch['status'] = TRUE;
                 } else {
-                    $arrFetch['status'] = FALSE;
+                    $arrFetch['status'] = TRUE;
                 }
                 $result->free();
             } else {
@@ -561,11 +595,21 @@ class GossoutUser {
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "SELECT p.`id`, p.`post`, p.`community_id`, p.`sender_id`,u.firstname,u.lastname, p.`time`, p.`status` FROM post as p JOIN `community_subscribers` as cs ON p.community_id=cs.community_id JOIN user_personal_info as u ON p.sender_id=u.id JOIN usercontacts as uc ON (p.sender_id=uc.username1 AND uc.username2=$this->id) OR (p.sender_id=uc.username2 AND uc.username1=$this->id) AND uc.status='Y' WHERE cs.user=$this->id AND p.sender_id<>$this->id order by p.time desc";
-            if ($result = $mysql->query($sql)) {
+            $encrypt = new Encryption();
+            $user = new GossoutUser(0);
+            //post notiif
+            $sql1 = "SELECT distinct(p.`id`), p.`post`, p.`community_id`, p.`sender_id`,u.firstname,u.lastname, p.`time`, p.`status` FROM post as p JOIN `community_subscribers` as cs ON p.community_id=cs.community_id JOIN user_personal_info as u ON p.sender_id=u.id JOIN usercontacts as uc ON (p.sender_id=uc.username1 AND uc.username2=$this->id) OR (p.sender_id=uc.username2 AND uc.username1=$this->id) AND uc.status='Y' WHERE cs.user=$this->id AND p.sender_id<>$this->id order by p.time desc";
+            if ($result = $mysql->query($sql1)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
                         $row['type'] = "post";
+                        $user->setUserId($row['sender_id']);
+                        $pix = $user->getProfilePix();
+                        if ($pix['status']) {
+                            $row['photo'] = $pix['pix'];
+                        } else {
+                            $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
+                        }
                         $arrFetch['bag'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
@@ -576,12 +620,21 @@ class GossoutUser {
             } else {
                 $arrFetch['status'] = FALSE;
             }
-
-            $sql = "SELECT c.`id`, c.`comment`, c.`post_id`, c.`sender_id`,u.firstname,u.lastname, c.`time` FROM comments as c JOIN `post` as p ON c.post_id=p.id JOIN community_subscribers as cs ON cs.community_id=p.community_id JOIN user_personal_info as u ON c.sender_id=u.id JOIN usercontacts as uc ON (p.sender_id=uc.username1 AND uc.username2=$this->id) OR (p.sender_id=uc.username2 AND uc.username1=$this->id ) AND uc.status='Y' WHERE cs.user=$this->id AND c.sender_id<>$this->id order by c.time desc";
-            if ($result = $mysql->query($sql)) {
+            //comment notif
+            $sql2 = "Select c.id,c.comment, c.post_id,c.sender_id,com.name,u.firstname,u.lastname,p.sender_id as post_sender_id, c.time From comments as c JOIN user_personal_info as u ON c.sender_id=u.id JOIN post as p ON c.post_id=p.id JOIN community as com ON p.community_id=com.id Where
+ c.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id)) AND c.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') UNION (SELECT c.id,c.comment, c.post_id,c.sender_id,com.name,u.firstname,u.lastname,p.sender_id as post_sender_id,c.time FROM comments as c JOIN post as p ON c.post_id=p.id JOIN user_personal_info as u ON c.sender_id=u.id JOIN community as com ON p.community_id=com.id WHERE p.sender_id=$this->id AND c.sender_id<>$this->id)";
+            if ($result = $mysql->query($sql2)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
                         $row['type'] = "comment";
+                        $row['isMyPost'] = $row['post_sender_id'] == $this->id ? TRUE : FALSE;
+                        $user->setUserId($row['sender_id']);
+                        $pix = $user->getProfilePix();
+                        if ($pix['status']) {
+                            $row['photo'] = $pix['pix'];
+                        } else {
+                            $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
+                        }
                         $arrFetch['bag'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
@@ -594,12 +647,49 @@ class GossoutUser {
                 if (!$arrFetch['status'])
                     $arrFetch['status'] = FALSE;
             }
-
-            $sql = "SELECT t.`id`, t.`sender_id`,u.firstname,u.lastname, t.`type`, t.`time`, t.`status` FROM `tweakwink` as t JOIN user_personal_info as u ON t.sender_id=u.id  WHERE t.`receiver_id` =$this->id order by t.time desc";
-            if ($result = $mysql->query($sql)) {
+            //wink notif
+            $sql3 = "SELECT t.`id`, t.`sender_id`,u.firstname,u.lastname, t.`type`, t.`time`, t.`status` FROM `tweakwink` as t JOIN user_personal_info as u ON t.sender_id=u.id  WHERE t.`receiver_id` =$this->id AND status='N' order by t.time desc";
+            if ($result = $mysql->query($sql3)) {
                 if ($result->num_rows > 0) {
+                    $user = new GossoutUser(0);
                     while ($row = $result->fetch_assoc()) {
                         $row['type'] = "TW";
+                        $user->setUserId($row['sender_id']);
+                        $pix = $user->getProfilePix();
+                        if ($pix['status']) {
+                            $row['photo'] = $pix['pix'];
+                        } else {
+                            $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
+                        }
+                        $row['id'] = $encrypt->safe_b64encode($row['id']);
+                        $row['sender_id'] = $encrypt->safe_b64encode($row['sender_id']);
+                        $arrFetch['bag'][] = $row;
+                    }
+                    $arrFetch['status'] = TRUE;
+                } else {
+                    if (!$arrFetch['status'])
+                        $arrFetch['status'] = FALSE;
+                }
+                $result->free();
+            } else {
+                if (!$arrFetch['status'])
+                    $arrFetch['status'] = FALSE;
+            }
+            //friends request notif
+            $sql4 = "SELECT uc.username1,uc.`time`,u.firstname,u.lastname FROM usercontacts as uc JOIN user_personal_info as u ON uc.username1=u.id WHERE username2=$this->id AND status='N'";
+            if ($result = $mysql->query($sql4)) {
+                if ($result->num_rows > 0) {
+                    $user = new GossoutUser(0);
+                    while ($row = $result->fetch_assoc()) {
+                        $row['type'] = "frq";
+                        $user->setUserId($row['username1']);
+                        $row['username1'] = $encrypt->safe_b64encode($row['username1']);
+                        $pix = $user->getProfilePix();
+                        if ($pix['status']) {
+                            $row['photo'] = $pix['pix'];
+                        } else {
+                            $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
+                        }
                         $arrFetch['bag'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
@@ -674,7 +764,6 @@ class GossoutUser {
                     $sql = "INSERT INTO `user_login_details`(`id`, `password`, `token`) VALUES ('$newUid','$password','$token')";
                     $mysql->query($sql);
                     if ($mysql->affected_rows > 0) {
-                        include_once './encryptionClass.php';
                         $encrypt = new Encryption();
                         setcookie("user_auth", $encrypt->safe_b64encode($newUid));
                         $this->setUserId($newUid);
@@ -707,8 +796,9 @@ class GossoutUser {
             throw new Exception("Connection to server failed!");
         } else {
             $sql = "SELECT * FROM user_personal_info WHERE username='$email'";
-            if ($mysql->query($sql)) {
-                if ($mysql->affected_rows > 0) {
+            if ($result = $mysql->query($sql)) {
+                if ($result->num_rows > 0) {
+                    $result->free();
                     $mysql->close();
                     return FALSE;
                 } else {
@@ -719,9 +809,137 @@ class GossoutUser {
         }
     }
 
+    public function unfriend($userid) {
+        $arr = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "UPDATE usercontacts SET status='R' WHERE ((username1='$this->id' AND username2='$userid') OR (username1='$userid' AND username2='$this->id')) AND status='Y' OR status ='N'";
+            if ($mysql->query($sql)) {
+                if ($mysql->affected_rows > 0) {
+                    $arr['status'] = TRUE;
+                } else {
+                    $arr['status'] = FALSE;
+                }
+            } else {
+                $arr['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arr;
+    }
+
+    public function acceptFriendRequest($userid) {
+        $arr = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "UPDATE usercontacts SET status='Y' WHERE username1='$userid' AND username2='$this->id' AND status='N'";
+            if ($mysql->query($sql)) {
+                if ($mysql->affected_rows > 0) {
+                    $arr['status'] = TRUE;
+                } else {
+                    $arr['status'] = FALSE;
+                }
+            } else {
+                $arr['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arr;
+    }
+
+    public function sendFriendRequest($userid) {
+        $arr = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "SELECT * FROM usercontacts WHERE ((username1='$this->id' AND username2='$userid') OR (username1='$userid' AND username2='$this->id')) AND (status='N' OR status='Y')";
+
+            if ($result = $mysql->query($sql)) {
+                if ($result->num_rows > 0) {
+                    $arr['status'] = TRUE;
+                } else {
+                    $sql = "INSERT INTO usercontacts(username1,username2,sender_id) VALUES($this->id,$userid,$this->id)";
+                    if ($mysql->query($sql)) {
+                        if ($mysql->affected_rows > 0) {
+                            $arr['status'] = TRUE;
+                        } else {
+                            $arr['status'] = FALSE;
+                        }
+                    } else {
+                        $arr['status'] = FALSE;
+                    }
+                }
+            } else {
+                $arr['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arr;
+    }
+
+    public function wink($userid, $winkBack = FALSE) {
+        if ($winkBack) {
+            $this->responseToWink($userid);
+        }
+        $arr = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "SELECT * FROM tweakwink WHERE sender_id=$this->id AND receiver_id=$userid AND status='N'";
+            if ($result = $mysql->query($sql)) {
+                if ($result->num_rows > 0) {
+                    $arr['status'] = FALSE;
+                } else {
+                    $sql = "INSERT INTO tweakwink(sender_id,receiver_id,`type`) VALUES('$this->id','$userid','W')";
+                    if ($mysql->query($sql)) {
+                        if ($mysql->affected_rows > 0) {
+                            $arr['status'] = TRUE;
+                        } else {
+                            $arr['status'] = FALSE;
+                        }
+                    } else {
+                        $arr['status'] = FALSE;
+                    }
+                }
+            } else {
+                $arr['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arr;
+    }
+
+    public function responseToWink($userid, $response = "R") {
+        $arr = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "UPDATE tweakwink SET status ='$response' WHERE sender_id=$userid AND receiver_id=$this->id AND status='N'";
+            if ($mysql->query($sql)) {
+                if ($mysql->affected_rows > 0) {
+                    $arr['status'] = TRUE;
+                } else {
+                    $arr['status'] = FALSE;
+                }
+            } else {
+                $arr['status'] = FALSE;
+                $arr['sql'] = $sql;
+                echo json_encode($arr);
+                exit;
+            }
+        }
+        $mysql->close();
+        return $arr;
+    }
+
     public function getMiniStat($param = "ALL") {
-        include_once './Post.php';
-        include_once './Community.php';
         $userCom = new Community();
         $post = new Post();
         $post->setUserId($this->getId());

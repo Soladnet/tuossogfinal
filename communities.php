@@ -45,6 +45,13 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
     <?php
 } else {
     ?>
+                    $(document).ready(function() {
+                        $(".fancybox").fancybox({
+                            openEffect: 'none',
+                            closeEffect: 'none',
+                            minWidth: 250
+                        });
+                    });
                     sendData("loadCommunity", {target: ".community-box", uid: readCookie('user_auth'), loadImage: true, max: true});
     <?php
 }
@@ -75,7 +82,7 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                         <div id="creatComDiv">
                             <h3>Would you like to create one? It's very easy! 
                                 <br>
-                                <button class="button-big"><a href="create-community.php">New Community</a></button>
+                                <button class="button-big"><a href="create-community">New Community</a></button>
                             </h3>
                         </div>
                         <div class="community-box">

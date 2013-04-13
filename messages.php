@@ -41,7 +41,8 @@ if (isset($_COOKIE['user_auth'])) {
                 sendData("loadNavMessages", {uid: readCookie("user_auth"), target: "#individual-message-box", loadImage: true <?php echo isset($_GET['param']) ? $_GET['param'] != "" ? ",cw:'" . $_GET['param'] . "'" : ""  : "" ?>});
                 $(".fancybox").fancybox({
                     openEffect: 'none',
-                    closeEffect: 'none'
+                    closeEffect: 'none',
+                    minWidth: 250
                 });
                 $(".newMessage").fancybox({
                     openEffect: 'none',

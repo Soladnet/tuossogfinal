@@ -23,7 +23,7 @@ session_start();
 //echo '<<==<br/>';
 include './encryptionClass.php';
 $encrypt = new Encryption();
-echo $encrypt->safe_b64encode("11");
+echo ($encrypt->safe_b64decode("MTE"));
 
 function prepareUsername($email) {
     $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
