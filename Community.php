@@ -5,7 +5,8 @@
  * and open the template in the editor.
  */
 require_once 'Config.php';
-
+include_once './GossoutUser.php';
+include_once './encryptionClass.php';
 /**
  * Description of Community
  *
@@ -171,7 +172,6 @@ class Community {
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     include_once './encryptionClass.php';
-                    include_once './GossoutUser.php';
                     $encrytp = new Encryption();
                     $user = new GossoutUser(0);
                     while ($row = $result->fetch_assoc()) {
@@ -281,13 +281,13 @@ class Community {
     public function suggest() {
         $response = array();
         $arr = array();
-        include_once './GossoutUser.php';
+        $encrypt = new Encryption();
         $user = new GossoutUser($this->getUser());
         $userF = $user->getFriends(0, 1000);
         if ($userF['status']) {
             $com = new Community();
             foreach ($userF['friends'] as $friend) {
-                $com->setUser($friend['id']);
+                $com->setUser($encrypt->safe_b64decode($friend['id']));
                 $userComm = $com->userComm(0, 1000, TRUE);
                 if ($userComm['status'])
                     foreach ($userComm['community_list'] as $mem) {
@@ -371,8 +371,7 @@ class Community {
                 }
             }
         }
-        echo json_encode($arr);
-        exit;
+        
         return $response;
     }
 
