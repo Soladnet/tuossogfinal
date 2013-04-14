@@ -52,7 +52,6 @@ if (isValidEmail($email)) {
                     if (!isset($_COOKIE['user_auth'])) {
                         $data = $_SESSION['data'];
                         $resp = $userReg->register(clean($data['first_name']), clean($data['last_name']), clean($email), md5($pass), $data['gender'], "$data[dob_yr]-$data[dob_month]-$data[dob_day]");
-                        
                     } else {
                         $resp['status'] = TRUE;
                         include_once './encryptionClass.php';
@@ -131,9 +130,13 @@ function clean($value) {
         include_once './webbase.php';
         ?>
         <title>Gossout - Signup 3/3</title>
-        <?php
-        include ("head.php");
-        ?>
+        <link rel="shortcut icon" href="favicon.ico">
+        <link rel="stylesheet" media="screen" href="css/style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" > 
+        <link rel="stylesheet" href="css/validationEngine.jquery.css" type="text/css"/>
+        <script src="scripts/jquery-1.9.1.min.js" type="text/javascript"></script>
+        <script src="scripts/languages/jquery.validationEngine-en.js" type="text/javascript"></script>
+        <script src="scripts/jquery.validationEngine.js" type="text/javascript"></script>
         <style>
             .progress { position:relative; width:400px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
             .bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
@@ -165,8 +168,16 @@ function clean($value) {
                             <ul>
                                 <li>
                                     <label>Select an image: </label>
-                                    <input type="file" name="myfile" class="input-fields">
-                                    <p></p>
+                                    <div class="profile-pic">
+                                        <img src="<?php
+                                        $pix = $userReg->getPix();
+                                        echo isset($pix['thumbnail150']) ? $pix['thumbnail150'] : "images/no-pic.png"
+                                        ?>" id="target">
+                                    </div>
+                                    <hr>
+                                    <input type="file" id="fileInput" name="myfile" class="input-fields validate[required]" style="position: absolute;left: -9999px;"/>
+                                    <div id="fileChookseBtn" class="button"><span class="icon-16-camera"></span> Click to choose image</div>
+                                    <p>Maximum file size of 5MB<br/>Image type of .jpg, .jpeg, .gif, and .png</p>
                                     <input type="submit" class="button" value="Upload photo">
                                     <hr>
                                     <div class="progress">
@@ -179,7 +190,7 @@ function clean($value) {
                             <br>
                         </form>
                         <div class="button"><a href="signup-photo-edit?skip=">Skip</a></div>
-                        <div class="button"><a href="signup-photo-edit">Next!</a></div>
+                        <div class="button"><a href="signup-agreement">Next!</a></div>
                         <div class="clear"></div>
                     </div>
                 </div>
@@ -192,14 +203,16 @@ function clean($value) {
             </div>
 
         </div>
-        <script src="scripts/jquery.min.js"></script>
         <script src="scripts/jquery.form.js"></script>
         <script>
             (function() {
                 var bar = $('.bar');
                 var percent = $('.percent');
                 var status = $('#status');
-
+                $("#uploadForm").validationEngine();
+                $("#fileChookseBtn").click(function() {
+                    $("#fileInput").focus().trigger('click');
+                });
                 $('#uploadForm').ajaxForm({
                     beforeSend: function() {
                         status.empty();
@@ -212,8 +225,22 @@ function clean($value) {
                         bar.width(percentVal)
                         percent.html(percentVal);
                     },
-                    complete: function(xhr) {
-                        status.html(xhr.responseText);
+                    success: function(responseText, statusText, xhr, $form) {
+                        var percentVal = '100%';
+                        bar.width(percentVal)
+                        percent.html(percentVal);
+                        if (!responseText.error) {
+                            document.getElementById("target").src = responseText.thumb;
+                        }
+//                        alert(document.getElementById("target").src);
+                    },
+                    complete: function(xhr, textStatus) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (!response.error) {
+                            status.html("Upload Successfull");
+                        } else {
+                            status.html("Upload Failed. " + response.error.message);
+                        }
                     }
                 });
 

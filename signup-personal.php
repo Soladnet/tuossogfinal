@@ -43,7 +43,7 @@ session_start();
                             </h1>
                             <hr>
                         </div>	
-                        <form action="signup-login.php" method="POST">
+                        <form action="signup-login" method="POST">
                             <ul>
                                 <li>
                                     <label for="first_name">First Name</label>

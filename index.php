@@ -21,6 +21,10 @@ if (isset($_GET['page'])) {
         include_once './all-notifications.php';
     } else if ($_GET['page'] == "signup-personal") {
         include_once './signup-personal.php';
+    } else if ($_GET['page'] == "signup-login") {
+        include_once './signup-login.php';
+    } else if ($_GET['page'] == "signup-photo") {
+        include_once './signup-photo.php';
     } else if ($_GET['page'] == "signup-agreement") {
         include_once './signup-agreement.php';
     } else if ($_GET['page'] == "create-community") {

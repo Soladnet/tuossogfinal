@@ -411,7 +411,7 @@ function loadNotificationCount(response, statusText, target) {
     }
     setTimeout(function() {
         sendData("loadNotificationCount", target);
-    }, 30000);
+    }, 10000);
 }
 function loadCommunityMembers(response, statusText, target) {
     var htmlstr = "", wink = "";

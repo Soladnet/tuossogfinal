@@ -3,7 +3,10 @@ $countStat = isset($user) ? $user->getMiniStat() : array("fc" => 0, "cc" => 0, "
 ?>
 <div class="aside">
     <div class="aside-wrapper">
-        <img class="profile-pic" src="<?php echo isset($userProfile['user']['photo']['nophoto']) ? $userProfile['user']['photo']['alt'] : $userProfile['user']['photo']['thumbnail'] ?>">
+        <img class="profile-pic" src="<?php
+        $pix = $user->getPix();
+        echo isset($pix['thumbnail150']) ? $pix['thumbnail150'] : "images/no-pic.png"
+        ?>">
         <table>
             <tr><td></td><td><h3><a href=""><?php echo isset($user) ? $user->getFullname() : "GUEST"; ?></a></h3></td></tr>
             <tr><td><span class="icon-16-location"></span></td><td class="profile-meta"><?php echo isset($user) ? $user->getLocation() != "" ? $user->getLocation() : "Set your location"  : ""; ?></td></tr>
@@ -66,7 +69,9 @@ $countStat = isset($user) ? $user->getMiniStat() : array("fc" => 0, "cc" => 0, "
     <div class="aside-wrapper"><h3><a href="friends">Friends</a></h3>
         <script>
             $(document).ready(function() {
-                sendData("loadFriends", {target: "#aside-friends-list", uid: readCookie('user_auth'), loadImage: true <?php if ($_GET['page'] == "friends") {echo ",friendPage:'#individual-friend-box'";} ?>});
+                sendData("loadFriends", {target: "#aside-friends-list", uid: readCookie('user_auth'), loadImage: true <?php if ($_GET['page'] == "friends") {
+                    echo ",friendPage:'#individual-friend-box'";
+                } ?>});
                 sendData("loadCommunity", {target: "#aside-community-list", uid: readCookie('user_auth'), loadImage: false, max: ""});
             });
         </script>

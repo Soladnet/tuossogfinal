@@ -68,7 +68,7 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) && isset($_POST['g
                         </div>	
                         <progress max="100" value="50" >2 of 3 Completed</progress>
                         <hr>
-                        <form id="formID" class="formular" action="signup-photo.php" method="POST">
+                        <form id="formID" class="formular" action="signup-photo" method="POST">
                             <ul>
                                 <li>
                                     <label for="email">eMail Address</label>

@@ -4,9 +4,10 @@ require_once 'Config.php';
 include_once './encryptionClass.php';
 include_once './Community.php';
 include_once './Post.php';
+
 class GossoutUser {
 
-    var $id, $fname, $lname, $fullname, $location, $gender, $url, $tel, $email, $screenName = "", $dob;
+    var $id, $fname, $lname, $fullname, $location, $gender, $url, $tel, $email, $screenName = "", $dob, $pix = array();
 
     /**
      * @author Soladnet Software
@@ -109,6 +110,9 @@ class GossoutUser {
     public function getDOB() {
         return $this->dateToString($this->dob);
     }
+    public function getPix() {
+        return $this->pix;
+    }
 
     public function setUserId($newUid) {
         if (is_null($newUid)) {
@@ -157,6 +161,7 @@ class GossoutUser {
                     $this->email = $arr['email'];
                     $this->screenName = $arr['username'];
                     $this->dob = $arr['dob'];
+                    $this->pix = $arr['photo'];
                     $response['status'] = true;
                 } else {
                     $response['status'] = false;
@@ -202,7 +207,7 @@ class GossoutUser {
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "SELECT id,original,thumbnail,date_added FROM pictureuploads WHERE user_id=$this->id";
+            $sql = "SELECT id,original,thumbnail45,thumbnail50,thumbnail75,thumbnail150,date_added FROM pictureuploads WHERE user_id=$this->id";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     $response['status'] = TRUE;
@@ -244,13 +249,13 @@ class GossoutUser {
         return $response;
     }
 
-    public function updateThumbnail($pix_id, $thumb) {
+    public function updateThumbnail($pix_id, $thumbnail45, $thumbnail50, $thumbnail75, $thumbnail150) {
         $response = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "UPDATE pictureuploads SET thumbnail='$thumb' WHERE id=$pix_id";
+            $sql = "UPDATE pictureuploads SET thumbnail45='$thumbnail45',thumbnail50='$thumbnail50',thumbnail75='$thumbnail75',thumbnail150='$thumbnail150' WHERE id=$pix_id";
             $mysql->query($sql);
             if ($mysql->affected_rows > 0) {
                 $response['status'] = TRUE;
