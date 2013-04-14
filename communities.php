@@ -33,6 +33,11 @@ if (isset($_COOKIE['user_auth'])) {
         if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FALSE) {
             ?>
             <script type="text/javascript" src="scripts/jquery.form.js"></script>
+            <style>
+                .progress { position:relative; width:60%; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
+                .bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
+                .percent { position:absolute; display:inline-block; top:3px; left:48%; }
+            </style>
             <?php
         }
         ?>

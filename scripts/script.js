@@ -441,7 +441,7 @@ function loadCommunityMembers(response, statusText, target) {
         });
         if (response.length > 20) {
             $("#showAllCommem").html('<span class="icon-16-dot"></span><a href="friends">Show all</a>');
-        }else{
+        } else {
             $("#showAllCommem").html('');
         }
         $(target.target).html(htmlstr);
@@ -470,7 +470,9 @@ function loadCommunity(response, statusText, target) {
                             '<form method="POST" action="tuossog-api-json.php" id="com-' + response.id + '" enctype="multipart/form-data"><textarea required placeholder="Post to a community" name="post" id="post' + response.id + '"></textarea>' +
                             '<input type="submit" class="submit button float-right" value="Post">' +
                             '<input type="file" name="photo[]" multiple style="position: absolute;left: -9999px;" id="uploadInput"/>' +
-                            '<div class="button hint hint--left  float-right" data-hint="Upload image" id="uploadImagePost"><span class="icon-16-camera"></span></div></form>' +
+                            '<div class="button hint hint--left  float-right" data-hint="Upload image" id="uploadImagePost"><span class="icon-16-camera"></span></div>' +
+                            '<div class="progress" style="display:none"><div class="bar"></div ><div class="percent">0%</div></div><div id="status"></div>' +
+                            '</form>' +
                             '<div class="clear"></div></div><span id="loadPost"></span></div><script>sendData("loadPost",{target:"#loadPost",uid:readCookie("user_auth"),comid:"' + response.id + '"});</script>';
                 } else {
                     htmlstr += '<div class="posts"><h1>' + response.name + '</h1><hr/><span id="loadPost"></span></div><script>sendData("loadPost",{target:"#loadPost",uid:readCookie("user_auth"),comid:"' + response.id + '"})</script>';
@@ -482,13 +484,27 @@ function loadCommunity(response, statusText, target) {
                     $("#uploadImagePost").click(function() {
                         $("#uploadInput").focus().trigger('click');
                     });
+                    var bar = $('.bar');
+                    var percent = $('.percent');
                     $("#com-" + comid).ajaxForm({
                         beforeSubmit: function(formData, jqForm, options) {
+                            $(".progress").show();
+                            var percentVal = '0%';
+                            bar.width(percentVal)
+                            percent.html(percentVal);
 //                            var postIdPos = (jqForm.attr('id')).lastIndexOf("-") + 1;
 //                            var postId = ((jqForm.attr('id')).substring(postIdPos));
 //                            var msg = $('#post' + comid).val();
                         },
+                        uploadProgress: function(event, position, total, percentComplete) {
+                            var percentVal = percentComplete + '%';
+                            bar.width(percentVal)
+                            percent.html(percentVal);
+                        },
                         success: function(responseText, statusText, xhr, $form) {
+                            var percentVal = '100%';
+                            bar.width(percentVal)
+                            percent.html(percentVal);
                             if (responseText.id !== 0) {
                                 var msg = $('#post' + comid).val();
                                 var str = '<div class="post"><div class="post-content"><pre><p>' + (htmlencode(msg)) + '</p></pre>';
@@ -534,7 +550,6 @@ function loadCommunity(response, statusText, target) {
                                         $("#post-new-comment-form-" + postId).clearForm();
                                     },
                                     complete: function(response, statusText, xhr, $form) {
-
                                     },
                                     data: {
                                         param: "comment",
@@ -547,6 +562,7 @@ function loadCommunity(response, statusText, target) {
                             $("#com-" + comid).clearForm();
                         },
                         complete: function(response, statusText, xhr, $form) {
+                            $(".progress").hide(500);
                         },
                         data: {
                             param: "post",
