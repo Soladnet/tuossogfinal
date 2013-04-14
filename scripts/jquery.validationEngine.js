@@ -444,7 +444,7 @@
                     methods._ajaxError(data, transport);
                 },
                 success: function(json) {
-                    if ((dataType == "json") && (json !== true)) {
+                    if ((dataType === "json") && (json !== true)) {
                         // getting to this case doesn't necessary means that the form is invalid
                         // the server may return green or closing prompt actions
                         // this flag helps figuring it out
@@ -1415,7 +1415,6 @@
                         methods._ajaxError(data, transport);
                     },
                     success: function(json) {
-
                         // asynchronously called on success, data is the json answer from the server
                         var errorFieldId = json[0];
                         //var errorField = $($("#" + errorFieldId)[0]);
@@ -1440,8 +1439,13 @@
                                         }
                                     }
                                 }
-                                else
-                                    msg = rule.alertText;
+                                else {
+                                    if (json.msg) {
+                                        msg = json.msg;
+                                    } else {
+                                        msg = rule.alertText;
+                                    }
+                                }
 
                                 if (options.showPrompts)
                                     methods._showPrompt(errorField, msg, "", true, options);

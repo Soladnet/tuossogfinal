@@ -371,7 +371,6 @@ class Community {
                 }
             }
         }
-        
         return $response;
     }
 

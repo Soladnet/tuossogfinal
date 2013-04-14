@@ -23,6 +23,7 @@ if ($mysql->connect_errno > 0) {
         } else {
             if(strstr($validateValue, ' ')){
                 $arrayToJs[] = FALSE;
+                $arrayToJs['msg'] = "* Helve Cannot contain space";
             }else{
                 $arrayToJs[] = TRUE;
             }

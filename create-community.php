@@ -23,10 +23,10 @@ if (isset($_COOKIE['user_auth'])) {
         </title>
         <script src="scripts/jquery-1.9.1.min.js"></script>
         <link rel="stylesheet" href="css/validationEngine.jquery.css" type="text/css"/>
-        <link rel="stylesheet" href="css/jackedup.css" type="text/css"/>
         <?php
         include ("head.php");
         ?>
+        <link rel="stylesheet" href="css/jackedup.css" type="text/css"/>
         <script src="scripts/humane.min.js"></script>
         <script src="scripts/languages/jquery.validationEngine-en.js" type="text/javascript"></script>
         <script src="scripts/jquery.validationEngine.js" type="text/javascript"></script>
@@ -55,7 +55,7 @@ if (isset($_COOKIE['user_auth'])) {
                         percent.html(percentVal);
                     },
                     success: function(responseText, statusText, xhr, $form) {
-                        var percentVal = '100%';
+                        var percentVal = 'Completed!';
                         bar.width(percentVal)
                         percent.html(percentVal);
                         if (responseText.status === "success") {

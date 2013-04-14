@@ -577,10 +577,10 @@ if (isset($_POST['param'])) {
                 if (isset($_FILES)) {
                     if (isset($_FILES['img']['tmp_name'])) {
                         include_once './SimpleImage.php';
-                        $allowedExts = array("jpeg", "jpg", "png", "JPEG", "JPG", "PNG");
+                        $allowedExts = array("jpeg", "jpg", "png","gif", "JPEG", "JPG", "PNG","GIF");
                         $arr = explode(".", $_FILES['img']['name']);
                         $ext = end($arr);
-                        if ((($_FILES['img']['type'] == "image/jpeg") || ($_FILES['img']['type'] == "image/jpg") || ($_FILES['img']['type'] == "image/png")) && in_array($ext, $allowedExts) && $_FILES['img']['size'] < 2048000) {
+                        if ((($_FILES['img']['type'] == "image/jpeg") || ($_FILES['img']['type'] == "image/gif") || ($_FILES['img']['type'] == "image/jpg") || ($_FILES['img']['type'] == "image/png")) && in_array($ext, $allowedExts) && $_FILES['img']['size'] < 2048000) {
                             $original = "upload/images/community_photo/" . time() . "-" . $_POST['uid'] . "-" . 0 . ".$ext";
                             $thumbnail100 = "upload/images/community_photo/" . time() . "-" . $_POST['uid'] . "-" . 1 . "_thumb.$ext";
                             $thumbnail150 = "upload/images/community_photo/" . time() . "-" . $_POST['uid'] . "-" . 2 . "_thumb.$ext";

@@ -41,10 +41,6 @@ if (isset($_COOKIE['user_auth'])) {
 <?php
 if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FALSE) {
     ?>
-                    sendData("loadCommunity", {target: "#rightcolumn", uid: readCookie('user_auth'), loadImage: true, max: true, loadAside: true, comname: '<?php echo $_GET['param'] ?>'});
-    <?php
-} else {
-    ?>
                     $(document).ready(function() {
                         $(".fancybox").fancybox({
                             openEffect: 'none',
@@ -52,6 +48,10 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                             minWidth: 250
                         });
                     });
+                    sendData("loadCommunity", {target: "#rightcolumn", uid: readCookie('user_auth'), loadImage: true, max: true, loadAside: true, comname: '<?php echo $_GET['param'] ?>'});
+    <?php
+} else {
+    ?>
                     sendData("loadCommunity", {target: ".community-box", uid: readCookie('user_auth'), loadImage: true, max: true});
     <?php
 }

@@ -418,9 +418,9 @@ function loadCommunityMembers(response, statusText, target) {
     if (!response.error) {
         $.each(response, function(i, response) {
             htmlstr += '<a class= "fancybox " id="inline" href="#' + response.username + '">' +
-                    '<img class= "friends-thumbnails" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail) + '">' +
+                    '<img class= "friends-thumbnails" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
                     '<div style="display:none"><div id="' + response.username + '"><div class="aside-wrapper">' +
-                    '<img class="profile-pic" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail) + '"><table><tr><td></td><td>' +
+                    '<img class="profile-pic" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail150) + '"><table><tr><td></td><td>' +
                     '<h3>' + response.firstname.concat(" ", response.lastname) + '</h3></td></tr><tr><td><span class="icon-16-map"></span></td><td class="profile-meta">' + (response.location === "" ? "Not Set" : response.location) + '</td></tr>' +
                     '<tr><td><span class="icon-16-' + (response.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta">' + (response.gender === "M" ? "Male" : "Female") + '</td></tr>' +
 //                    '<tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a href="">See Profile</a> </td></tr>' +
