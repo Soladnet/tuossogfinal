@@ -1,6 +1,6 @@
-
 <?php
 session_start();
+//print_r($_SESSION);
 ?>
 <!doctype html>
 <html>
@@ -8,13 +8,13 @@ session_start();
         <?php
         include_once './webbase.php';
         ?>
-        <link rel="stylesheet" href="css/bigbox.css">
+        <title>Gossout - Login</title>
         <?php
         include ("head.php");
         if (isset($_SESSION['login_error']) && isset($_GET['login_error'])) {
 //            exit;
             ?>
-            
+            <link rel="stylesheet" href="css/bigbox.css">
             <script type="text/javascript" src="scripts/humane.min.js"></script>
             <script>
                 humane.log("Login failed", {timeout: 10000, clickToClose: true, addnCls: 'humane-bigbox-error'});

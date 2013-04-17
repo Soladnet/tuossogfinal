@@ -21,10 +21,12 @@ session_start();
 //$user = new GossoutUser(0);
 //echo $user->encodeText("1");
 //echo '<<==<br/>';
-include './encryptionClass.php';
-$encrypt = new Encryption();
-echo ($encrypt->safe_b64decode("MTE"));
+//include './encryptionClass.php';
+//$encrypt = new Encryption();
+//echo ($encrypt->safe_b64decode("MTE"));
 
+$str = "_-thissdfkj";
+print_r(preg_match("/[^A-Za-z0-9_-]/", $str));
 function prepareUsername($email) {
     $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
     if ($mysql->connect_errno > 0) {

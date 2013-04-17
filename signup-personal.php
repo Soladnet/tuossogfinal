@@ -8,8 +8,10 @@ session_start();
         include_once './webbase.php';
         ?>
         <title>Gossout - Signup 1/3</title>
+        <link rel="shortcut icon" href="favicon.ico">
+        <link rel="stylesheet" media="screen" href="css/style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" > 
         <?php
-        include ("head.php");
         if (isset($_SESSION['signup_perosnal_error']) && isset($_GET['signup_error'])) {
             ?>
             <link rel="stylesheet" href="css/jackedup.css">

@@ -24,8 +24,9 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) && isset($_POST['g
         include_once './webbase.php';
         ?>
         <title>Gossout - Signup 2/3</title>
+        <link rel="stylesheet" media="screen" href="css/style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" > 
         <?php
-        include ("head.php");
         if (isset($_SESSION['signup_login_error']) && isset($_GET['signup_login_error'])) {
             ?>
             <link rel="stylesheet" href="css/jackedup.css">

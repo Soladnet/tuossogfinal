@@ -67,7 +67,13 @@ if (isValidEmail($email)) {
                     }
                     if ($resp['status']) {
                         $userReg->setUserId($resp['id']);
-                        $userReg->getProfile();
+                        $result = $userReg->getProfile();
+                        if (!$result['status']) {
+                            include_once './LoginClass.php';
+                            $login = new Login();
+                            $login->logout();
+                            exit;
+                        }
                     } else {
                         $_SESSION['signup_login_error']['message'] = $resp['message'];
                         $_SESSION['signup_login_error']['data'] = $_POST;
@@ -85,7 +91,7 @@ if (isValidEmail($email)) {
             $_SESSION['signup_login_error']['message'] = "Something terrible just went wrong...we will fix this as soon as possible";
             $_SESSION['signup_login_error']['data'] = $_POST;
             header("Location: signup-login?signup_login_error=");
-            exit();
+            exit;
         }
     }
 } else {

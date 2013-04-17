@@ -28,6 +28,7 @@ if (isValidEmail($validateValue)) {
     }
 } else {
     $arrayToJs[] = false;
+    $arrayToJs['msg'] = "* Email host does not exist";
     echo json_encode($arrayToJs);
 }
 

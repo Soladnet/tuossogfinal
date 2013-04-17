@@ -674,7 +674,7 @@ input[type=checkbox] { vertical-align: baseline !important; }
 .more-div { text-align: center; }
 
 .more-container { position: relative; display: none; }
-.more-container .more { -webkit-box-shadow: 0px 1px 6px 0px #555; box-shadow: 0px 1px 6px 0px #555; border: 1px solid #dadada; background: white; z-index: 1000; position: absolute; right: -6px; min-width: 12em; min-height: 100px; top: 15px; border: 1px solid #bbb; text-align: left; }
+.more-container .more { -webkit-box-shadow: 0px 1px 6px 0px #555; box-shadow: 0px 1px 6px 0px #555; border: 1px solid #dadada; background: white; z-index: 1000; position: absolute; right: -6px; min-width: 12em; /*min-height: 100px;*/ top: 15px; border: 1px solid #bbb; text-align: left; }
 .more-container .more ul li { padding: 0.8em 0.5em; width: 100%; }
 .more-container .more ul li:hover { background-color: #f8f8f8; }
 

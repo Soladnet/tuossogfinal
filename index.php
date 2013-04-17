@@ -29,6 +29,8 @@ if (isset($_GET['page'])) {
         include_once './signup-agreement.php';
     } else if ($_GET['page'] == "create-community") {
         include_once './create-community.php';
+    } else if ($_GET['page'] == "community-settings") {
+        include_once './community-settings.php';
     }else {
         header("Location: communities/$_GET[page]");
     }

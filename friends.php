@@ -8,9 +8,17 @@ if (isset($_COOKIE['user_auth'])) {
     if (is_numeric($uid)) {
         $user = new GossoutUser($uid);
         $userProfile = $user->getProfile();
+    } else {
+        include_once './LoginClass.php';
+        $login = new Login();
+        $login->logout();
+        exit;
     }
 } else {
-    header("Location: login");
+    include_once './LoginClass.php';
+    $login = new Login();
+    $login->logout();
+    exit;
 }
 ?>
 <!doctype html>
@@ -42,7 +50,7 @@ if (isset($_COOKIE['user_auth'])) {
         </script>
     </head>
     <body>
-        
+
         <div class="page-wrapper">
             <?php
             include ("nav.php");

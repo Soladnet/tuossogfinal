@@ -13,7 +13,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         header("Location:home");
     } else {
         $_SESSION['login_error']['data'] = $_POST;
-        header("Location:login?login_error=");
+        header("Location:index.php?page=login&login_error=");
     }
 } else {
     $login->logout();

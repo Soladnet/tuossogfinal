@@ -7,6 +7,7 @@
 require_once 'Config.php';
 include_once './GossoutUser.php';
 include_once './encryptionClass.php';
+
 /**
  * Description of Community
  *
@@ -53,17 +54,18 @@ class Community {
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
+            $encrypt = new Encryption();
             if ($max) {
                 if ($comname) {
-                    $sql = "SELECT id,unique_name,`name`,`pix`,`type`,description FROM community WHERE unique_name='$comname'";
+                    $sql = "SELECT id,creator_id,unique_name,`name`,`pix`,thumbnail100,thumbnail150,thumbnail150,`type`,description FROM community WHERE unique_name='$comname'";
                 } else {
-                    $sql = "SELECT cs.`community_id` as id,c.unique_name,c.`name`,c.`pix`,c.`type`,c.description FROM community_subscribers as cs JOIN community as c ON cs.community_id=c.id  WHERE cs.`user`=$this->uid AND cs.leave_status=0 order by c.name asc LIMIT $start,$limit";
+                    $sql = "SELECT cs.`community_id` as id,c.creator_id,c.unique_name,c.`name`,c.`pix`,c.thumbnail100,c.thumbnail150,c.thumbnail150,c.`type`,c.description FROM community_subscribers as cs JOIN community as c ON cs.community_id=c.id  WHERE cs.`user`=$this->uid AND cs.leave_status=0 order by c.name asc LIMIT $start,$limit";
                 }
             } else {
                 if ($comname) {
-                    $sql = "SELECT id,unique_name,`name` FROM community WHERE unique_name='$comname'";
+                    $sql = "SELECT id,creator_id,unique_name,`name` FROM community WHERE unique_name='$comname'";
                 } else {
-                    $sql = "SELECT cs.`community_id` as id,c.unique_name,c.`name` FROM community_subscribers as cs JOIN community as c ON cs.community_id=c.id  WHERE cs.`user`=$this->uid AND cs.leave_status=0 order by c.name asc LIMIT $start,$limit";
+                    $sql = "SELECT cs.`community_id` as id,c.creator_id,c.unique_name,c.`name` FROM community_subscribers as cs JOIN community as c ON cs.community_id=c.id  WHERE cs.`user`=$this->uid AND cs.leave_status=0 order by c.name asc LIMIT $start,$limit";
                 }
             }
             if ($result = $mysql->query($sql)) {
@@ -92,8 +94,9 @@ class Community {
                             } else {
                                 $row['post_count'] = 0;
                             }
+                            $row['description'] = nl2br($row['description']);
                         }
-
+                        $row['creator_id'] = $encrypt->safe_b64encode($row['creator_id']);
                         $arr['community_list'][] = $row;
                     }
                     $arr['status'] = true;
@@ -391,12 +394,83 @@ class Community {
         return implode(' ', $exp);
     }
 
-    public function updateDescription($commId) {
-        throw new Exception("Method not supported");
+    public function updateDescription($desc, $comHelve) {
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        $arr = array();
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "UPDATE community SET description='$desc' WHERE unique_name='$comHelve'";
+            if ($mysql->query($sql)) {
+                $arr['status'] = TRUE;
+            } else {
+                $arr['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arr;
     }
 
-    public function updateName($commName) {
-        throw new Exception("Method not supported");
+    public function updatePix($pix, $thumbnail100, $thumbnail150, $comHelve) {
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        $arr = array();
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql1 = "SELECT pix,thumbnail100,thumbnail150 FROM community WHERE unique_name='$comHelve'";
+            if ($result = $mysql->query($sql1)) {
+                if ($result->num_rows > 0) {
+                    $arr['com_pix'] = $result->fetch_assoc();
+                    $sql = "UPDATE community SET pix='$pix',thumbnail100='$thumbnail100',thumbnail150='$thumbnail150' WHERE unique_name='$comHelve'";
+                    if ($mysql->query($sql)) {
+                        $arr['status'] = TRUE;
+                    } else {
+                        $arr['status'] = FALSE;
+                    }
+                }else{
+                    $arr['status'] = FALSE;
+                }
+                $result->free();
+            }else{
+                $arr['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arr;
+    }
+
+    public function updateName($name, $comHelve) {
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        $arr = array();
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "UPDATE community SET `name`='$name' WHERE unique_name='$comHelve'";
+            if ($mysql->query($sql)) {
+                $arr['status'] = TRUE;
+            } else {
+                $arr['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arr;
+    }
+
+    public function updatePrivacy($privacy, $comHelve) {
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        $arr = array();
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "UPDATE community SET `type`='$privacy' WHERE unique_name='$comHelve'";
+            if ($mysql->query($sql)) {
+                $arr['status'] = TRUE;
+            } else {
+                $arr['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arr;
     }
 
     public function addMember($commId) {

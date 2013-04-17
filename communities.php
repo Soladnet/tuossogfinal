@@ -24,11 +24,13 @@ if (isset($_COOKIE['user_auth'])) {
         <?php
         include ("head.php");
         ?>
+        <link rel="stylesheet" href="css/chosen.css" />
         <link rel="stylesheet" href="css/jackedup.css">
         <script type="text/javascript" src="scripts/humane.min.js"></script>
         <script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
         <script src="scripts/test_helpers.js" type="text/javascript"></script>
+        <script src="scripts/chosen.jquery.min.js" type="text/javascript"></script>
         <?php
         if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FALSE) {
             ?>
@@ -42,16 +44,15 @@ if (isset($_COOKIE['user_auth'])) {
         }
         ?>
         <script type="text/javascript">
-            $(function() {
+            $(document).ready(function() {
 <?php
 if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FALSE) {
     ?>
-                    $(document).ready(function() {
-                        $(".fancybox").fancybox({
-                            openEffect: 'none',
-                            closeEffect: 'none',
-                            minWidth: 250
-                        });
+
+                    $(".fancybox").fancybox({
+                        openEffect: 'none',
+                        closeEffect: 'none',
+                        minWidth: 250
                     });
                     sendData("loadCommunity", {target: "#rightcolumn", uid: readCookie('user_auth'), loadImage: true, max: true, loadAside: true, comname: '<?php echo $_GET['param'] ?>'});
     <?php
@@ -87,7 +88,7 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                         <div id="creatComDiv">
                             <h3>Would you like to create one? It's very easy! 
                                 <br>
-                                <button class="button-big"><a href="create-community">New Community</a></button>
+                                <div class="button"><a href="create-community">New Community</a></div>
                             </h3>
                         </div>
                         <div class="community-box">

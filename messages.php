@@ -74,26 +74,6 @@ if (isset($_COOKIE['user_auth'])) {
                     uid: readCookie("user_auth")
                 }
             });
-//            $("#conForm").ajaxForm({
-//                beforeSubmit: function() {
-//                },
-//                success: function(responseText, statusText, xhr, $form) {
-//                    $("#messageStatus").html("");
-//                    $("#msg").val("");
-//                    $.fancybox.close();
-//                },
-//                complete: function(response, statusText, xhr, $form) {
-//                    if (response.error) {
-//                        $("#messageStatus").html(response.error.message);
-//                    } else {
-//                        $("#messageStatus").html("");
-//                    }
-//                },
-//                data: {
-//                    uid: readCookie("user_auth"),
-//                    user:<?php echo isset($_GET['param']) ? $_GET['param'] != "" ? "'" . $_GET['param'] . "'" : "''"  : "''" ?>
-//                }
-//            });
         </script>
 
     </head>

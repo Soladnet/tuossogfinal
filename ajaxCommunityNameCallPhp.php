@@ -21,9 +21,9 @@ if ($mysql->connect_errno > 0) {
             $arrayToJs[] = FALSE;
             echo json_encode($arrayToJs);
         } else {
-            if(strstr($validateValue, ' ')){
+            if(preg_match("/[^A-Za-z0-9-]/", $validateValue)){
                 $arrayToJs[] = FALSE;
-                $arrayToJs['msg'] = "* Helve Cannot contain space";
+                $arrayToJs['msg'] = "* Helve Cannot contain special characters except '-'";
             }else{
                 $arrayToJs[] = TRUE;
             }

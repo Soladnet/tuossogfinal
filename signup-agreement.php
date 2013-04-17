@@ -24,6 +24,10 @@ if (isset($_COOKIE['user_auth'])) {
 <html>
     <head>
         <?php
+        include_once './webbase.php';
+        ?>
+        <title>Gossout - Agreement</title>
+        <?php
         include ("head.php");
         ?>
     </head>
@@ -48,7 +52,6 @@ if (isset($_COOKIE['user_auth'])) {
                         </div>
                         <progress max="100" value="95" >95% done!</progress>
                         <hr>
-                        <form>
                             <ul>
                                 <li>
                                     <p class="info">
@@ -64,8 +67,7 @@ if (isset($_COOKIE['user_auth'])) {
 
                                     </p>
                                 </li>
-                            </ul>
-                            <button class="button-big"><a href="home">Finish!</a></button>
+                            <div class="button"><a href="home">Finish!</a></div>
                         </form>
                         <div class="clear"></div>
                     </div>

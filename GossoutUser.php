@@ -755,9 +755,9 @@ class GossoutUser {
             $count = 0;
             do {
                 if ($count > 0) {
-                    $username = $this->prepareUsername($usernameTemp[0] . $count);
+                    $username = $this->prepareUsername(str_replace(".", "", $usernameTemp[0]) . $count);
                 } else {
-                    $username = $this->prepareUsername($usernameTemp[0]);
+                    $username = $this->prepareUsername(str_replace(".", "", $usernameTemp[0]));
                 }
                 $count++;
             } while (!$username);

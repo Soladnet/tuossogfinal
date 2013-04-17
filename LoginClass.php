@@ -67,11 +67,11 @@ class Login {
     }
 
     public function logout() {
-        if (isset($_SESSION['auth'])) {
+//        if (isset($_SESSION['auth'])) {
             unset($_SESSION['auth']);
             setcookie("user_auth", "", time() - 3600);
             setcookie("m_t", "", time() - 3600);
-        }
+//        }
         header("Location:login");
     }
 

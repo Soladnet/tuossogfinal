@@ -63,7 +63,7 @@ if (isset($_COOKIE['user_auth'])) {
                             $("#noCom").hide();
                             $("#cc").html(parseInt($("#cc").html())+1);
                             $("#aside-community-list").prepend('<div class="community-listing"><span><a href="' + responseText.unique_name + '">' + responseText.name + '</a></span></div><hr>');
-                            humane.log("Community created successfully", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-info'});
+                            humane.log("Community created successfully", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
                         } else {
                             if (responseText.status) {
                                 humane.log("Community was not created", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});

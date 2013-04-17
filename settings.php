@@ -8,9 +8,17 @@ if (isset($_COOKIE['user_auth'])) {
     if (is_numeric($uid)) {
         $user = new GossoutUser($uid);
         $userProfile = $user->getProfile();
+    } else {
+        include_once './LoginClass.php';
+        $login = new Login();
+        $login->logout();
+        exit;
     }
 } else {
-    header("Location: login");
+    include_once './LoginClass.php';
+    $login = new Login();
+    $login->logout();
+    exit;
 }
 ?>
 <!doctype html>
@@ -84,14 +92,14 @@ if (isset($_COOKIE['user_auth'])) {
                         <h2>Confirm Password</h2>
                         <input type="password">
                     </div>
-<!--                    <div class="individual-setting">
-                        <h2>Privacy</h2>
-                        <p> <input type="checkbox"> Make my account private</p>
-                    </div>
-                    <div class="individual-setting">
-                        <h2>Notifications</h2>
-                        <p> <input type="checkbox"> Receive notifications through e-mail</p>
-                    </div>-->
+                    <!--                    <div class="individual-setting">
+                                            <h2>Privacy</h2>
+                                            <p> <input type="checkbox"> Make my account private</p>
+                                        </div>
+                                        <div class="individual-setting">
+                                            <h2>Notifications</h2>
+                                            <p> <input type="checkbox"> Receive notifications through e-mail</p>
+                                        </div>-->
                     <input type="button" class="button submit" value="Save Changes">	
                 </div>
 
