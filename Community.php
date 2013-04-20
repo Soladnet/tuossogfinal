@@ -308,8 +308,57 @@ class Community {
         } else {
             $response['status'] = FALSE;
         }
+//        if ($response['status']) {
+//            $myComm = $this->userComm(0, 1000, TRUE);
+//            if ($myComm['status']) {
+//                foreach ($myComm['community_list'] as $item) {
+//                    if (array_key_exists($item['id'], $arr)) {
+//                        unset($arr[$item['id']]);
+//                    }
+//                }
+//            }
+//            if (count($arr) == 0) {
+//                $response['status'] = FALSE;
+//            } else {
+//                $response['suggest'] = array_values($arr);
+//                shuffle($response['suggest']);
+//            }
+//        } //else {
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+//        $arr = array();
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "SELECT id,unique_name,`name`,category,`type`,description,pix FROM community WHERE `type`='Public'";
+            if ($result = $mysql->query($sql)) {
+                if ($result->num_rows > 0) {
+                    $comInfo = new Community();
+                    while ($row = $result->fetch_assoc()) {
+                        $comInfo->setCommunityId($row['id']);
+                        $mem_count = $comInfo->getMemberCount();
+                        if ($mem_count['status']) {
+                            $row['mem_count'] = $mem_count['count'];
+                        } else {
+                            $row['mem_count'] = 0;
+                        }
+                        $post_count = $comInfo->getPostCount();
+                        if ($post_count['status']) {
+                            $row['post_count'] = $post_count['count'];
+                        } else {
+                            $row['post_count'] = 0;
+                        }
+                        $arr[$row['id']] = $row;
+                    }
+                    $response['status'] = TRUE;
+                } else {
+                    $response['status'] = FALSE;
+                }
+            } else {
+                $response['status'] = FALSE;
+            }
+        }
         if ($response['status']) {
-            $myComm = $this->userComm(0, 1000, TRUE);
+            $myComm = $this->userComm(0, 1000);
             if ($myComm['status']) {
                 foreach ($myComm['community_list'] as $item) {
                     if (array_key_exists($item['id'], $arr)) {
@@ -323,57 +372,8 @@ class Community {
                 $response['suggest'] = array_values($arr);
                 shuffle($response['suggest']);
             }
-        } else {
-            $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
-            $arr = array();
-            if ($mysql->connect_errno > 0) {
-                throw new Exception("Connection to server failed!");
-            } else {
-                $sql = "SELECT id,unique_name,`name`,category,`type`,description,pix FROM community WHERE `type`='Public'";
-                if ($result = $mysql->query($sql)) {
-                    if ($result->num_rows > 0) {
-                        $comInfo = new Community();
-                        while ($row = $result->fetch_assoc()) {
-                            $comInfo->setCommunityId($row['id']);
-                            $mem_count = $comInfo->getMemberCount();
-                            if ($mem_count['status']) {
-                                $row['mem_count'] = $mem_count['count'];
-                            } else {
-                                $row['mem_count'] = 0;
-                            }
-                            $post_count = $comInfo->getPostCount();
-                            if ($post_count['status']) {
-                                $row['post_count'] = $post_count['count'];
-                            } else {
-                                $row['post_count'] = 0;
-                            }
-                            $arr[$row['id']] = $row;
-                        }
-                        $response['status'] = TRUE;
-                    } else {
-                        $response['status'] = FALSE;
-                    }
-                } else {
-                    $response['status'] = FALSE;
-                }
-            }
-            if ($response['status']) {
-                $myComm = $this->userComm(0, 1000);
-                if ($myComm['status']) {
-                    foreach ($myComm['community_list'] as $item) {
-                        if (array_key_exists($item['id'], $arr)) {
-                            unset($arr[$item['id']]);
-                        }
-                    }
-                }
-                if (count($arr) == 0) {
-                    $response['status'] = FALSE;
-                } else {
-                    $response['suggest'] = array_values($arr);
-                    shuffle($response['suggest']);
-                }
-            }
         }
+//        }
         return $response;
     }
 
@@ -392,6 +392,67 @@ class Community {
             }
         }
         return implode(' ', $exp);
+    }
+
+    public function inviteFriends() {
+        $arrFetch = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        //$count = 0;
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "SELECT if(uc.username1=$this->uid,uc.username2,uc.username1) as id,username,firstname, lastname From user_personal_info, usercontacts as uc Where ((username1 = user_personal_info.id AND username2 = $this->uid) OR (username2 = user_personal_info.id AND username1 = $this->uid)) AND status ='Y'";
+            if ($result = $mysql->query($sql)) {
+                if ($result->num_rows > 0) {
+                    $encrypt = new Encryption();
+                    while ($row = $result->fetch_assoc()) {
+                        $row['id'] = $encrypt->safe_b64encode($row['id']);
+                        $arrFetch['friends'][] = $row;
+                    }
+                    $arrFetch['status'] = TRUE;
+                } else {
+                    $arrFetch['status'] = FALSE;
+                }
+                $result->free();
+            } else {
+                $arrFetch['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arrFetch;
+    }
+
+    public function sendInvitation($values) {
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        $arr = array();
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "INSERT INTO comminvitation (sender_id,receiver_id,comid) VALUES $values";
+            if ($mysql->query($sql)) {
+                $arr['status'] = TRUE;
+            } else {
+                $arr['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arr;
+    }
+    public function respondToInvitation() {
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        $arr = array();
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "UPDATE comminvitation SET status =1 WHERE receiver_id=$this->uid AND comid=$this->id";
+            if ($mysql->query($sql)) {
+                $arr['status'] = TRUE;
+            } else {
+                $arr['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arr;
     }
 
     public function updateDescription($desc, $comHelve) {
@@ -427,11 +488,11 @@ class Community {
                     } else {
                         $arr['status'] = FALSE;
                     }
-                }else{
+                } else {
                     $arr['status'] = FALSE;
                 }
                 $result->free();
-            }else{
+            } else {
                 $arr['status'] = FALSE;
             }
         }
@@ -471,10 +532,6 @@ class Community {
         }
         $mysql->close();
         return $arr;
-    }
-
-    public function addMember($commId) {
-        throw new Exception("Method not supported");
     }
 
     public function leave() {

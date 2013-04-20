@@ -49,6 +49,7 @@ if (isset($_COOKIE['user_auth'])) {
             <script type="text/javascript">
                 $(document).ready(function() {
                     sendData("loadCommunity", {target: "#rightcolumn", uid: readCookie('user_auth'), loadImage: true, max: true, loadAside: true, comname: '<?php echo $_GET['param'] ?>', settings: true});
+                    sendData("loadNotificationCount", {uid: readCookie("user_auth"), title: document.title});
                     $("#settingsForm,#imageChangeForm").validationEngine();
                     $("#settingsForm").ajaxForm({
                         success: function(responseText, statusText, xhr, $form) {

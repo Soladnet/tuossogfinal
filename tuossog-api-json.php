@@ -183,6 +183,54 @@ if (isset($_POST['param'])) {
         } else {
             displayError(400, "The request cannot be fulfilled due to bad syntax");
         }
+    } else if ($_POST['param'] == "inviteFriends" || $_POST['param'] == "Send Invitation") {
+        include_once './Community.php';
+        if (isset($_POST['uid']) && isset($_POST['comid'])) {
+            $id = decodeText($_POST['uid']);
+            if (is_numeric($id) && is_numeric($_POST['comid'])) {
+                $com = new Community();
+                $com->setUser($id);
+                $com->setCommunityId($_POST['comid']);
+                if ($_POST['param'] == "Send Invitation") {
+                    if (is_array($_POST['user'])) {
+                        $valTex = "";
+                        foreach ($_POST['user'] as $uid) {
+                            if (is_numeric(decodeText($uid))) {
+                                if ($valTex != "") {
+                                    $valTex .=",";
+                                }
+                                $valTex .= "($id," . decodeText($uid) . ",$_POST[comid])";
+                            }
+                        }
+                        $response = $com->sendInvitation($valTex);
+                    } else {
+                        displayError(404, "Not Found");
+                    }
+                } else {
+                    if (isset($_POST['response'])) {
+                        $response = $com->respondToInvitation();
+                        if ($_POST['response'] == "true") {
+                            $response = $com->join();
+                        }
+                    } else {
+                        $response = $com->inviteFriends();
+                    }
+                }
+                if ($response['status']) {
+                    if ($_POST['param'] == "Send Invitation" || isset($_POST['response'])) {
+                        echo json_encode($response);
+                    } else {
+                        echo json_encode($response['friends']);
+                    }
+                } else {
+                    displayError(404, "Not Found");
+                }
+            } else {
+                displayError(400, "The request cannot be fulfilled due to bad syntax");
+            }
+        } else {
+            displayError(400, "The request cannot be fulfilled due to bad syntax");
+        }
     } else if ($_POST['param'] == "notifSum") {
         include_once './GossoutUser.php';
         if (isset($_POST['uid'])) {

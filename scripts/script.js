@@ -127,6 +127,35 @@ function sendData(callback, target) {
                 uid: target.uid
             }
         };
+    } else if (callback === "inviteFriends") {
+        option = {
+            beforeSend: function() {
+                showuidfeedback(target);
+            },
+            success: function(response, statusText, xhr) {
+                inviteFriends(response, statusText, target);
+            },
+            data: {
+                param: "inviteFriends",
+                uid: target.uid,
+                comid: target.comId
+            }
+        };
+    } else if (callback === "acceptDeclineComInvitation") {
+        option = {
+            beforeSend: function() {
+                showuidfeedback(target);
+            },
+            success: function(response, statusText, xhr) {
+                acceptDeclineComInvitation(response, statusText, target);
+            },
+            data: {
+                param: "inviteFriends",
+                uid: target.uid,
+                comid: target.comId,
+                response: target.response
+            }
+        };
     } else if (callback === "loadPost") {
         option = {
             beforeSend: function() {
@@ -263,25 +292,32 @@ function loadGossbag(response, statusText, target) {
                             '<p><span class="icon-16-pencil"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
                             '<div class="all-notification-text"><h3>' + response.firstname.concat(' ', response.lastname) + '</h3>' +
-                            //'<div class="all-notifications-message">Post on ' + (response.isMyPost ? "on your post" : "a post") + '</div>' +
-                            '<div class="all-notifications-comment">"' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '"</div></div><hr><p>' +
+                            '<div class="all-notifications-comment">posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '" in <a href="communities/' + response.unique_name + '">' + response.name + '</a></div></div><hr><p>' +
                             '<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a></p></div>';
                 } else {
                     htmlstr += '<div class="individual-notification viewed-notification"><p><span class="icon-16-pencil"></span>' +
                             '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
                             '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + ' </p>' +
-                            '<p>' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '</p></div><div class="clear"></div><hr><a class="notification-actions">View</a>' +
+                            '<p>posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '"</p><p>in <a href="communities/' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><a class="notification-actions">View</a>' +
                             '<div class="clear"></div></div>';
                 }
-            } else if (response.type === "invite") {
+            } else if (response.type === "IV") {
                 if (target.target === "#individual-notification-box") {
-
+                    htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-earth"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
+                            '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
+                            '<h3>' + response.firstname.concat(' ', response.lastname) + ' </h3>' +
+                            '<div class="all-notifications-message">invites you to join <a href="communities/' + response.unique_name + '">' + response.name + '</a></div></div><hr><p id="invitationtarget">' +
+                            '<a class="all-notifications-actions" id="invitationIgnore-text-' + response.comid + '"><span class="icon-16-cross"></span>Ignore</a>' +
+                            '<a class="all-notifications-actions" id="invitation-text-' + response.comid + '"><span class="icon-16-earth"></span>Join</a>' +
+                            '</p></div>';
+                    accept_frq_text += accept_frq_text === "" ? "#invitationIgnore-text-" + response.comid + ",#invitation-text-" + response.comid : ",#invitationIgnore-text-" + response.comid + ",#invitation-text-" + response.comid;
                 } else {
-//                htmlstr += '<div class="individual-notification viewed-notification"><p><span class="icon-16-earth"></span>' +
-//                        '<span class="float-right"> 17 hrs </span></p><img class= "notification-icon" src="images/1.jpg">' +
-//                        '<div class="notification-text"> <p class="name">Chiroma Chukwuma Adekunle </p><p>invites you to join community</p>' +
-//                        '<p>"Ahmadu Bello University Zaria..."</p></div><div class="clear"></div><hr><a class="notification-actions">View</a>' +
-//                        '<a class="notification-actions">Accept</a><div class="clear"></div></div>';
+                    htmlstr += '<div class="individual-notification viewed-notification"><p><span class="icon-16-earth"></span>' +
+                            '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
+                            '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + '</p><p>invites you to join</p>' +
+                            '<p><a href="communities/' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><span id="invitationtarget"><a class="notification-actions" id="invitationIgnore-text-n-' + response.comid + '">Ignore</a>' +
+                            '<a class="notification-actions">Join</a></span><div class="clear"></div></div>';
+                    accept_frq_text += accept_frq_text === "" ? "#invitationIgnore-text-n-" + response.comid + ",#invitation-text-n-" + response.comid : ",#invitationIgnore-text-n-" + response.comid + ",#invitation-text-n-" + response.comid;
                 }
             }
         });
@@ -296,6 +332,41 @@ function loadGossbag(response, statusText, target) {
             $(target.target).html('<div class="individual-notification">' +
                     '<div class="notification-text"><p class="name">Gossbag empty</p>');
         }
+    }
+}
+function inviteFriends(response, statusText, target) {
+    var htmlstr = "";
+    if (!response.error) {
+        $.each(response, function(i, response) {
+            htmlstr += '<option value="' + response.id + '">' + response.firstname.concat(' ', response.lastname) + '</option>';
+        });
+        if (htmlstr !== "") {
+            var str = '<select data-placeholder="enter contact" class="chzn-select" multiple style="width:350px;" name="user[]" id="user_callup"><option value=""></option>' + htmlstr + '</select><li><input id="sendBtn" type="submit" class="button submit" name="param" value="Send Invitation" /><span id="messageStatus"></span></li>';
+            $(target.target).html(str);
+            $(".chzn-select").chosen();
+        } else {
+            $(target.target).html("You do not have any friend to send invitation to");
+        }
+    }
+}
+function acceptDeclineComInvitation(response, statusText, target) {
+    if(!response.error){
+        var str = "";
+        if(response.status===true){
+            str = "Your request was successfull!";
+            humane.log(str, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+        }else{
+            if(target.response===true){
+                str = "Your accept request was not successfull!";
+                humane.log(str, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+            }else{
+                str = "Your ignore request was not successfull!";
+                humane.log(str, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+            }
+        }
+        $(target.target).html(str);
+    }else{
+        humane.log(response.error.message, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
     }
 }
 function sendFriendRequest(response, statusText, target) {
@@ -465,11 +536,10 @@ function loadCommunity(response, statusText, target) {
                     if (response.creator_id === readCookie('user_auth')) {
                         $("#otherCommOption").html('<div class=" button profile-button" id="loadCommore">More<span class="icon-16-arrow-down"></span>' +
                                 '<div class="more-container" id="pop-up-community-more"><div class="more"><ul>' +
-                                '<li id="inviteMemBtn"><a class="display" href="#inviteDisplay"><span class="icon-16-user-add"></span> Invite Members<div style="display:none">' +
+                                '<li id="inviteMemBtn"><a class="displayX" href="#inviteDisplay"><span class="icon-16-user-add"></span> Invite Members<div style="display:none">' +
                                 '<div id="inviteDisplay" class="registration" style="width: 800"><h3>Invite Friends</h3><hr/>' +
                                 '<form id="inviteForm" method="POST" action="tuossog-api-json.php"><ul>' +
-                                '<li><label for="To" id="toLabel">To</label><span id="toUserInput"></span></li>' +
-                                '<li><input id="sendBtn" type="submit" class="button submit" name="param" value="Send Invitation" /><span id="messageStatus"></span></li>' +
+                                '<li><span id="toUserInput"></span></li>' +
                                 '</ul></form></div></div></a></li>' +
 //                                '<li><a href=""><span class="icon-16-star"></span> Favourite</a></li>' +
 //                                '<li><a href=""><span class="icon-16-star-empty"></span> Un-Favourite</a></li>' +
@@ -478,19 +548,48 @@ function loadCommunity(response, statusText, target) {
                                 '<li><a href="community-settings/' + target.comname + '"><span class="icon-16-cog"></span> Settings</a></li>' +
                                 '</ul></div></div></div>');
                     } else {
-                        $("#otherCommOption").html('<div class=" button profile-button display" id="inviteDisplay"><span class="icon-16-user-add"></span> Invite Friends<input type="hidden" id="joinleave-comid" value="0"/><div style="display:none">' +
-                                '<div id="inviteDisplay" class="registration" style="width: 800"><h3>Invite Friends</h3><hr/>' +
+                        $("#otherCommOption").html('<a class=" button profile-button displayX" id="inviteMemBtn"  href="#inviteDisplay"><span class="icon-16-user-add"></span> Invite Friends</a>' +
+                                '<div style="display:none"><div id="inviteDisplay" class="registration" style="width: 800"><h3>Invite Friends</h3><hr/>' +
                                 '<form id="inviteForm" method="POST" action="tuossog-api-json.php"><ul>' +
-                                '<li><label for="To" id="toLabel">To</label><span id="toUserInput"></span></li>' +
-                                '<li><input id="sendBtn" type="submit" class="button submit" name="param" value="Send Invitation" /><span id="messageStatus"></span></li>' +
-                                '</ul></form></div></div></div>');
+                                '<li><span id="toUserInput"></span></li>' +
+                                '</ul></form></div></div>');
                     }
-                    $(".display").fancybox({
+                    $(".displayX").fancybox({
                         openEffect: 'none',
                         closeEffect: 'none',
                         minWidth: 500,
                         afterClose: function() {
                             $("#inviteMemBtn").removeClass("Open");
+                        }
+                    });
+                    $("#inviteForm").ajaxForm({
+                        beforeSubmit: function() {
+                            var value = $("#user_callup").val();
+                            if (value === null) {
+                                humane.log("Select at least a friend first", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        },
+                        success: function(responseText, statusText, xhr, $form) {
+                            if (!responseText.error) {
+                                if (responseText.status === true) {
+                                    $.fancybox.close();
+                                    humane.log("Your invitation was sent successfully", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                                } else {
+                                    humane.log("Your invitation was not sent successfully due to invalid friend", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                                }
+                            } else {
+                                humane.log(responseText.error.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                            }
+                        },
+                        complete: function(response, statusText, xhr, $form) {
+
+                        },
+                        data: {
+                            uid: readCookie("user_auth"),
+                            comid: $("#joinleave-comid").val()
                         }
                     });
                 } else if (target.settings) {
@@ -1168,8 +1267,18 @@ function showOption(obj) {
         if ($("#" + obj.id).hasClass("Open")) {
             if (!$("#" + obj.id).hasClass("loaded")) {
                 $("#" + obj.id).addClass("loaded");
-                sendData("loadFriends", {uid: readCookie("user_auth"), target: "#toUserInput", loadImage: true, inviteMemBtn: ""});
+                var comId = $("#joinleave-comid").val();
+                sendData("inviteFriends", {uid: readCookie("user_auth"), target: "#toUserInput", loadImage: true, comId: comId});
             }
+        }
+    } else if ((obj.id).indexOf("invitationIgnore-text") >= 0 || (obj.id).indexOf("invitation-text-") >= 0) {
+        alert(obj.id);
+        var userIdPos = (obj.id).lastIndexOf("-") + 1;
+        var comid = ((obj.id).substring(userIdPos));
+        if((obj.id).indexOf("invitationIgnore-text") >= 0){
+            sendData("acceptDeclineComInvitation", {uid: readCookie("user_auth"), target: "#invitationtarget", loadImage: true, comId: comid, response: false});
+        }else{
+            sendData("acceptDeclineComInvitation", {uid: readCookie("user_auth"), target: "#invitationtarget", loadImage: true, comId: comid, response: true});
         }
     }
 }

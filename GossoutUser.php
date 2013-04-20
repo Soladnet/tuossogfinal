@@ -603,7 +603,8 @@ class GossoutUser {
             $encrypt = new Encryption();
             $user = new GossoutUser(0);
             //post notiif
-            $sql1 = "SELECT distinct(p.`id`), p.`post`, p.`community_id`, p.`sender_id`,u.firstname,u.lastname, p.`time`, p.`status` FROM post as p JOIN `community_subscribers` as cs ON p.community_id=cs.community_id JOIN user_personal_info as u ON p.sender_id=u.id JOIN usercontacts as uc ON (p.sender_id=uc.username1 AND uc.username2=$this->id) OR (p.sender_id=uc.username2 AND uc.username1=$this->id) AND uc.status='Y' WHERE cs.user=$this->id AND p.sender_id<>$this->id order by p.time desc";
+            $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where
+ p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y')";
             if ($result = $mysql->query($sql1)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
@@ -668,6 +669,33 @@ class GossoutUser {
                         }
                         $row['id'] = $encrypt->safe_b64encode($row['id']);
                         $row['sender_id'] = $encrypt->safe_b64encode($row['sender_id']);
+                        $arrFetch['bag'][] = $row;
+                    }
+                    $arrFetch['status'] = TRUE;
+                } else {
+                    if (!$arrFetch['status'])
+                        $arrFetch['status'] = FALSE;
+                }
+                $result->free();
+            } else {
+                if (!$arrFetch['status'])
+                    $arrFetch['status'] = FALSE;
+            }
+            //invitation notif
+            $sql3 = "SELECT u.id,u.firstname,u.lastname,c.id as comid, c.`name`,c.unique_name,ci.`time`,ci.status FROM comminvitation as ci JOIN user_personal_info as u ON ci.sender_id=u.id JOIN community as c ON ci.comid=c.id WHERE ci.receiver_id=$this->id AND ci.status=0";
+            if ($result = $mysql->query($sql3)) {
+                if ($result->num_rows > 0) {
+                    $user = new GossoutUser(0);
+                    while ($row = $result->fetch_assoc()) {
+                        $row['type'] = "IV";
+                        $user->setUserId($row['id']);
+                        $pix = $user->getProfilePix();
+                        if ($pix['status']) {
+                            $row['photo'] = $pix['pix'];
+                        } else {
+                            $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
+                        }
+                        $row['id'] = $encrypt->safe_b64encode($row['id']);
                         $arrFetch['bag'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;

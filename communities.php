@@ -35,6 +35,7 @@ if (isset($_COOKIE['user_auth'])) {
         if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FALSE) {
             ?>
             <script type="text/javascript" src="scripts/jquery.form.js"></script>
+
             <style>
                 .progress { position:relative; width:60%; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
                 .bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
@@ -48,12 +49,6 @@ if (isset($_COOKIE['user_auth'])) {
 <?php
 if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FALSE) {
     ?>
-
-                    $(".fancybox").fancybox({
-                        openEffect: 'none',
-                        closeEffect: 'none',
-                        minWidth: 250
-                    });
                     sendData("loadCommunity", {target: "#rightcolumn", uid: readCookie('user_auth'), loadImage: true, max: true, loadAside: true, comname: '<?php echo $_GET['param'] ?>'});
     <?php
 } else {
@@ -63,6 +58,11 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
 }
 ?>
                 sendData("loadNotificationCount", {uid: readCookie("user_auth"), title: document.title});
+                $(".fancybox").fancybox({
+                    openEffect: 'none',
+                    closeEffect: 'none',
+                    minWidth: 250
+                });
             });
         </script>
     </head>

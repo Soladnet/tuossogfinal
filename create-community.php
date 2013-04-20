@@ -85,6 +85,7 @@ if (isset($_COOKIE['user_auth'])) {
                     closeEffect: 'none'
 
                 });
+                sendData("loadNotificationCount", {uid: readCookie("user_auth"), title: document.title});
             });
         </script>
         <style>
