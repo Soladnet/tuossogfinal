@@ -281,7 +281,7 @@ function loadGossbag(response, statusText, target) {
                             '<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a></p></div>';
                 } else {
                     htmlstr += '<div class="individual-notification"><p><span class="icon-16-comment"></span><span class="float-right timeago" title="' + response.time + '">' + response.time + '</span></p>' +
-                            '<img class= "notification-icon" src="images/1.jpg"><div class="notification-text">' +
+                            '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="notification-text">' +
                             '<p class="name">' + response.firstname.concat(' ', response.lastname) + '</p><p>commented on ' + (response.isMyPost ? "on your post" : "a post") + '</p>' +
                             '<p>"' + (response.comment.length > 31 ? response.comment.substring(0, 31) + "..." : response.comment) + '"</p></div><div class="clear"></div><hr>' +
                             '<a class="notification-actions" title="' + response.name + '">View</a><div class="clear"></div></div>';
@@ -416,7 +416,7 @@ function loadNavMessages(response, statusText, target) {
 //               alert(converPhoto?converPhoto.nophoto:"B");
 //                if (target.uid === response.sender_id) {
                 htmlstr += '<div class="individual-message-box"><p><span class="all-messages-time timeago" title="' + response.time + '"> ' + response.time + ' </span>' +
-                        '</p><img class= "all-messages-image" src="' + (converPhoto.nophoto ? converPhoto.alt : (response.s_username === target.cw ? converPhoto[response.s_username].thumbnail : converPhoto[response.s_username].thumbnail)) + '"><div class="all-messages-text">' +
+                        '</p><img class= "all-messages-image" src="' + (converPhoto.nophoto ? converPhoto.alt : (response.s_username === target.cw ? converPhoto[response.s_username].thumbnail50 : converPhoto[response.s_username].thumbnail50)) + '"><div class="all-messages-text">' +
                         '<a href=""><h3>' + (response.s_username === target.cw ? response.s_firstname.concat(' ', response.s_lastname) : response.s_firstname.concat(' ', response.s_lastname)) + ' </h3></a>' +
                         '<div class="all-messages-message">' + (target.uid === response.sender_id ? '<span class="icon-16-reply"></span>' : '') + ' <p>' + response.message + '</p><!--<br><span class="post-meta-delete"><span class="icon-16-trash"></span><span>Delete</span></span>--></div></div></div>';
 //                } else {
@@ -433,7 +433,7 @@ function loadNavMessages(response, statusText, target) {
             if (target.target === "#message-individual-notification") {
                 if (!response.code) {
                     htmlstr += '<div class="individual-notification' + ((response.status === "R") ? " viewed-notification" : "") + '"><p><span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span><div class="clear"></div>' +
-                            '</p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail) + '"><div class="notification-text">' +
+                            '</p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="notification-text">' +
                             '<p class="name">' + response.firstname.concat(' ', response.lastname) + '</p><p><!--<span class="icon-16-reply">--></span>' + response.message.substring(0, 30) + (response.message.lenght > 29 ? "..." : "") + '</p>' +
                             '</div><div class="clear"></div><hr><a class="notification-actions" href="messages/' + response.username + '">View</a><div class="clear"></div></div>';
                 } else {
@@ -442,7 +442,7 @@ function loadNavMessages(response, statusText, target) {
             } else {
                 if (!response.code) {
                     htmlstr += '<div class="individual-message-box"><p><span class="all-messages-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-                            '<img class= "all-messages-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail) + '"><div class="all-messages-text">' +
+                            '<img class= "all-messages-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-messages-text">' +
                             '<a href=""><h3>' + response.firstname.concat(' ', response.lastname) + '</h3></a>' +
                             '<div class="all-messages-message">' + response.message.substring(0, 250) + (response.message.lenght > 249 ? "..." : "") + '</div></div><hr><p>' +
                             '<!--<a class="all-messages-actions"><span class="icon-16-cross"></span>Delete</a>-->' +
@@ -660,7 +660,7 @@ function loadCommunity(response, statusText, target) {
                                     var str = '<div class="post"><div class="post-content"><pre><p>' + (htmlencode(msg)) + '</p></pre>';
                                     if (responseText.post_photo) {
                                         $.each(responseText.post_photo, function(k, photo) {
-                                            str += '<a class="fancybox" rel="gallery' + responseText.id + '"  href="' + photo.original + '" rel="group"><img src="' + photo.thumbnail + '"></a>';
+                                            str += '<a class="fancybox" rel="gallery' + responseText.id + '"  href="' + photo.original + '" rel="group"><img src="' + photo.thumbnail50 + '"></a>';
                                         });
                                     }
                                     str += '<hr><h3 class="name">' + responseText.name +
@@ -692,7 +692,7 @@ function loadCommunity(response, statusText, target) {
                                             if (responseText.id !== 0) {
                                                 var msg = $("#input-" + postId).val();
 //                    $("#post-comments-" + postId).html($("#post-comments-" + postId).html() + '<div class="post-comment"><img class = "post-thumb" src = "' + (responseText.photo.nophoto ? responseText.photo.alt : responseText.photo.thumbnail) + '"><h4 class = "name"> ' + responseText.name + ' </h4><span class = "post-time timeago" title="' + responseText.time + '"> ' + responseText.time + ' </span><p><pre>' + (htmlencode(msg)) + '</pre></p><div class = "clear"></div></div>');
-                                                $("#post-comments-" + postId).html($("#post-comments-" + postId).html() + '<div class="post-comment"><img class="post-thumb" src="' + (responseText.photo.nophoto ? responseText.photo.alt : responseText.photo.thumbnail) + '"><h4 class="name">' + responseText.name + '</h4><span class="post-time timeago" title="' + responseText.time + '">' + responseText.time + '</span><pre><p>' + (htmlencode(msg)) + '</p></pre><div class="clear"></div></div>');
+                                                $("#post-comments-" + postId).html($("#post-comments-" + postId).html() + '<div class="post-comment"><img class="post-thumb" src="' + (responseText.photo.nophoto ? responseText.photo.alt : responseText.photo.thumbnail50) + '"><h4 class="name">' + responseText.name + '</h4><span class="post-time timeago" title="' + responseText.time + '">' + responseText.time + '</span><pre><p>' + (htmlencode(msg)) + '</p></pre><div class="clear"></div></div>');
                                                 prepareDynamicDates();
                                                 $(".timeago").timeago();
                                                 $("#numComnt-" + postId).html(parseInt($("#numComnt-" + postId).html()) + 1);
@@ -853,7 +853,7 @@ function loadPost(response, statusText, target) {
                 if (responseText.id !== 0) {
                     var msg = $("#input-" + postId).val();
 //                    $("#post-comments-" + postId).html($("#post-comments-" + postId).html() + '<div class="post-comment"><img class = "post-thumb" src = "' + (responseText.photo.nophoto ? responseText.photo.alt : responseText.photo.thumbnail) + '"><h4 class = "name"> ' + responseText.name + ' </h4><span class = "post-time timeago" title="' + responseText.time + '"> ' + responseText.time + ' </span><p><pre>' + (htmlencode(msg)) + '</pre></p><div class = "clear"></div></div>');
-                    $("#post-comments-" + postId).html($("#post-comments-" + postId).html() + '<div class="post-comment"><img class="post-thumb" src="' + (responseText.photo.nophoto ? responseText.photo.alt : responseText.photo.thumbnail) + '"><h4 class="name">' + responseText.name + '</h4><span class="post-time timeago" title="' + responseText.time + '">' + responseText.time + '</span><pre><p>' + (htmlencode(msg)) + '</p></pre><div class="clear"></div></div>');
+                    $("#post-comments-" + postId).html($("#post-comments-" + postId).html() + '<div class="post-comment"><img class="post-thumb" src="' + (responseText.photo.nophoto ? responseText.photo.alt : responseText.photo.thumbnail50) + '"><h4 class="name">' + responseText.name + '</h4><span class="post-time timeago" title="' + responseText.time + '">' + responseText.time + '</span><pre><p>' + (htmlencode(msg)) + '</p></pre><div class="clear"></div></div>');
                     prepareDynamicDates();
                     $(".timeago").timeago();
                     $("#numComnt-" + postId).html(parseInt($("#numComnt-" + postId).html()) + 1);
@@ -879,7 +879,7 @@ function loadComment(response, statusText, target) {
     if (!response.error) {
         var htmlstr = "";
         $.each(response, function(i, responseItem) {
-            htmlstr += '<div class="post-comment"><img class="post-thumb" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail) + '"><h4 class="name">' + responseItem.firstname.concat(' ', responseItem.lastname) + '</h4><span class="post-time timeago" title="' + responseItem.time + '">' + responseItem.time + '</span><p>' + responseItem.comment + '</p><div class="clear"></div></div>';
+            htmlstr += '<div class="post-comment"><img class="post-thumb" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail50) + '"><h4 class="name">' + responseItem.firstname.concat(' ', responseItem.lastname) + '</h4><span class="post-time timeago" title="' + responseItem.time + '">' + responseItem.time + '</span><p>' + responseItem.comment + '</p><div class="clear"></div></div>';
         });
         $(target.target).html(htmlstr);
         prepareDynamicDates();

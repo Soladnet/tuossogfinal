@@ -21,9 +21,9 @@ session_start();
 //$user = new GossoutUser(0);
 //echo $user->encodeText("1");
 //echo '<<==<br/>';
-//include './encryptionClass.php';
-//$encrypt = new Encryption();
-//echo ($encrypt->safe_b64decode("MTE"));
+include './encryptionClass.php';
+$encrypt = new Encryption();
+echo ($encrypt->safe_b64decode("NDQ"));
 
 $str = "_-thissdfkj";
 print_r(preg_match("/[^A-Za-z0-9_-]/", $str));
