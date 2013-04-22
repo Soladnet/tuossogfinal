@@ -125,7 +125,66 @@ class GossoutUser {
     public function setScreenName($user) {
         $this->screenName = $user;
     }
-
+    public function updateFirstname($newName) {
+        $arrFetch = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        //$count = 0;
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "UPDATE user_personal_info SET firstname='$newName' WHERE id=$this->id";
+            if ($mysql->query($sql)) {
+                if ($mysql->affected_rows > 0) {
+                    $arrFetch['status'] = TRUE;
+                }else{
+                    $arrFetch['status'] = FALSE;
+                }
+            }else{
+                $arrFetch['status'] = FALSE;
+            }
+        }
+        return $arrFetch;
+    }
+    public function updateLastname($lname) {
+        $arrFetch = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        //$count = 0;
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "UPDATE user_personal_info SET lastname='$lname' WHERE id=$this->id";
+            if ($mysql->query($sql)) {
+                if ($mysql->affected_rows > 0) {
+                    $arrFetch['status'] = TRUE;
+                }else{
+                    $arrFetch['status'] = FALSE;
+                }
+            }else{
+                $arrFetch['status'] = FALSE;
+            }
+        }
+        return $arrFetch;
+    }
+    public function updatePassword($pass) {
+        $arrFetch = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        //$count = 0;
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "UPDATE user_login_details SET password='$pass' WHERE id=$this->id";
+            if ($mysql->query($sql)) {
+                if ($mysql->affected_rows > 0) {
+                    $arrFetch['status'] = TRUE;
+                }else{
+                    $arrFetch['status'] = FALSE;
+                }
+            }else{
+                $arrFetch['status'] = FALSE;
+            }
+        }
+        return $arrFetch;
+    }
     /**
      * Get the profile of the current user if a valid user id was specified
      * @return Array An array containing $this user's profile information would be returned
@@ -444,7 +503,7 @@ class GossoutUser {
      * @return Array
      * @throws Exception is thrown when the connection to the server fails
      */
-    public function getMessages($start, $limit, $status) {
+    public function getMessages($start, $limit, $status,$flag=TRUE) {
         $arrFetch = array();
         $temp = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
@@ -464,7 +523,7 @@ class GossoutUser {
                             $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
                         }
                         $temp[$row['sender_id']] = $row;
-                        if ($row['status'] == "N") {
+                        if ($row['status'] == "N" && $flag) {
                             $mysql->query("UPDATE `privatemessae` SET `status`='D' WHERE `id`=$row[id]");
                         }
                     }
@@ -741,7 +800,7 @@ class GossoutUser {
 
     public function getNotificationSummary() {
         $gb = $this->getGossbag();
-        $msg = $this->getMessages(0, 1000, "AND status='N'");
+        $msg = $this->getMessages(0, 1000, "AND status='N'",FALSE);
         $response['msg'] = $msg['status'] ? count($msg['message']) : 0;
         $response['gb'] = $gb['status'] ? count($gb['bag']) : 0;
         return $response;

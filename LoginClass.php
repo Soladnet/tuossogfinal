@@ -6,7 +6,7 @@ include_once './encryptionClass.php';
 
 class Login {
 
-    var $user, $pass, $rem;
+    var $user, $pass, $rem,$uid;
 
     public function __construct() {
         
@@ -23,6 +23,9 @@ class Login {
     public function setRememberStatus($remember = FALSE) {
         $this->rem = $remember;
     }
+    public function setUid($uid){
+        $this->uid = $uid;
+    }
 
     public function getUser() {
         return $this->user;
@@ -36,7 +39,7 @@ class Login {
             throw new Exception("Connection to server failed!");
         } else {
             $str = "SELECT l.id, p.email, l.activated,p.dateJoined,  p.firstname, p.lastname, p.gender, p.dob,p.relationship_status,p.phone,p.url,p.bio,p.favquote,p.location,p.likes,p.dislikes,p.works FROM user_login_details AS l JOIN user_personal_info AS p ON p.id = l.id WHERE p.email = '$this->user' AND l.password = '$this->pass' AND l.id=p.id";
-            
+
             if ($result = $mysql->query($str)) {
                 if ($result->num_rows > 0 && $result->num_rows == 1) {
                     $row = $result->fetch_assoc();
@@ -48,7 +51,7 @@ class Login {
                             $expire = time() + 60 * 60 * 24 * 30 * 3;
                             setcookie("user_auth", $encrypt->safe_b64encode($row['id']), $expire);
                         } else {
-                            setcookie("user_auth", $encrypt->safe_b64encode($row['id']));
+                            setcookie("user_auth", $encrypt->safe_b64encode($row['id']),0);
                         }
                         $_SESSION['auth'] = $row;
                     } else {
@@ -65,12 +68,63 @@ class Login {
         $mysql->close();
         return $arrFetch;
     }
+    public function isValidPassword() {
+        $arrFetch = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        //$count = 0;
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "SELECT count(*) as count FROM user_personal_info as u JOIN user_login_details as ul ON u.id=ul.id AND u.id='$this->uid' AND ul.password='$this->pass'";
+            if ($result = $mysql->query($sql)) {
+                if ($result->num_rows > 0) {
+                    $row = $result->fetch_assoc();
+                    if ($row['count'] == 1) {
+                        $arrFetch['status'] = TRUE;
+                        $arrFetch['sql'] = $sql;
+                    } else {
+                        $arrFetch['status'] = FALSE;
+                    }
+                } else {
+                    $arrFetch['status'] = FALSE;
+                }
+            } else {
+                $arrFetch['status'] = FALSE;
+            }
+        }
+        return $arrFetch;
+    }
+    public function isValidCredential() {
+        $arrFetch = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        //$count = 0;
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "SELECT count(*) as count FROM user_personal_info as u JOIN user_login_details as ul ON u.id=ul.id AND u.email='$this->user' AND ul.password='$this->pass'";
+            if ($result = $mysql->query($sql)) {
+                if ($result->num_rows > 0) {
+                    $row = $result->fetch_assoc();
+                    if ($row['count'] == 1) {
+                        $arrFetch['status'] = TRUE;
+                    } else {
+                        $arrFetch['status'] = FALSE;
+                    }
+                } else {
+                    $arrFetch['status'] = FALSE;
+                }
+            } else {
+                $arrFetch['status'] = FALSE;
+            }
+        }
+        return $arrFetch;
+    }
 
     public function logout() {
 //        if (isset($_SESSION['auth'])) {
-            unset($_SESSION['auth']);
-            setcookie("user_auth", "", time() - 3600);
-            setcookie("m_t", "", time() - 3600);
+        unset($_SESSION['auth']);
+        setcookie("user_auth", "", time() - 3600);
+        setcookie("m_t", "", time() - 3600);
 //        }
         header("Location:login");
     }

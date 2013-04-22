@@ -401,13 +401,15 @@ class Community {
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "SELECT if(uc.username1=$this->uid,uc.username2,uc.username1) as id,username,firstname, lastname From user_personal_info, usercontacts as uc Where ((username1 = user_personal_info.id AND username2 = $this->uid) OR (username2 = user_personal_info.id AND username1 = $this->uid)) AND status ='Y'";
+            $sql = "SELECT if(uc.username1=$this->uid,uc.username2,uc.username1) as id,username,firstname, lastname From user_personal_info, usercontacts as uc Where ((username1 = user_personal_info.id AND username2 = $this->uid) OR (username2 = user_personal_info.id AND username1 = $this->uid)) AND status ='Y' AND (username1 NOT IN(SELECT user FROM community_subscribers WHERE `community_id`=$this->id) AND username2 NOT IN(SELECT user FROM community_subscribers WHERE `community_id`=$this->id))";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     $encrypt = new Encryption();
                     while ($row = $result->fetch_assoc()) {
                         $row['id'] = $encrypt->safe_b64encode($row['id']);
+                        $row['sql'] = $sql;
                         $arrFetch['friends'][] = $row;
+                        
                     }
                     $arrFetch['status'] = TRUE;
                 } else {

@@ -6,7 +6,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     $login->setUsername($_POST['email']);
 
     if (isset($_POST['remember'])) {
-        $login->setRememberStatus($_GET['remember']);
+        $login->setRememberStatus($_POST['remember']);
     }
     $response = $login->confirmLogin();
     if ($response['status']) {

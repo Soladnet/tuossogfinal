@@ -49,9 +49,10 @@ if (isValidEmail($email)) {
                 if ($pass == $cpass) {
                     include_once './GossoutUser.php';
                     $userReg = new GossoutUser(0);
-                    if (!isset($_COOKIE['user_auth'])) {
+                    if (!isset($_COOKIE['user_auth']) && isset($_SESSION['data'])) {
                         $data = $_SESSION['data'];
                         $resp = $userReg->register(clean($data['first_name']), clean($data['last_name']), clean($email), md5($pass), $data['gender'], "$data[dob_yr]-$data[dob_month]-$data[dob_day]");
+                        unset($_SESSION['data']);
                     } else {
                         $resp['status'] = TRUE;
                         include_once './encryptionClass.php';

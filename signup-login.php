@@ -77,7 +77,7 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) && isset($_POST['g
                                 </li>
                                 <li>
                                     <label for="password">Password</label>
-                                    <input  name="password" type="password" placeholder="Minimum of 6 characters" spellcheck="false" class="validate[required,minSize[6] text-input input-fields" value="" min="6" maxlength="255" required id="password"/> 
+                                    <input  name="password" type="password" placeholder="Minimum of 6 characters" spellcheck="false" class="validate[required,minSize[6]] text-input input-fields" value="" min="6" maxlength="255" required id="password"/> 
                                 </li>
                                 <li>
                                     <label for="cpassword">Confirm Password</label>

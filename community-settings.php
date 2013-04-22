@@ -106,7 +106,7 @@ if (isset($_COOKIE['user_auth'])) {
                     <h1>Community Settings</h1>
                     <hr>
                     <hr>
-                    <form action="tuossog-api-json.php" method="POST" id="imageChangeForm">
+                    <form action="tuossog-api-json.php" method="POST" id="imageChangeForm" enctype="application/x-www-form-urlencoded">
                         <div class="individual-setting individual-detail">
                             <h2>Photo</h2>
                             <div class="pic-user">

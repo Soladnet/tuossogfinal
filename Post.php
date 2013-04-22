@@ -55,12 +55,12 @@ class Post {
                     $user = new GossoutUser($uid);
                     $user->getProfile();
                     $arrFetch['post']['name'] = $user->getFullname();
-                    $pix = $user->getProfilePix();
-                    if ($pix['status']) {
-                        $arrFetch['post']['photo'] = $pix['pix'];
-                    } else {
-                        $arrFetch['post']['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
-                    }
+//                    $pix = $user->getProfilePix();
+//                    if ($pix['status']) {
+//                        $arrFetch['post']['photo'] = $pix['pix'];
+//                    } else {
+//                        $arrFetch['post']['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
+//                    }
                     $result = $mysql->query("SELECT NOW() as time");
                     $row = $result->fetch_assoc();
                     $result->free();

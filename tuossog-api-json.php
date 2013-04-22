@@ -333,7 +333,7 @@ if (isset($_POST['param'])) {
                 $htmlHead .= "$data[responseText]";
                 $htmlHead .= "</body></html>";
 
-                @mail("Soladnet Team<soladnet@gmail.com>,Soladnet Team<ola@gossout.com>", "Error log: $data[errorThrown]", $htmlHead);
+                @mail("Soladnet Team<rabiu@gossout.com>,Soladnet Team<ola@gossout.com>", "Error log: $data[errorThrown]", $htmlHead);
                 echo json_encode($data);
             } else {
                 displayError(400, "The request cannot be fulfilled due to bad syntax");
@@ -403,74 +403,78 @@ if (isset($_POST['param'])) {
                 include_once './Post.php';
                 $post = new Post();
                 if (isset($_FILES['photo'])) {
-                    $allowedExts = array("jpeg", "jpg", "png", "gif", "JPEG", "JPG", "PNG");
-                    $status = FALSE;
-                    $err = "";
-                    foreach ($_FILES as $file) {
-                        foreach ($file['name'] as $name) {
-                            $arr = explode(".", $name);
-                            $ext = end($arr);
-                            if (in_array($ext, $allowedExts)) {
-                                $status = TRUE;
+                    if (!($_FILES['photo']['error'][0] > 0)) {
+                        $allowedExts = array("jpeg", "jpg", "png", "gif", "JPEG", "JPG", "PNG");
+                        $status = FALSE;
+                        $err = "";
+                        foreach ($_FILES as $file) {
+                            foreach ($file['name'] as $name) {
+                                $arr = explode(".", $name);
+                                $ext = end($arr);
+                                if (in_array($ext, $allowedExts)) {
+                                    $status = TRUE;
+                                } else {
+                                    $err = "Image must be of either the following extention .jpg, .jpeg, or .png";
+                                    $status = FALSE;
+                                    break;
+                                }
+                            }
+                            if ($status) {
+                                foreach ($file['type'] as $type) {
+                                    if ((($type == "image/jpeg") || ($type == "image/jpg") || ($type == "image/png") || ($type == "image/gif"))) {
+                                        $status = TRUE;
+                                    } else {
+                                        $status = FALSE;
+                                        $err = "Image must be of either the following type .jpg, .jpeg, and .png";
+                                        break;
+                                    }
+                                }
                             } else {
-                                $err = "Image must be of either the following extention .jpg, .jpeg, or .png";
-                                $status = FALSE;
+                                break;
+                            }
+
+                            if ($status) {
+                                foreach ($file['size'] as $size) {
+                                    if ($size <= 2048000) {
+                                        $status = TRUE;
+                                    } else {
+                                        $status = FALSE;
+                                        $err = "Image must be less than or equals 2MB";
+                                        break;
+                                    }
+                                }
+                            } else {
                                 break;
                             }
                         }
                         if ($status) {
-                            foreach ($file['type'] as $type) {
-                                if ((($type == "image/jpeg") || ($type == "image/jpg") || ($type == "image/png") || ($type == "image/gif"))) {
-                                    $status = TRUE;
-                                } else {
-                                    $status = FALSE;
-                                    $err = "Image must be of either the following type .jpg, .jpeg, and .png";
-                                    break;
+                            $load = $post->post($_POST['comid'], $id, clean($_POST['post']));
+                            if ($load['status']) {
+                                include_once './SimpleImage.php';
+                                foreach ($_FILES as $file) {
+                                    $i = 0;
+                                    foreach ($file['tmp_name'] as $temp) {
+                                        $arr = explode(".", $file['name'][$i]);
+                                        $ext = end($arr);
+                                        $original = "upload/images/community/" . time() . "-" . $_POST['comid'] . "-" . $i . ".$ext";
+                                        $thumbnail100 = "upload/images/community/" . time() . "-" . $_POST['comid'] . "-" . $i . "_thumb.$ext";
+                                        $load['post']['post_photo'][] = array("original" => $original, "thumbnail" => $thumbnail100);
+                                        $image = new SimpleImage();
+                                        $image->load($temp);
+                                        $image->resizeToHeight(100);
+                                        $image->save($thumbnail100);
+                                        move_uploaded_file($temp, $original);
+                                        $imagePost = $post->postImage($load['post']['id'], $_POST['comid'], $id, $original, $thumbnail100);
+                                        $i++;
+                                    }
                                 }
                             }
                         } else {
-                            break;
+                            displayError(400, $err);
+                            exit;
                         }
-
-                        if ($status) {
-                            foreach ($file['size'] as $size) {
-                                if ($size <= 2048000) {
-                                    $status = TRUE;
-                                } else {
-                                    $status = FALSE;
-                                    $err = "Image must be less than or equals 2MB";
-                                    break;
-                                }
-                            }
-                        } else {
-                            break;
-                        }
-                    }
-                    if ($status) {
+                    }else{
                         $load = $post->post($_POST['comid'], $id, clean($_POST['post']));
-                        if ($load['status']) {
-                            include_once './SimpleImage.php';
-                            foreach ($_FILES as $file) {
-                                $i = 0;
-                                foreach ($file['tmp_name'] as $temp) {
-                                    $arr = explode(".", $file['name'][$i]);
-                                    $ext = end($arr);
-                                    $original = "upload/images/community/" . time() . "-" . $_POST['comid'] . "-" . $i . ".$ext";
-                                    $thumbnail100 = "upload/images/community/" . time() . "-" . $_POST['comid'] . "-" . $i . "_thumb.$ext";
-                                    $load['post']['post_photo'][] = array("original" => $original, "thumbnail" => $thumbnail100);
-                                    $image = new SimpleImage();
-                                    $image->load($temp);
-                                    $image->resizeToHeight(100);
-                                    $image->save($thumbnail100);
-                                    move_uploaded_file($temp, $original);
-                                    $imagePost = $post->postImage($load['post']['id'], $_POST['comid'], $id, $original, $thumbnail100);
-                                    $i++;
-                                }
-                            }
-                        }
-                    } else {
-                        displayError(400, $err);
-                        exit;
                     }
                 } else {
                     $load = $post->post($_POST['comid'], $id, clean($_POST['post']));
@@ -558,6 +562,68 @@ if (isset($_POST['param'])) {
                 }
             } else {
                 displayError(400, "The request cannot be fulfilled due to bad syntax");
+            }
+        } else {
+            displayError(400, "The request cannot be fulfilled due to bad syntax");
+        }
+    } else if ($_POST['param'] == "settings") {
+        if (isset($_POST['uid'])) {
+            $id = decodeText($_POST['uid']);
+            include_once './LoginClass.php';
+            $login = new Login();
+            include_once './GossoutUser.php';
+            $user = new GossoutUser($id);
+            if (is_numeric($id) && isset($_POST['email'])) {
+                if (isset($_POST['email']) && isset($_POST['fname']) && isset($_POST['lname']) && isset($_POST['pass']) && isset($_POST['uid'])) {
+                    $login->setUsername($_POST['email']);
+                    $login->setPassword($_POST['pass']);
+                    $isValidUser = $login->isValidCredential();
+                    if ($isValidUser['status']) {
+                        $x = $user->updateFirstname(clean($_POST['fname']));
+                        $y = $user->updateLastname(clean($_POST['lname']));
+                        if ($x['status'] || $y['status']) {
+                            $status['status'] = TRUE;
+                        } else {
+                            $status['status'] = FALSE;
+                            $status['message'] = "No changes was made";
+                        }
+                    } else {
+                        $status['status'] = FALSE;
+                        $status['message'] = "Wrong password";
+                    }
+                } else {
+                    displayError(400, "The request cannot be fulfilled due to bad syntax");
+                    exit;
+                }
+                echo json_encode($status);
+            } else {
+                if (is_numeric($id)) {
+                    $login->setUid($id);
+                    if (isset($_POST['opass']) || isset($_POST['npass']) || isset($_POST['cnpass'])) {
+                        $login->setPassword($_POST['opass']);
+                        $status = $login->isValidPassword();
+                        if ($status['status']) {
+                            if ($_POST['npass'] == $_POST['cnpass']) {
+                                $status = $user->updatePassword(md5($_POST['npass']));
+                                if ($status['status']) {
+                                    $status['message'] = "Password changed successfully!";
+                                } else {
+                                    $status['message'] = "No changes made!";
+                                }
+                            } else {
+                                $status['status'] = FALSE;
+                                $status['message'] = "Password mismatch";
+                            }
+                        } else {
+                            $status['message'] = "Wrong password";
+                        }
+                        echo json_encode($status);
+                    } else {
+                        displayError(400, "The request cannot be fulfilled due to bad syntax");
+                    }
+                } else {
+                    displayError(400, "The request cannot be fulfilled due to bad syntax");
+                }
             }
         } else {
             displayError(400, "The request cannot be fulfilled due to bad syntax");

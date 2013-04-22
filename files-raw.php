@@ -67,7 +67,7 @@ if ($type == 'xml') {
             if ($response['status']) {
                 $userUploader->updateThumbnail($response['id'], $thumbnail45, $thumbnail50, $thumbnail75, $thumbnail150);
                 header('Content-type: application/json');
-                echo json_encode(array('thumb' => $thumbnail150));
+                echo json_encode(array('thumb' => $thumbnail150,"status"=>TRUE));
             } else {
                 unlink($newPath);
                 unlink($thumbnail150);

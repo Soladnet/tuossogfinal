@@ -16,15 +16,6 @@
                     <a href="notifications"> See all</a>
                 </div>
             </div>
-            
-        </li>
-
-        <li class="last">
-            <a id="messages-text" >
-                <span class="icon-16-mail"></span>
-                <span>Messages</span>
-            </a>
-            <span class="notification-number">&nbsp;</span>
             <div class="messages-container" id="pop-up-message">
                 <div class="messages">
                     <a id="messages-close" class="float-right">
@@ -36,14 +27,22 @@
             </div>
         </li>
 
+        <li class="last">
+            <a id="messages-text" >
+                <span class="icon-16-mail"></span>
+                <span>Messages</span>
+            </a>
+            <span class="notification-number" id="msg-number">&nbsp;</span>
+        </li>
+
         <li class="nav-user-profile last"  id="user-actions">
             <a>
                 <span class="icon-16-user"></span></a>
             <div class="user-actions-container" id="pop-up-user-actions">
                 <div class="user-actions">
                     <ul>
-                        <li><a href="home"><span class="icon-16-vcard"></span> My Profile</a></li>
-                        <li><a href="settings"><span class="icon-16-cog"></span> Settings</a></li>
+                        <!--<li><a href="home"><span class="icon-16-vcard"></span> My Profile</a></li>-->
+                        <li><a href="settings"><span class="icon-16-cog"></span> Profile &AMP; Settings</a></li>
                         <hr>
                         <li><a href="login_exec"><span class="icon-16-logout"></span> Log Out</a></li>
                     </ul>

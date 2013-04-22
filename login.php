@@ -9,10 +9,12 @@ session_start();
         include_once './webbase.php';
         ?>
         <title>Gossout - Login</title>
+        <link rel="shortcut icon" href="favicon.ico">
+        <link rel="stylesheet" media="screen" href="css/style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" > 
+        <script src="scripts/jquery-1.9.1.min.js"></script>
         <?php
-        include ("head.php");
         if (isset($_SESSION['login_error']) && isset($_GET['login_error'])) {
-//            exit;
             ?>
             <link rel="stylesheet" href="css/bigbox.css">
             <script type="text/javascript" src="scripts/humane.min.js"></script>

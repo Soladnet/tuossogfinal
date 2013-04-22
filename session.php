@@ -1,7 +1,7 @@
 <?php
 session_start();
 //session_destroy();
-//print_r($_SESSION);
+print_r($_SESSION);
 //include_once './Config.php';
 //$email = "soladnnet@gmail.com";
 //$usernameTemp = explode('@', $email);
@@ -21,29 +21,51 @@ session_start();
 //$user = new GossoutUser(0);
 //echo $user->encodeText("1");
 //echo '<<==<br/>';
-include './encryptionClass.php';
-$encrypt = new Encryption();
-echo ($encrypt->safe_b64decode("NDQ"));
+//include './encryptionClass.php';
+//$encrypt = new Encryption();
+//echo ($encrypt->safe_b64decode("MzQ"));
 
-$str = "_-thissdfkj";
-print_r(preg_match("/[^A-Za-z0-9_-]/", $str));
-function prepareUsername($email) {
-    $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
-    if ($mysql->connect_errno > 0) {
-        throw new Exception("Connection to server failed!");
-    } else {
-        $sql = "SELECT * FROM user_personal_info WHERE username='$email'";
-        if ($mysql->query($sql)) {
-            if ($mysql->affected_rows > 0) {
-                $mysql->close();
-                return FALSE;
-            } else {
-                $mysql->close();
-                return $email;
-            }
-        }
-    }
-}
+//$str = "_-thissdfkj";
+//print_r(preg_match("/[^A-Za-z0-9_-]/", $str));
+//function prepareUsername($email) {
+//    $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+//    if ($mysql->connect_errno > 0) {
+//        throw new Exception("Connection to server failed!");
+//    } else {
+//        $sql = "SELECT * FROM user_personal_info WHERE username='$email'";
+//        if ($mysql->query($sql)) {
+//            if ($mysql->affected_rows > 0) {
+//                $mysql->close();
+//                return FALSE;
+//            } else {
+//                $mysql->close();
+//                return $email;
+//            }
+//        }
+//    }
+//}
+
+
+//$stamp = imagecreatefrompng('images/stamp25.png');
+//$im = imagecreatefrompng('images/no-pic.png');
+//
+//// Set the margins for the stamp and get the height/width of the stamp image
+//$marge_right = 1;
+//$marge_bottom = 1;
+//$sx = imagesx($stamp);
+//$sy = imagesy($stamp);
+//
+//$imx = imagesx($im);
+//$imy = imagesy($im);
+//
+//// Copy the stamp image onto our photo using the margin offsets and the photo 
+//// width to calculate positioning of the stamp. 
+//imagecopy($im, $stamp, imagesx($im) - $sx - $marge_right, imagesy($im) - $sy - $marge_bottom, 0, 0, imagesx($stamp), imagesy($stamp));
+//
+//// Output and free memory
+//header('Content-type: image/png');
+//imagepng($im);
+//imagedestroy($im);
 ?>
 <!--<!doctype html>
 <html>

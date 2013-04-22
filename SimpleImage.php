@@ -81,8 +81,14 @@ class SimpleImage {
     }
 
     function resize($width, $height) {
+//        $stamp = imagecreatefrompng('images/stamp.png');
+//        $marge_right = 1;
+//        $marge_bottom = 1;
+//        $sx = imagesx($stamp);
+//        $sy = imagesy($stamp);
         $new_image = imagecreatetruecolor($width, $height);
         imagecopyresampled($new_image, $this->image, 0, 0, 0, 0, $width, $height, $this->getWidth(), $this->getHeight());
+//        imagecopy($new_image, $stamp, imagesx($new_image) - $sx - $marge_right, imagesy($new_image) - $sy - $marge_bottom, 0, 0, imagesx($stamp), imagesy($stamp));
         $this->image = $new_image;
     }
 
