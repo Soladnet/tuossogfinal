@@ -1,12 +1,16 @@
 <?php
 
-session_start();
+//if (session_status() == PHP_SESSION_NONE) {
+if (session_id() == "")
+    session_start();
+//}
 include_once './Config.php';
 include_once './encryptionClass.php';
+include_once './GossoutUser.php';
 
 class Login {
 
-    var $user, $pass, $rem,$uid;
+    var $user, $pass, $rem, $uid, $timezone;
 
     public function __construct() {
         
@@ -23,7 +27,12 @@ class Login {
     public function setRememberStatus($remember = FALSE) {
         $this->rem = $remember;
     }
-    public function setUid($uid){
+
+    public function setTimezone($zone) {
+        $this->timezone = $zone;
+    }
+
+    public function setUid($uid) {
         $this->uid = $uid;
     }
 
@@ -43,20 +52,21 @@ class Login {
             if ($result = $mysql->query($str)) {
                 if ($result->num_rows > 0 && $result->num_rows == 1) {
                     $row = $result->fetch_assoc();
-                    if (is_numeric($row['id'])) {
-                        $arrFetch['status'] = TRUE;
-                        $arrFetch['user'] = $row['id'];
-                        $encrypt = new Encryption();
-                        if ($this->rem) {
-                            $expire = time() + 60 * 60 * 24 * 30 * 3;
-                            setcookie("user_auth", $encrypt->safe_b64encode($row['id']), $expire);
-                        } else {
-                            setcookie("user_auth", $encrypt->safe_b64encode($row['id']),0);
-                        }
-                        $_SESSION['auth'] = $row;
+                    $arrFetch['status'] = TRUE;
+                    $arrFetch['user'] = $row['id'];
+                    $encrypt = new Encryption();
+                    if ($this->rem) {
+                        $expire = time() + 60 * 60 * 24 * 30 * 3;
+                        setcookie("user_auth", $encrypt->safe_b64encode($row['id']), $expire);
                     } else {
-                        $arrFetch['status'] = FALSE;
+                        setcookie("user_auth", $encrypt->safe_b64encode($row['id']), 0);
                     }
+                    $user = new GossoutUser($row['id']);
+                    $user->getProfile();
+                    $row['photo'] = $user->getPix();
+                    $row['timezone'] = $this->timezone;
+                    session_regenerate_id();
+                    $_SESSION['auth'] = $row;
                 } else {
                     $arrFetch['status'] = FALSE;
                 }
@@ -68,6 +78,7 @@ class Login {
         $mysql->close();
         return $arrFetch;
     }
+
     public function isValidPassword() {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
@@ -94,6 +105,7 @@ class Login {
         }
         return $arrFetch;
     }
+
     public function isValidCredential() {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
@@ -123,6 +135,8 @@ class Login {
     public function logout() {
 //        if (isset($_SESSION['auth'])) {
         unset($_SESSION['auth']);
+        unset($_SESSION['data']);
+        session_destroy();
         setcookie("user_auth", "", time() - 3600);
         setcookie("m_t", "", time() - 3600);
 //        }

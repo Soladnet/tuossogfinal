@@ -24,6 +24,15 @@ session_start();
             <?php
         }
         ?>
+        <script type="text/javascript">
+            function getTimeZone() {
+                var timezone = (-(new Date().getTimezoneOffset()))/60;
+                return timezone;
+            }
+            $(document).ready(function(){
+                $("#tz").val(getTimeZone());
+            });
+        </script>
     </head>
     <body>
         <div class="index-page-wrapper">	
@@ -56,6 +65,7 @@ session_start();
                                 <li>
                                     <label for="password">Password</label>
                                     <input class="input-fields" name="password" placeholder="******" type="password" value="" spellcheck="false" required/>
+                                    <input name="tz" type="hidden" id="tz" />
                                 </li>
                                 <li><input type="checkbox" name="remember" value="TRUE"> Remember me</li>
                             </ul>

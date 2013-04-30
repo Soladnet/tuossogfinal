@@ -239,7 +239,7 @@ class Community {
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "SELECT count(`id`) as count from post where community_id=$this->id";
+            $sql = "SELECT count(`id`) as count from post where community_id=$this->id AND `deleteStatus`=0";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     $row = $result->fetch_assoc();
@@ -401,15 +401,13 @@ class Community {
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "SELECT if(uc.username1=$this->uid,uc.username2,uc.username1) as id,username,firstname, lastname From user_personal_info, usercontacts as uc Where ((username1 = user_personal_info.id AND username2 = $this->uid) OR (username2 = user_personal_info.id AND username1 = $this->uid)) AND status ='Y' AND (username1 NOT IN(SELECT user FROM community_subscribers WHERE `community_id`=$this->id) AND username2 NOT IN(SELECT user FROM community_subscribers WHERE `community_id`=$this->id))";
+            $sql = "SELECT if(uc.username1=$this->uid,uc.username2,uc.username1) as id,username,firstname, lastname From user_personal_info, usercontacts as uc Where ((username1 = user_personal_info.id AND username2 = $this->uid) OR (username2 = user_personal_info.id AND username1 = $this->uid)) AND status ='Y' AND (username1 NOT IN(SELECT user FROM community_subscribers WHERE `community_id`=$this->id AND leave_status=0) OR username2 NOT IN(SELECT user FROM community_subscribers WHERE `community_id`=$this->id AND leave_status=0))";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     $encrypt = new Encryption();
                     while ($row = $result->fetch_assoc()) {
                         $row['id'] = $encrypt->safe_b64encode($row['id']);
-                        $row['sql'] = $sql;
                         $arrFetch['friends'][] = $row;
-                        
                     }
                     $arrFetch['status'] = TRUE;
                 } else {
@@ -440,6 +438,7 @@ class Community {
         $mysql->close();
         return $arr;
     }
+
     public function respondToInvitation() {
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
         $arr = array();

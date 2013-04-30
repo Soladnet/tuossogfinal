@@ -63,7 +63,7 @@ if (isset($_COOKIE['user_auth'])) {
                     <span id="individual-notification-box"></span>
                     <script>
                         $(document).ready(function() {
-                            sendData("loadGossbag", {uid: readCookie("user_auth"), target: "#individual-notification-box", loadImage: true});
+                            sendData("loadGossbag", {uid: readCookie("user_auth"), target: "#individual-notification-box", loadImage: true,start:0,limit:20});
                         });
                     </script>
                 </div>

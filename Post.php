@@ -1,6 +1,7 @@
 <?php
 
 include_once './Config.php';
+include_once './encryptionClass.php';
 
 /**
  * Description of Post
@@ -9,7 +10,7 @@ include_once './Config.php';
  */
 class Post {
 
-    var $uid, $comId;
+    var $uid, $comId, $postId;
 
     public function __construct() {
         
@@ -41,26 +42,16 @@ class Post {
         return $arrFetch;
     }
 
-    public function post($comid, $uid, $post) {
+    public function post($values) {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "INSERT INTO post(post,community_id,sender_id) VALUES('$post','$comid','$uid')";
+            $sql = "INSERT INTO post(post,community_id,sender_id) VALUES $values";
             if ($mysql->query($sql)) {
                 if ($mysql->affected_rows > 0) {
-                    $arrFetch['post']['id'] = $mysql->insert_id;
-                    include_once './GossoutUser.php';
-                    $user = new GossoutUser($uid);
-                    $user->getProfile();
-                    $arrFetch['post']['name'] = $user->getFullname();
-//                    $pix = $user->getProfilePix();
-//                    if ($pix['status']) {
-//                        $arrFetch['post']['photo'] = $pix['pix'];
-//                    } else {
-//                        $arrFetch['post']['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
-//                    }
+                    $arrFetch['post']['id'][] = $mysql->insert_id;
                     $result = $mysql->query("SELECT NOW() as time");
                     $row = $result->fetch_assoc();
                     $result->free();
@@ -77,13 +68,13 @@ class Post {
         return $arrFetch;
     }
 
-    public function postImage($post_id, $community_id, $sender_id, $original, $thumbnail100) {
+    public function postImage($values) {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "INSERT INTO post_image(post_id,community_id,sender_id,original,thumbnail100) VALUES('$post_id','$community_id','$sender_id','$original','$thumbnail100')";
+            $sql = "INSERT INTO post_image(post_id,community_id,sender_id,original,thumbnail100) VALUES $values";
             if ($mysql->query($sql)) {
                 $arrFetch['status'] = TRUE;
             } else {
@@ -94,13 +85,14 @@ class Post {
         return $arrFetch;
     }
 
-    public function loadPost() {
+    public function loadPost($timezone) {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
         //$count = 0;
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
+            $encrypt = new Encryption();
             $sql = "SELECT p.`id`, p.`post`, p.`sender_id`,u.firstname,u.lastname, p.`time`, p.`status` FROM `post` as p JOIN user_personal_info as u ON p.sender_id=u.id WHERE p.`community_id`=$this->comId  AND p.deleteStatus=0 order by p.`id` desc";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
@@ -113,9 +105,11 @@ class Post {
                             $row['numComnt'] = 0;
                         }
                         $post_image = $this->loadPostImage($row['id']);
-                        if($post_image['status']){
+                        if ($post_image['status']) {
                             $row['post_photo'] = $post_image['photo'];
                         }
+//                        $row['time'] = $this->convert_time_zone($row['time'], $timezone);
+                        $row['sender_id'] = $encrypt->safe_b64encode($row['sender_id']);
                         $arrFetch['post'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
@@ -130,6 +124,7 @@ class Post {
         $mysql->close();
         return $arrFetch;
     }
+
     public function loadPostImage($postId) {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
@@ -144,7 +139,7 @@ class Post {
                         $arrFetch['photo'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
-                }else{
+                } else {
                     $arrFetch['status'] = FALSE;
                 }
                 $result->free();
@@ -153,6 +148,7 @@ class Post {
         $mysql->close();
         return $arrFetch;
     }
+
     public function getCommentCountFor($postId) {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
@@ -160,7 +156,7 @@ class Post {
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "SELECT count(`id`) as count FROM `comments` WHERE `post_id` =$postId";
+            $sql = "SELECT count(`id`) as count FROM `comments` WHERE `post_id` =$postId AND `deleteStatus`=0";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     $row = $result->fetch_assoc();
@@ -185,7 +181,8 @@ class Post {
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "SELECT c.`id`, c.`comment`, c.`post_id`, c.`sender_id`,u.firstname,u.lastname, c.`time`, c.`status`, c.`deleteStatus` FROM `comments` as c JOIN user_personal_info as u ON c.`sender_id`=u.id WHERE `post_id`=$postId order by c.id ASC";
+            $encrypt = new Encryption();
+            $sql = "SELECT c.`id`, c.`comment`, c.`post_id`, c.`sender_id`,u.firstname,u.lastname, c.`time`, c.`status` FROM `comments` as c JOIN user_personal_info as u ON c.`sender_id`=u.id WHERE c.`post_id`=$postId AND c.`deleteStatus`=0 order by c.id ASC";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
@@ -198,6 +195,7 @@ class Post {
                         } else {
                             $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
                         }
+                        $row['sender_id'] = $encrypt->safe_b64encode($row['sender_id']);
                         $arrFetch['comment'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
@@ -263,6 +261,58 @@ class Post {
 
     public function setCommunity($newComId) {
         $this->comId = $newComId;
+    }
+
+    public function setPostId($newPost) {
+        $this->postId = $newPost;
+    }
+
+    public function deletePost() {
+        $arrFetch = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "UPDATE post SET `deleteStatus`=1 WHERE id=$this->postId AND sender_id=$this->uid";
+            if ($mysql->query($sql)) {
+                if ($mysql->affected_rows > 0) {
+                    $arrFetch['status'] = TRUE;
+                } else {
+                    $arrFetch['status'] = FALSE;
+                }
+            } else {
+                $arrFetch['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arrFetch;
+    }
+    public function deleteComment($cid) {
+        $arrFetch = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "UPDATE comments SET `deleteStatus`=1 WHERE id=$cid AND sender_id=$this->uid";
+            if ($mysql->query($sql)) {
+                if ($mysql->affected_rows > 0) {
+                    $arrFetch['status'] = TRUE;
+                } else {
+                    $arrFetch['status'] = FALSE;
+                }
+            } else {
+                $arrFetch['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arrFetch;
+    }
+
+    private function convert_time_zone($timeFromDatabase, $userOffset) {
+        $userTime = new DateTime($timeFromDatabase, new DateTimeZone('UTC'));
+        $userTime->setTimezone(new DateTimeZone($userOffset));
+        return $userTime->format('Y-m-d H:i:s');
+        // or return $userTime; // if you want to return a DateTime object.
     }
 
 }

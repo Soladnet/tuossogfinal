@@ -110,6 +110,7 @@ class GossoutUser {
     public function getDOB() {
         return $this->dateToString($this->dob);
     }
+
     public function getPix() {
         return $this->pix;
     }
@@ -125,6 +126,7 @@ class GossoutUser {
     public function setScreenName($user) {
         $this->screenName = $user;
     }
+
     public function updateFirstname($newName) {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
@@ -136,15 +138,16 @@ class GossoutUser {
             if ($mysql->query($sql)) {
                 if ($mysql->affected_rows > 0) {
                     $arrFetch['status'] = TRUE;
-                }else{
+                } else {
                     $arrFetch['status'] = FALSE;
                 }
-            }else{
+            } else {
                 $arrFetch['status'] = FALSE;
             }
         }
         return $arrFetch;
     }
+
     public function updateLastname($lname) {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
@@ -156,15 +159,45 @@ class GossoutUser {
             if ($mysql->query($sql)) {
                 if ($mysql->affected_rows > 0) {
                     $arrFetch['status'] = TRUE;
-                }else{
+                } else {
                     $arrFetch['status'] = FALSE;
                 }
-            }else{
+            } else {
                 $arrFetch['status'] = FALSE;
             }
         }
         return $arrFetch;
     }
+
+    public function updateTime() {
+        $arrFetch = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        //$count = 0;
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "UPDATE user_time_update SET lastupdate=NOW() WHERE user_id=$this->id";
+            if ($mysql->query($sql)) {
+                if ($mysql->affected_rows > 0) {
+                    $arrFetch['status'] = TRUE;
+                } else {
+                    $sql = "INSERT INTO user_time_update(user_id) VALUES('$this->id')";
+                    if ($mysql->query($sql)) {
+                        if ($mysql->affected_rows > 0) {
+                            $arrFetch['status'] = TRUE;
+                        } else {
+                            $arrFetch['status'] = FALSE;
+                        }
+                    } else {
+                        $arrFetch['status'] = FALSE;
+                    }
+                }
+            } else {
+                $arrFetch['status'] = FALSE;
+            }
+        }
+    }
+
     public function updatePassword($pass) {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
@@ -176,15 +209,16 @@ class GossoutUser {
             if ($mysql->query($sql)) {
                 if ($mysql->affected_rows > 0) {
                     $arrFetch['status'] = TRUE;
-                }else{
+                } else {
                     $arrFetch['status'] = FALSE;
                 }
-            }else{
+            } else {
                 $arrFetch['status'] = FALSE;
             }
         }
         return $arrFetch;
     }
+
     /**
      * Get the profile of the current user if a valid user id was specified
      * @return Array An array containing $this user's profile information would be returned
@@ -503,7 +537,7 @@ class GossoutUser {
      * @return Array
      * @throws Exception is thrown when the connection to the server fails
      */
-    public function getMessages($start, $limit, $status,$flag=TRUE) {
+    public function getMessages($start, $limit, $status, $flag = TRUE) {
         $arrFetch = array();
         $temp = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
@@ -653,7 +687,7 @@ class GossoutUser {
      * @return Array
      * @throws Exception is thrown when the connection to the server fails
      */
-    public function getGossbag() {
+    public function getGossbag($updateTime = FALSE) {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
         if ($mysql->connect_errno > 0) {
@@ -662,8 +696,13 @@ class GossoutUser {
             $encrypt = new Encryption();
             $user = new GossoutUser(0);
             //post notiif
-            $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where
+            if (!$updateTime) {
+                $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where
+ p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') AND p.time>=(SELECT `lastupdate` FROM user_time_update WHERE `user_id`=$this->id)";
+            } else {
+                $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where
  p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y')";
+            }
             if ($result = $mysql->query($sql1)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
@@ -678,6 +717,8 @@ class GossoutUser {
                         $arrFetch['bag'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
+                    if ($updateTime)
+                        $this->updateTime();
                 } else {
                     $arrFetch['status'] = FALSE;
                 }
@@ -686,8 +727,13 @@ class GossoutUser {
                 $arrFetch['status'] = FALSE;
             }
             //comment notif
-            $sql2 = "Select c.id,c.comment, c.post_id,c.sender_id,com.name,u.firstname,u.lastname,p.sender_id as post_sender_id, c.time From comments as c JOIN user_personal_info as u ON c.sender_id=u.id JOIN post as p ON c.post_id=p.id JOIN community as com ON p.community_id=com.id Where
+            if (!$updateTime) {
+                $sql2 = "SELECT c.id,c.comment, c.post_id,c.sender_id,com.name,u.firstname,u.lastname,p.sender_id as post_sender_id, c.time From comments as c JOIN user_personal_info as u ON c.sender_id=u.id JOIN post as p ON c.post_id=p.id JOIN community as com ON p.community_id=com.id Where
+ c.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id)) AND c.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') UNION (SELECT c.id,c.comment, c.post_id,c.sender_id,com.name,u.firstname,u.lastname,p.sender_id as post_sender_id,c.time FROM comments as c JOIN post as p ON c.post_id=p.id JOIN user_personal_info as u ON c.sender_id=u.id JOIN community as com ON p.community_id=com.id WHERE p.sender_id=$this->id AND c.sender_id<>$this->id) AND c.time >= (SELECT `lastupdate` FROM user_time_update WHERE `user_id`=$this->id)";
+            } else {
+                $sql2 = "Select c.id,c.comment, c.post_id,c.sender_id,com.name,u.firstname,u.lastname,p.sender_id as post_sender_id, c.time From comments as c JOIN user_personal_info as u ON c.sender_id=u.id JOIN post as p ON c.post_id=p.id JOIN community as com ON p.community_id=com.id Where
  c.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id)) AND c.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') UNION (SELECT c.id,c.comment, c.post_id,c.sender_id,com.name,u.firstname,u.lastname,p.sender_id as post_sender_id,c.time FROM comments as c JOIN post as p ON c.post_id=p.id JOIN user_personal_info as u ON c.sender_id=u.id JOIN community as com ON p.community_id=com.id WHERE p.sender_id=$this->id AND c.sender_id<>$this->id)";
+            }
             if ($result = $mysql->query($sql2)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
@@ -700,6 +746,7 @@ class GossoutUser {
                         } else {
                             $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
                         }
+
                         $arrFetch['bag'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
@@ -795,12 +842,14 @@ class GossoutUser {
                     $arrFetch['status'] = FALSE;
             }
         }
+//        echo json_encode($arrFetch);
+//        exit;
         return $arrFetch;
     }
 
     public function getNotificationSummary() {
         $gb = $this->getGossbag();
-        $msg = $this->getMessages(0, 1000, "AND status='N'",FALSE);
+        $msg = $this->getMessages(0, 1000, "AND status='N'", FALSE);
         $response['msg'] = $msg['status'] ? count($msg['message']) : 0;
         $response['gb'] = $gb['status'] ? count($gb['bag']) : 0;
         return $response;
@@ -812,11 +861,33 @@ class GossoutUser {
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "SELECT p.`id`, p.`post`, p.`community_id`, p.`sender_id`,u.firstname,u.lastname, p.`time`, p.`status` FROM post as p JOIN `community_subscribers` as cs ON p.community_id=cs.community_id JOIN user_personal_info as u ON p.sender_id=u.id JOIN usercontacts as uc ON (p.sender_id=uc.username1 AND uc.username2=$this->id) OR (p.sender_id=uc.username2 AND uc.username1=$this->id) AND uc.status='Y' WHERE cs.user=$this->id AND p.sender_id<>$this->id order by p.time desc";
-            if ($result = $mysql->query($sql)) {
+            $encrypt = new Encryption();
+            $user = new GossoutUser(0);
+            //post notiif
+            $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y')";
+            if ($result = $mysql->query($sql1)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
-                        $arrFetch['message'][] = $row;
+                        $row['type'] = "post";
+                        $user->setUserId($row['sender_id']);
+                        $pix = $user->getProfilePix();
+                        if ($pix['status']) {
+                            $row['photo'] = $pix['pix'];
+                        } else {
+                            $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
+                        }
+                        $post = new Post();
+                        $comCount = $post->getCommentCountFor($row['id']);
+                        if ($comCount['status']) {
+                            $row['numComnt'] = $comCount['count'];
+                        } else {
+                            $row['numComnt'] = 0;
+                        }
+                        $post_image = $post->loadPostImage($row['id']);
+                        if ($post_image['status']) {
+                            $row['post_photo'] = $post_image['photo'];
+                        }
+                        $arrFetch['timeline'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
                 } else {
@@ -826,8 +897,57 @@ class GossoutUser {
             } else {
                 $arrFetch['status'] = FALSE;
             }
+            //community creation by friend
+            $sql1 = "SELECT c.`id`, c.`unique_name`,u.firstname,u.lastname, c.`name`, c.`category`, c.`type`, c.`description`,c.`thumbnail100`, c.`datecreated` as time, c.`creator_id` FROM `community` as c JOIN user_personal_info as u ON c.creator_id=u.id WHERE `creator_id` IN(Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y')";
+            if ($result = $mysql->query($sql1)) {
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $row['type'] = "comcrea";
+                        $user->setUserId($row['creator_id']);
+                        $pix = $user->getProfilePix();
+                        if ($pix['status']) {
+                            $row['photo'] = $pix['pix'];
+                        } else {
+                            $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
+                        }
+                        $arrFetch['timeline'][] = $row;
+                    }
+                    $arrFetch['status'] = TRUE;
+                } else {
+                    if (!$arrFetch['status'])
+                        $arrFetch['status'] = FALSE;
+                }
+                $result->free();
+            } else {
+                if (!$arrFetch['status'])
+                    $arrFetch['status'] = FALSE;
+            }
+            //friends who joined community
+            $sql1 = "SELECT c.name,cs.community_id,cs.`user`, cs.datejoined as time,cs.leave_status FROM community_subscribers as cs JOIN community as c ON cs.community_id=c.id WHERE cs.leave_status=0 cs.`user` IN(Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y')";
+            if ($result = $mysql->query($sql1)) {
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $row['type'] = "joinCom";
+                        $user->setUserId($row['user']);
+                        $pix = $user->getProfilePix();
+                        if ($pix['status']) {
+                            $row['photo'] = $pix['pix'];
+                        } else {
+                            $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
+                        }
+                        $arrFetch['timeline'][] = $row;
+                    }
+                    $arrFetch['status'] = TRUE;
+                } else {
+                    if (!$arrFetch['status'])
+                        $arrFetch['status'] = FALSE;
+                }
+                $result->free();
+            } else {
+                if (!$arrFetch['status'])
+                    $arrFetch['status'] = FALSE;
+            }
         }
-        $mysql->close();
         return $arrFetch;
     }
 

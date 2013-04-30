@@ -26,16 +26,18 @@ if (isset($_COOKIE['user_auth'])) {
         ?>
         <link rel="stylesheet" href="css/chosen.css" />
         <link rel="stylesheet" href="css/jackedup.css">
+        <link rel="stylesheet" href="css/validationEngine.jquery.css">
         <script type="text/javascript" src="scripts/humane.min.js"></script>
         <script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
         <script src="scripts/test_helpers.js" type="text/javascript"></script>
         <script src="scripts/chosen.jquery.min.js" type="text/javascript"></script>
+        <script type="text/javascript" src="scripts/jquery.form.js"></script>
+        <script type="text/javascript" src="scripts/languages/jquery.validationEngine-en.js"></script>
+        <script type="text/javascript" src="scripts/jquery.validationEngine.js"></script>
         <?php
         if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FALSE) {
             ?>
-            <script type="text/javascript" src="scripts/jquery.form.js"></script>
-
             <style>
                 .progress { position:relative; width:60%; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
                 .bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
@@ -54,6 +56,45 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
 } else {
     ?>
                     sendData("loadCommunity", {target: ".community-box", uid: readCookie('user_auth'), loadImage: true, max: true});
+                    $("#searchForm").validationEngine();
+                    $("#searchForm").ajaxForm({
+                        beforeSend: function() {
+                            if (!($('#searchTerm').val().length > 2) && $('#searchTerm').val() !== "*") {
+                                return false;
+                            } else {
+                                $(".community-box").html("<center><img src='images/loading.gif'/></center>");
+                            }
+                        },
+                        success: function(responseText, statusText, xhr, $form) {
+                            var htmlstr = "";
+                            if (responseText.status === true) {
+                                if (responseText.community) {
+                                    $.each(responseText.community, function(i, response) {
+                                        htmlstr += '<div class="community-box-wrapper"><div class="community-image">' +
+                                                '<img src="' + response.thumbnail100 + '">' +
+                                                '</div><div class="community-text"><div class="community-name">' +
+                                                '<a href="' + response.unique_name + '">' + response.name + '</a> </div><hr><div class="details">' + br2nl(response.description) +
+                                                '</div><div class="members">' + response.type + '</div><div class="members">' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</div><div class="members">' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</div></div><div class="clear"></div></div>';
+                                    });
+                                    $(".community-box").html(htmlstr);
+                                } else {
+                                }
+                            } else {
+                                if (responseText.status) {
+                                    humane.log("Community was not created", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                                } else {
+                                    $(".community-box").html("<center>No result found!</center>");
+                                }
+                            }
+                        },
+                        data: {
+                            param: "search",
+                            opt: "mc",
+                            uid: readCookie('user_auth')
+                        }
+                    });
+
+
     <?php
 }
 ?>
@@ -80,8 +121,10 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                         <h1 id="pageTitle">Communities</h1>
 
                         <div class="community-search-box">
-                            <input name="" class="community-search-field " placeholder="Search Communities" type="text" value="" required="">
-                            <input type="submit" class="button" value="Search">
+                            <form action="tuossog-api-json.php" method="POST" id="searchForm">
+                                <input name="a" class="community-search-field validate[required]" id="searchTerm" placeholder="Search Communities" type="text" value="" >
+                                <input type="submit" class="button" value="Search">
+                            </form>
                         </div>
                         <div class="clear"></div>
                         <hr/>

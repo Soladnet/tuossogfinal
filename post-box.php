@@ -1,17 +1,25 @@
 <div class="post-box">
-    <form>
-        <textarea required placeholder="Post to a community"></textarea>
-        <div class="group-1 button">	
-            <select> 
-                <option>Select Community to Post to.</option>
-                <option>Ahmadu Bello University, Zaria, Nigeria </option>
-                <option>Eko Radio Party</option>
-                <option>Abuja, Federal Capital Territory, Nigeria</option>
-                <option>Abuja, Federal Capital Territory, Nigeria Abuja, Federal Capital Territory, Nigeria</option>
+    <form method="POST" action="tuossog-api-json.php" id="timelineForm">
+        <textarea required placeholder="Post to a community" name="post" id="postText"></textarea>
+        <div class="button"><span class="icon-globe"></span>	
+            <select data-placeholder="Select Community" class="chzn-select" multiple name="comid[]"> 
+                <option></option>
+                <?php
+                $comm = $userCommunity->userComm(0,10000);
+                if($comm['status']){
+                    foreach ($comm['community_list'] as $com){
+                        echo "<option value='$com[id]'>$com[name]</option>";
+                    }
+                }
+                ?>
+                
             </select>
         </div>
-        <input type="submit" class="submit button float-right" value="Post">
-        <button class="button hint hint--left  float-right" data-hint="Upload image"><span class="icon-16-camera"></span></button>	
+        <input type="submit" class="submit button float-right" value="Post" id="postBtn">
+        <input type="hidden" id="hiddenComm">
+        <input type="file" name="photo[]" multiple style="position: absolute;left: -9999px;" id="uploadInput"/>
+        <div class="button hint hint--left  float-right" data-hint="Upload image" id="uploadImagePost"><span class="icon-16-camera"></span></div>	
+        <div class="progress" style="display:none"><div class="bar"></div ><div class="percent">0%</div></div><div id="status"></div>
     </form>
     <div class="clear"></div>
 </div>

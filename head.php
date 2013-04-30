@@ -13,7 +13,7 @@
         $.ajaxSetup({
             url: 'tuossog-api-json.php',
             dataType: "json",
-            timeout: 30000,
+            timeout: 60000 * 10,
             type: "post",
             error: function(jqXHR, textStatus, errorThrown) {
                 manageError(jqXHR, textStatus, errorThrown, {uid: readCookie("user_auth")});

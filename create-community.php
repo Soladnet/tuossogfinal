@@ -28,6 +28,8 @@ if (isset($_COOKIE['user_auth'])) {
         ?>
         <link rel="stylesheet" href="css/jackedup.css" type="text/css"/>
         <script src="scripts/humane.min.js"></script>
+        <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
+        <script src="scripts/test_helpers.js" type="text/javascript"></script>
         <script src="scripts/languages/jquery.validationEngine-en.js" type="text/javascript"></script>
         <script src="scripts/jquery.validationEngine.js" type="text/javascript"></script>
         <script src="scripts/jquery.form.js"></script>

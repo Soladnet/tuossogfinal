@@ -33,10 +33,14 @@ if (isset($_COOKIE['user_auth'])) {
         include ("head.php");
         ?>
         <link rel="stylesheet" href="css/jackedup.css">
+        <link rel="stylesheet" href="css/validationEngine.jquery.css">
         <script type="text/javascript" src="scripts/humane.min.js"></script>
         <script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
         <script src="scripts/test_helpers.js" type="text/javascript"></script>
+        <script type="text/javascript" src="scripts/jquery.form.js"></script>
+        <script type="text/javascript" src="scripts/languages/jquery.validationEngine-en.js"></script>
+        <script type="text/javascript" src="scripts/jquery.validationEngine.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {
                 $(".fancybox").fancybox({
@@ -44,6 +48,51 @@ if (isset($_COOKIE['user_auth'])) {
                     closeEffect: 'none',
                     minWidth: 250
 
+                });
+                $("#searchForm").validationEngine();
+                $("#searchForm").ajaxForm({
+                    beforeSend: function() {
+                        if (!($('#searchTerm').val().length > 2) && $('#searchTerm').val() !== "*") {
+                            return false;
+                        } else {
+                            $("#individual-friend-box").html("<center><img src='images/loading.gif'/></center>");
+                        }
+                    },
+                    success: function(responseText, statusText, xhr, $form) {
+                        var htmlstr = "";
+                        if (responseText.status === true) {
+                            if (responseText.people) {
+                                $.each(responseText.people, function(i, response) {
+                                    htmlstr += '<div class="individual-friend-box"><a class= "fancybox " id="inline" href="#' + response.username + '">' +
+                                            '<div class="friend-image"><img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"></div><div class="friend-text">' +
+                                            '<div class="friend-name">' + response.firstname.concat(" ", response.lastname) + '</div>' +
+                                            '<div class="friend-location">' + response.location + '</div></div>' +
+                                            '<div style="display:none"><div id="' + response.username + '"><div class="aside-wrapper"><img class="profile-pic" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail150) + '">' +
+                                            '<table><tr><td></td><td><h3>' + response.firstname.concat(" ", response.lastname) + '</h3></td></tr>' +
+                                            '<tr><td><span class="icon-16-map"></span></td><td class="profile-meta"> ' + response.location + '</td></tr>' +
+                                            '<tr><td><span class="icon-16-' + (response.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta">' + (response.gender === "M" ? "Male" : "Female") + '</td></tr>' +
+                                            '</table><div class="clear"></div>' +
+                                            '<div class="profile-meta-functions button" id="wink-f-' + response.id + '"><span class="icon-16-eye"></span> Wink</div>' +
+                                            '<div class="profile-meta-functions button"><a href="messages/' + response.username + '"><span class="icon-16-mail"></span> Send Message</a></div>' +
+                                            '<div class="profile-meta-functions button" id="unfriend-f-' + response.id + '"><span class="icon-16-checkmark"></span> <span id="unfriend-f-' + response.id + '-text">Unfriend</a></div><span id="friend-action-loading"></span>' +
+                                            '<div class="clear"></div></div></div></div></a></div>';
+                                });
+                                $("#individual-friend-box").html(htmlstr);
+                            } else {
+                            }
+                        } else {
+                            if (responseText.status) {
+                                humane.log("Community was not created", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                            } else {
+                                $("#individual-friend-box").html("<center>No result found!</center>");
+                            }
+                        }
+                    },
+                    data: {
+                        param: "search",
+                        opt: "mf",
+                        uid: readCookie('user_auth')
+                    }
                 });
                 sendData("loadNotificationCount", {uid: readCookie("user_auth"), title: document.title});
             });
@@ -63,8 +112,10 @@ if (isset($_COOKIE['user_auth'])) {
                     <h1>All Friends</h1>
 
                     <div class="friend-search-box">
-                        <input name="" class="friend-search-field " placeholder="Search Friends" type="text" value="" required="">
-                        <input type="submit" class="button" value="Search">
+                        <form action="tuossog-api-json.php" method="POST" id="searchForm">
+                            <input name="a" class="friend-search-field validate[required]" placeholder="Search Friends" type="text" value="" id="searchTerm">
+                            <input type="submit" class="button" value="Search">
+                        </form>
                     </div>
                     <div class="clear"></div>
                     <span id="individual-friend-box"></span>

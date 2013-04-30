@@ -196,7 +196,7 @@ function clean($value) {
                             </ul>
                             <br>
                         </form>
-                        <div class="button"><a href="signup-photo-edit?skip=">Skip</a></div>
+                        <div class="button"><a href="signup-agreement">Skip</a></div>
                         <div class="button"><a href="signup-agreement">Next!</a></div>
                         <div class="clear"></div>
                     </div>

@@ -144,7 +144,7 @@
                     // you may want to pass extra data on the ajax call
 //                    "extraData": "name=eric",
                     // if you provide an "alertTextOk", it will show as a green prompt when the field validates
-                    "alertTextOk": "* This username is available",
+                    "alertTextOk": "* Username accepted",
                     "alertText": "* This username is already taken",
                     "alertTextLoad": "* Validating, please wait"
                 },

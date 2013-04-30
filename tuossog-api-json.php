@@ -1,5 +1,6 @@
 <?php
 
+session_start();
 header('Content-type: text/html');
 if (isset($_POST['param'])) {
     if ($_POST['param'] == "user") {
@@ -168,10 +169,39 @@ if (isset($_POST['param'])) {
                 if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
                     $limit = $_POST['limit'];
                 }
-                $user_bag = $bag->getGossbag();
+                $user_bag = $bag->getGossbag(TRUE);
                 if ($user_bag['status']) {
                     include_once("./sortArray_$.php");
                     $SMA = new SortMultiArray($user_bag['bag'], "time", 1);
+                    $SortedArray = $SMA->GetSortedArray($start, $limit);
+                    echo json_encode($SortedArray);
+                } else {
+                    displayError(404, "Not Found");
+                }
+            } else {
+                displayError(400, "The request cannot be fulfilled due to bad syntax");
+            }
+        } else {
+            displayError(400, "The request cannot be fulfilled due to bad syntax");
+        }
+    } else if ($_POST['param'] == "timeline") {
+        include_once './GossoutUser.php';
+        if (isset($_POST['uid'])) {
+            $id = decodeText($_POST['uid']);
+            if (is_numeric($id)) {
+                $timeline = new GossoutUser($id);
+                $start = 0;
+                $limit = 10;
+                if (isset($_POST['start']) && is_numeric($_POST['start'])) {
+                    $start = $_POST['start'];
+                }
+                if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
+                    $limit = $_POST['limit'];
+                }
+                $user_timeline = $timeline->getTimeline();
+                if ($user_timeline['status']) {
+                    include_once("./sortArray_$.php");
+                    $SMA = new SortMultiArray($user_timeline['timeline'], "time", 1);
                     $SortedArray = $SMA->GetSortedArray($start, $limit);
                     echo json_encode($SortedArray);
                 } else {
@@ -262,10 +292,52 @@ if (isset($_POST['param'])) {
             if (isset($_POST['opt'])) {
                 $opt = $_POST['opt'];
             }
-
-            $response = $search->search($term, $start, $limit, $opt);
+            if (isset($_POST['uid'])) {
+                $id = decodeText($_POST['uid']);
+                if (is_numeric($id)) {
+                    $search->setUid($id);
+                } else {
+                    displayError(400, "The request cannot be fulfilled due to bad syntax");
+                    exit;
+                }
+            }
+            if ($term == "*") {
+                include_once './Community.php';
+                $comm = new Community();
+                $id = decodeText($_POST['uid']);
+                if (is_numeric($id)) {
+                    if ($opt == "mc") {
+                        $comm->setUser($id);
+                        $response = $comm->userComm($start, $limit, TRUE);
+                    } else if ($opt == "mf") {
+                        include_once './GossoutUser.php';
+                        $user = new GossoutUser($id);
+                        $response = $user->getFriends(0, 20);
+                    } else {
+                        $response = $search->search($term, $start, $limit, $opt);
+                    }
+                } else {
+                    displayError(400, "The request cannot be fulfilled due to bad syntax");
+                    exit;
+                }
+            } else {
+                $response = $search->search($term, $start, $limit, $opt);
+            }
             if ($response['status']) {
-                echo json_encode($response);
+                if ($term == "*") {
+                    if ($opt == "mc") {
+                        $resp['community'] = $response['community_list'];
+                        $resp['status'] = $response['status'];
+                    } else if ($opt == "mf") {
+                        $resp['people'] = $response['friends'];
+                        $resp['status'] = $response['status'];
+                    } else {
+                        $resp = $response;
+                    }
+                    echo json_encode($resp);
+                } else {
+                    echo json_encode($response);
+                }
             } else {
                 displayError(404, "Not Found");
             }
@@ -348,9 +420,50 @@ if (isset($_POST['param'])) {
                 include_once './Post.php';
                 $post = new Post();
                 $post->setCommunity(clean($_POST['cid']));
-                $load = $post->loadPost();
+                $load = $post->loadPost($_SESSION['auth']['timezone']);
                 if ($load['status']) {
                     echo json_encode($load['post']);
+                } else {
+                    displayError(404, "Not Found");
+                }
+            } else {
+                displayError(400, "The request cannot be fulfilled due to bad syntax");
+            }
+        } else {
+            displayError(400, "The request cannot be fulfilled due to bad syntax");
+        }
+    } else if ($_POST['param'] == "deletePost") {
+        if (isset($_POST['uid'])) {
+            $id = decodeText($_POST['uid']);
+            if (is_numeric($id) && is_numeric($_POST['postId'])) {
+                include_once './Post.php';
+                $post = new Post();
+                $post->setPostId(clean($_POST['postId']));
+                $post->setUserId($id);
+                $load = $post->deletePost();
+                echo json_encode($load);
+                exit;
+                if ($load['status']) {
+                    echo json_encode($load);
+                } else {
+                    displayError(404, "Not Found");
+                }
+            } else {
+                displayError(400, "The request cannot be fulfilled due to bad syntax");
+            }
+        } else {
+            displayError(400, "The request cannot be fulfilled due to bad syntax");
+        }
+    } else if ($_POST['param'] == "deleteComment") {
+        if (isset($_POST['uid'])) {
+            $id = decodeText($_POST['uid']);
+            if (is_numeric($id) && is_numeric($_POST['cid'])) {
+                include_once './Post.php';
+                $post = new Post();
+                $post->setUserId($id);
+                $load = $post->deleteComment($_POST['cid']);
+                if ($load['status']) {
+                    echo json_encode($load);
                 } else {
                     displayError(404, "Not Found");
                 }
@@ -399,7 +512,7 @@ if (isset($_POST['param'])) {
     } else if ($_POST['param'] == "post") {
         if (isset($_POST['uid'])) {
             $id = decodeText($_POST['uid']);
-            if (is_numeric($id) && trim($_POST['post']) != "") {
+            if (is_numeric($id) && trim($_POST['post']) != "" && isset($_POST['comid'])) {
                 include_once './Post.php';
                 $post = new Post();
                 if (isset($_FILES['photo'])) {
@@ -448,7 +561,33 @@ if (isset($_POST['param'])) {
                             }
                         }
                         if ($status) {
-                            $load = $post->post($_POST['comid'], $id, clean($_POST['post']));
+                            $values = "";
+                            foreach ($_POST['comid'] as $comid) {
+                                if (is_numeric($comid)) {
+                                    if ($values != "") {
+                                        $values .=",";
+                                    }
+                                    $values .= "('" . clean($_POST['post']) . "','$comid','$id')";
+                                }
+                            }
+                            if ($values != "") {
+                                $load = $post->post($values);
+                                $i = 0;
+                                if ($load['status']) {
+                                    foreach ($_POST['comid'] as $comid) {
+                                        if (is_numeric($comid)) {
+                                            if ($i != 0) {
+                                                $load['post']['id'][] = $load['post']['id'][0] + $i;
+                                            }
+                                            $i++;
+                                        }
+                                    }
+                                    $load['post']['name'] = $_SESSION['auth']['firstname'] . " " . $_SESSION['auth']['lastname'];
+                                    $load['post']['photo'] = $_SESSION['auth']['photo']['thumbnail45'] ? $_SESSION['auth']['photo']['thumbnail45'] : "images/no-pic.png";
+                                }
+                            } else {
+                                $load['status'] = FALSE;
+                            }
                             if ($load['status']) {
                                 include_once './SimpleImage.php';
                                 foreach ($_FILES as $file) {
@@ -456,15 +595,27 @@ if (isset($_POST['param'])) {
                                     foreach ($file['tmp_name'] as $temp) {
                                         $arr = explode(".", $file['name'][$i]);
                                         $ext = end($arr);
-                                        $original = "upload/images/community/" . time() . "-" . $_POST['comid'] . "-" . $i . ".$ext";
-                                        $thumbnail100 = "upload/images/community/" . time() . "-" . $_POST['comid'] . "-" . $i . "_thumb.$ext";
+                                        $original = "upload/images/community/" . time() . "-gossout-" . $i . ".$ext";
+                                        $thumbnail100 = "upload/images/community/" . time() . "-gossout-" . $i . "_thumb.$ext";
                                         $load['post']['post_photo'][] = array("original" => $original, "thumbnail" => $thumbnail100);
                                         $image = new SimpleImage();
                                         $image->load($temp);
                                         $image->resizeToHeight(100);
                                         $image->save($thumbnail100);
                                         move_uploaded_file($temp, $original);
-                                        $imagePost = $post->postImage($load['post']['id'], $_POST['comid'], $id, $original, $thumbnail100);
+                                        $post_id = 0;
+                                        $values = "";
+                                        foreach ($_POST['comid'] as $comid) {
+                                            if (is_numeric($comid)) {
+                                                if ($values != "") {
+                                                    $values .=",";
+                                                }
+                                                $values .= "('" . $load['post']['id'][$post_id] . "','$comid','$id','$original','$thumbnail100')";
+                                                $post_id++;
+                                            }
+                                        }
+                                        if ($values != "")
+                                            $post->postImage($values);
                                         $i++;
                                     }
                                 }
@@ -473,11 +624,63 @@ if (isset($_POST['param'])) {
                             displayError(400, $err);
                             exit;
                         }
-                    }else{
-                        $load = $post->post($_POST['comid'], $id, clean($_POST['post']));
+                    } else {
+                        $values = "";
+                        foreach ($_POST['comid'] as $comid) {
+                            if (is_numeric($comid)) {
+                                if ($values != "") {
+                                    $values .=",";
+                                }
+                                $values .= "('" . clean($_POST['post']) . "','$comid','$id')";
+                            }
+                        }
+                        if ($values != "") {
+                            $load = $post->post($values);
+                            $i = 0;
+                            if ($load['status']) {
+                                foreach ($_POST['comid'] as $comid) {
+                                    if (is_numeric($comid)) {
+                                        if ($i != 0) {
+                                            $load['post']['id'][] = $load['post']['id'][0] + $i;
+                                        }
+                                        $i++;
+                                    }
+                                }
+                                $load['post']['name'] = $_SESSION['auth']['firstname'] . " " . $_SESSION['auth']['lastname'];
+                                $load['post']['photo'] = $_SESSION['auth']['photo']['thumbnail45'] ? $_SESSION['auth']['photo']['thumbnail45'] : "images/no-pic.png";
+                            }
+                        } else {
+                            $load['status'] = FALSE;
+                        }
                     }
                 } else {
-                    $load = $post->post($_POST['comid'], $id, clean($_POST['post']));
+                    $values = "";
+                    foreach ($_POST['comid'] as $comid) {
+                        if (is_numeric($comid)) {
+                            if ($values != "") {
+                                $values .=",";
+                            }
+                            $values .= "('" . clean($_POST['post']) . "','$comid','$id')";
+                        }
+                    }
+                    if ($values != "") {
+                        $load = $post->post($values);
+                        $i = 0;
+                        if ($load['status']) {
+                            foreach ($_POST['comid'] as $comid) {
+                                if (is_numeric($comid)) {
+                                    if ($i != 0) {
+                                        $load['post']['id'][] = $load['post']['id'][0] + $i;
+                                    }
+                                    $i++;
+                                }
+                            }
+                            $load['post']['name'] = $_SESSION['auth']['firstname'] . " " . $_SESSION['auth']['lastname'];
+                            $load['post']['photo'] = $_SESSION['auth']['photo']['thumbnail45'] ? $_SESSION['auth']['photo']['thumbnail45'] : "images/no-pic.png";
+                        }
+                    } else {
+                        $load['status'] = FALSE;
+                    }
                 }
                 if ($load['status']) {
                     echo json_encode($load['post']);

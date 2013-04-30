@@ -23,8 +23,7 @@ print_r($_SESSION);
 //echo '<<==<br/>';
 //include './encryptionClass.php';
 //$encrypt = new Encryption();
-//echo ($encrypt->safe_b64decode("MzQ"));
-
+//echo ($encrypt->safe_b64decode("NDE"));
 //$str = "_-thissdfkj";
 //print_r(preg_match("/[^A-Za-z0-9_-]/", $str));
 //function prepareUsername($email) {
@@ -44,8 +43,6 @@ print_r($_SESSION);
 //        }
 //    }
 //}
-
-
 //$stamp = imagecreatefrompng('images/stamp25.png');
 //$im = imagecreatefrompng('images/no-pic.png');
 //
@@ -74,14 +71,19 @@ print_r($_SESSION);
         <link rel="stylesheet" href="css/chosen.css" />
         <script src="scripts/chosen.jquery.min.js" type="text/javascript"></script>
         <script type="text/javascript">
+            function clr() {
+                $(".chzn-choices").html('<input type="text" class="" autocomplete="off" tabindex="4">');
+//                $("#myselect option").each(function() {
+//                    if (this.selected) {
+//                        alert(this.);
+////                        this.selected = false;
+//                    }
+//                });
+            }
             $(document).ready(function() {
-                $("#myselect option").each(function() {
-                    this.selected = (this.text == "Nigeria");
-                });
                 $(".chzn-select").chosen();
                 $("#clear").click(function() {
-                    
-                    $("#myselect").clear();
+                    clr();
                 });
             });
         </script>

@@ -9,7 +9,7 @@ $countStat = isset($user) ? $user->getMiniStat() : array("fc" => 0, "cc" => 0, "
         ?>">
         <table>
             <tr><td></td><td><h3><a id="asideName"><?php echo isset($user) ? $user->getFullname() : "GUEST"; ?></a></h3></td></tr>
-            <tr><td><span class="icon-16-location"></span></td><td class="profile-meta"><?php echo isset($user) ? $user->getLocation() != "" ? $user->getLocation() : "Set your location"  : ""; ?></td></tr>
+            <!--<tr><td><span class="icon-16-location"></span></td><td class="profile-meta"><?php echo isset($user) ? $user->getLocation() != "" ? $user->getLocation() : "Set your location"  : ""; ?></td></tr>-->
             <!--<tr><td><span class="icon-16-calendar"></span></td><td class="profile-meta">Joined on Feb 18, 2013 </td></tr>-->
             <tr><td><span class="icon-16-male"></span></td><td class="profile-meta"><?php echo isset($user) ? $user->getGender() == "M" ? "Male" : "Female"  : "N/A"; ?></td></tr>
             <!--<tr><td><span class="icon-16-female"></span></td><td class="profile-meta">Female</td></tr>-->
@@ -34,8 +34,8 @@ $countStat = isset($user) ? $user->getMiniStat() : array("fc" => 0, "cc" => 0, "
                 <tr><td><strong>Gender</strong></td><td>Male<td></tr>
                 <tr><td><strong>Birthday</strong></td><td> <?php echo isset($user) ? $user->getDOB() : ""; ?><td></tr>
                 <!--<tr><td><strong>Relationship</strong></td><td>Single<td></tr>-->
-                <!--<tr><td><strong>Phone</strong></td><td><?php echo isset($user) ? $user->getTel()!=""?$user->getTel():"Not Set" : ""; ?><td></tr>-->
-                <tr><td><strong>Website</strong></td><td><?php echo isset($user) ? $user->getUrl()!=""?$user->getUrl():"Not set" : ""; ?><td></tr>
+                <!--<tr><td><strong>Phone</strong></td><td><?php echo isset($user) ? $user->getTel() != "" ? $user->getTel() : "Not Set"  : ""; ?><td></tr>-->
+                <tr><td><strong>Website</strong></td><td><?php echo isset($user) ? $user->getUrl() != "" ? $user->getUrl() : "Not set"  : ""; ?><td></tr>
             </table>
             <!--<hr>-->
 <!--            <p><b>Location</b></p>
@@ -69,8 +69,8 @@ $countStat = isset($user) ? $user->getMiniStat() : array("fc" => 0, "cc" => 0, "
     <div class="aside-wrapper"><h3><a href="friends">Friends</a></h3>
         <script>
             $(document).ready(function() {
-                sendData("loadFriends", {target: "#aside-friends-list", uid: readCookie('user_auth'), loadImage: true <?php echo isset($_GET['page'])?$_GET['page']=="friends"?",friendPage:'#individual-friend-box'":"":""?>});
-                sendData("loadCommunity", {target: "#aside-community-list", uid: readCookie('user_auth'), loadImage: false, max: ""});
+                sendData("loadFriends", {target: "#aside-friends-list", uid: readCookie('user_auth'), loadImage: true <?php echo isset($_GET['page']) ? $_GET['page'] == "friends" ? ",friendPage:'#individual-friend-box'" : "" : "" ?>});
+                sendData("loadCommunity", {target: "#aside-community-list", uid: readCookie('user_auth'), loadImage: true, max: "", start: 0, limit: 5});
             });
         </script>
         <span id="aside-friends-list"></span>

@@ -61,12 +61,12 @@ if (isset($_COOKIE['user_auth'])) {
                         if (responseText.status) {
                             $("#imageUploadForm").resetForm();
                             document.getElementById("user-img").src = document.getElementById("profile-pic").src = responseText.thumb;
-                            humane.log("Profile picture changed successfully", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                            humane.log("Profile picture changed successfully", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
                         } else {
                             if (responseText.error) {
-                                humane.log(responseText.error.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                                humane.log(responseText.error.message, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
                             } else {
-                                humane.log(responseText.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                                humane.log(responseText.message, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
                             }
                         }
                     },
@@ -78,15 +78,16 @@ if (isset($_COOKIE['user_auth'])) {
                         if (responseText.status) {
                             $("#asideName,#more-fullname").html($("#fname").val() + " " + $("#lname").val());
                             var msg = responseText.message ? responseText.message : "Profile updated successfully";
-                            humane.log(msg, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                            humane.log(msg, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
                         } else {
                             if (responseText.error) {
-                                humane.log(responseText.error.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                                humane.log(responseText.error.message, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
                             } else {
                                 var msg = responseText.message ? responseText.message : "Profile was not updated";
-                                humane.log(msg, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                                humane.log(msg, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
                             }
                         }
+                        $(":password").val("");
                     },
                     complete: function(xhr) {
                     },
