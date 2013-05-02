@@ -31,7 +31,7 @@ $countStat = isset($user) ? $user->getMiniStat() : array("fc" => 0, "cc" => 0, "
                 <tr><td><strong>Name</strong></td><td id="more-fullname"><?php echo isset($user) ? $user->getFullname() : "GUEST"; ?><td></tr>
                 <tr><td><strong>Username</strong></td><td><?php echo isset($user) ? $user->getScreenName() : ""; ?><td></tr>
                 <tr><td><strong>Email</strong></td><td><?php echo isset($user) ? $user->getEmail() : ""; ?><td></tr>
-                <tr><td><strong>Gender</strong></td><td>Male<td></tr>
+                <tr><td><strong>Gender</strong></td><td><?php echo isset($user) ? $user->getGender() == "M" ? "Male" : "Female"  : "N/A"; ?><td></tr>
                 <tr><td><strong>Birthday</strong></td><td> <?php echo isset($user) ? $user->getDOB() : ""; ?><td></tr>
                 <!--<tr><td><strong>Relationship</strong></td><td>Single<td></tr>-->
                 <!--<tr><td><strong>Phone</strong></td><td><?php echo isset($user) ? $user->getTel() != "" ? $user->getTel() : "Not Set"  : ""; ?><td></tr>-->

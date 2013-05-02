@@ -10,7 +10,7 @@ include_once './encryptionClass.php';
  */
 class Post {
 
-    var $uid, $comId, $postId;
+    var $uid, $comId, $postId, $tz;
 
     public function __construct() {
         
@@ -55,7 +55,7 @@ class Post {
                     $result = $mysql->query("SELECT NOW() as time");
                     $row = $result->fetch_assoc();
                     $result->free();
-                    $arrFetch['post']['time'] = $row['time'];
+                    $arrFetch['post']['time'] = $this->convert_time_zone($row['time'], $this->tz);
                 } else {
                     $arrFetch['post']['id'] = 0;
                 }
@@ -85,7 +85,7 @@ class Post {
         return $arrFetch;
     }
 
-    public function loadPost($timezone) {
+    public function loadPost() {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
         //$count = 0;
@@ -108,7 +108,7 @@ class Post {
                         if ($post_image['status']) {
                             $row['post_photo'] = $post_image['photo'];
                         }
-//                        $row['time'] = $this->convert_time_zone($row['time'], $timezone);
+                        $row['time'] = $this->convert_time_zone($row['time'], $this->tz);
                         $row['sender_id'] = $encrypt->safe_b64encode($row['sender_id']);
                         $arrFetch['post'][] = $row;
                     }
@@ -196,6 +196,7 @@ class Post {
                             $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
                         }
                         $row['sender_id'] = $encrypt->safe_b64encode($row['sender_id']);
+                        $row['time'] = $this->convert_time_zone($row['time'], $this->tz);
                         $arrFetch['comment'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
@@ -234,7 +235,7 @@ class Post {
                     $result = $mysql->query("SELECT NOW() as time");
                     $row = $result->fetch_assoc();
                     $result->free();
-                    $arrFetch['comment']['time'] = $row['time'];
+                    $arrFetch['comment']['time'] = $this->convert_time_zone($row['time'], $this->tz);
                 } else {
                     $arrFetch['comment']['id'] = 0;
                 }
@@ -267,6 +268,10 @@ class Post {
         $this->postId = $newPost;
     }
 
+    public function setTimezone($newTimeZone) {
+        $this->tz = $newTimeZone;
+    }
+
     public function deletePost() {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
@@ -287,6 +292,7 @@ class Post {
         $mysql->close();
         return $arrFetch;
     }
+
     public function deleteComment($cid) {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
@@ -308,10 +314,10 @@ class Post {
         return $arrFetch;
     }
 
-    private function convert_time_zone($timeFromDatabase, $userOffset) {
-        $userTime = new DateTime($timeFromDatabase, new DateTimeZone('UTC'));
-        $userTime->setTimezone(new DateTimeZone($userOffset));
-        return $userTime->format('Y-m-d H:i:s');
+    private function convert_time_zone($timeFromDatabase_time, $tz) {
+        $date = new DateTime($timeFromDatabase_time, new DateTimeZone(date_default_timezone_get()));
+        $date->setTimezone(new DateTimeZone($tz));
+        return $date->format('Y-m-d H:i:s');
         // or return $userTime; // if you want to return a DateTime object.
     }
 

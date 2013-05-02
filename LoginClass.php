@@ -58,14 +58,16 @@ class Login {
                     if ($this->rem) {
                         $expire = time() + 60 * 60 * 24 * 30 * 3;
                         setcookie("user_auth", $encrypt->safe_b64encode($row['id']), $expire);
+                        setcookie("tz", $encrypt->safe_b64encode($this->timezone), $expire);
                     } else {
                         setcookie("user_auth", $encrypt->safe_b64encode($row['id']), 0);
+                        setcookie("tz", $encrypt->safe_b64encode($this->timezone), 0);
                     }
                     $user = new GossoutUser($row['id']);
                     $user->getProfile();
                     $row['photo'] = $user->getPix();
-                    $row['timezone'] = $this->timezone;
                     session_regenerate_id();
+                    $row['tz'] = $encrypt->safe_b64encode($this->timezone);
                     $_SESSION['auth'] = $row;
                 } else {
                     $arrFetch['status'] = FALSE;

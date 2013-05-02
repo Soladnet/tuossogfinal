@@ -1,4 +1,4 @@
-<div class="nav-user">
+<div class="nav-user" id="nav-user">
     <ul>
         <li>
             <a id="gossbag-text">
@@ -22,7 +22,7 @@
                         <span class="icon-16-cross"></span>Close 
                     </a>
                     <div class="clear"></div>
-                    <span id="message-individual-notification"></span><a href="messages">See all</a>
+                    <span id="message-individual-notification"></span><a href="messages">Go to messages</a>
                 </div>
             </div>
         </li>

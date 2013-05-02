@@ -299,17 +299,24 @@ function loadTimeline(response, statusText, target) {
                         '<img src="' + response.thumbnail100 + '">' +
                         '<h3><a href="' + response.unique_name + '">' + response.name + '</a></h3>' +
                         '<p>' + response.description + '</p>' +
-                        '<p><a href="">Join</a></p></div><div class="clear"></div></div>';
-            } else if (response.type === "comcrea") {
-                htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
-                        '<img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail45) + '"></div>' +
-                        '<p><a>' + response.firstname.concat(' ', response.lastname) + '</a> created a new <a href="' + response.unique_name + '">Community</a></p>' +
-                        '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p><div class="community-meta">' +
-                        '<img src="' + response.thumbnail100 + '">' +
-                        '<h3><a href="' + response.unique_name + '">' + response.name + '</a></h3>' +
-                        '<p>' + response.description + '</p>' +
-                        '<p><a href="">Join</a></p></div><div class="clear"></div></div>';
-            }
+                        (response.isAmember ? "" : '<p><a id="joinCom-' + response.id + '">Join</a></p>') +
+                        '</div><div class="clear"></div></div>';
+                if (!response.isAmember) {
+                    if (toggleId !== "") {
+                        toggleId += ",";
+                    }
+                    toggleId += "#joinCom-" + response.id;
+                }
+            } /*else if (response.type === "comcrea") {
+             htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
+             '<img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail45) + '"></div>' +
+             '<p><a>' + response.firstname.concat(' ', response.lastname) + '</a> created a new <a href="' + response.unique_name + '">Community</a></p>' +
+             '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p><div class="community-meta">' +
+             '<img src="' + response.thumbnail100 + '">' +
+             '<h3><a href="' + response.unique_name + '">' + response.name + '</a></h3>' +
+             '<p>' + response.description + '</p>' +
+             '<p><a href="">Join</a></p></div><div class="clear"></div></div>';
+             }*/
         });
         $(target.target).html(htmlstr);
         prepareDynamicDates();
@@ -449,6 +456,8 @@ function inviteFriends(response, statusText, target) {
         } else {
             $(target.target).html("You do not have any friend to send invitation to");
         }
+    } else if (response.error) {
+        $(target.target).html("You do not have any friend to send invitation to");
     }
 }
 function acceptDeclineComInvitation(response, statusText, target) {
@@ -510,7 +519,7 @@ function loadNavMessages(response, statusText, target) {
                 '<input type="submit" class="submit button float-right" name="param" value="Send Message">' +
                 '<!--<button class="button float-right hint hint--left" data-hint ="Upload Image"><span class="icon-16-camera"></span></button>-->' +
                 '<script>$("#conForm").ajaxForm({beforeSubmit: function() {},success: function(responseText, statusText, xhr, $form) {' +
-                '$(\'' + target.target + '\').html(\'<div class="individual-message-box"><p><span class="all-messages-time timeago" title="\' + responseText.m_t + \'"> \' + responseText.m_t + \' </span></p><img class= "all-messages-image" src="\' + (responseText.photo.nophoto ? responseText.photo.alt : responseText.photo.thumbnail)+\'"><div class="all-messages-text"><a href=""><h3>\' + responseText.sender_name + \' </h3></a><div class="all-messages-message"><span class="icon-16-reply"></span> <p>\' + nl2br(htmlencode($("#msg").val())) + \'</p><!--<br><span class="post-meta-delete"><span class="icon-16-trash"></span><span>Delete</span></span>--></div></div></div>\'+$(\'' + target.target + '\').html());$("#msg").val("");prepareDynamicDates();$(".timeago").timeago();},' +
+                '$(\'' + target.target + '\').html(\'<div class="individual-message-box"><p><span class="all-messages-time timeago" title="\' + responseText.m_t + \'"> \' + responseText.m_t + \' </span></p><img class= "all-messages-image" src="\' + (responseText.photo.nophoto ? responseText.photo.alt : responseText.photo.thumbnail50)+\'"><div class="all-messages-text"><a href=""><h3>\' + responseText.sender_name + \' </h3></a><div class="all-messages-message"><span class="icon-16-reply"></span> <p>\' + nl2br(htmlencode($("#msg").val())) + \'</p><!--<br><span class="post-meta-delete"><span class="icon-16-trash"></span><span>Delete</span></span>--></div></div></div>\'+$(\'' + target.target + '\').html());$("#msg").val("");prepareDynamicDates();$(".timeago").timeago();},' +
                 'complete: function(response, statusText, xhr, $form) {if (response.error) {$("#messageStatus").html(response.error.message);} else {$("#messageStatus").html("");}},data: {uid: "' + readCookie("user_auth") + '",user:"' + target.cw + '"}});</script>' +
                 '</form><div class="clear"></div></div><div class="float-right"><span class="icon-16-arrow-left"></span><a href="messages" class="back">Back to messages</a></div>');
         if (response.conversation) {
@@ -590,7 +599,7 @@ function loadCommunityMembers(response, statusText, target) {
     var htmlstr = "", wink = "";
     if (!response.error) {
         $.each(response, function(i, response) {
-            htmlstr += '<a class= "fancybox " id="inline" href="#' + response.username + '">' +
+            htmlstr += '<a class= "fancyboxMem" id="inline" href="#' + response.username + '">' +
                     '<img class= "friends-thumbnails" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
                     '<div style="display:none"><div id="' + response.username + '"><div class="aside-wrapper">' +
                     '<img class="profile-pic" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail150) + '"><table><tr><td></td><td>' +
@@ -618,6 +627,11 @@ function loadCommunityMembers(response, statusText, target) {
             $("#showAllCommem").html('');
         }
         $(target.target).html(htmlstr);
+        $(".fancyboxMem").fancybox({
+            openEffect: 'none',
+            closeEffect: 'none',
+            minWidth: 400
+        });
         $(wink).click(function() {
             showOption(this);
         });
@@ -852,7 +866,7 @@ function loadCommunity(response, statusText, target) {
     } else {
         if (response.error.code === 404) {
             if (target.target !== "#aside-community-list") {
-                $("#pageTitle").html("Sugested Community");
+                $("#pageTitle").html("Suggested Community");
                 if (target.loadAside) {
                     $("#commTitle").html(response.error.message);
                     $("#commDesc").html(response.error.message);
@@ -893,7 +907,7 @@ function loadSuggestCommunity(response, statusText, target) {
                 htmlstr += '<div class="community-box-wrapper">';
                 htmlstr += '<div class="community-image"><img src="' + response.pix + '"></div>';
                 htmlstr += '<div class="community-text"><div class="community-name">' +
-                        '<a href="communities/' + response.unique_name + '">' + response.name + '</a> </div><hr><p class="community-privacy"><div class="details">'+ (response.description.length > 100 ? br2nl(response.description).substring(0, 100) + "..." : br2nl(response.description)) +
+                        '<a href="communities/' + response.unique_name + '">' + response.name + '</a> </div><hr><p class="community-privacy"><div class="details">' + (response.description.length > 100 ? br2nl(response.description).substring(0, 100) + "..." : br2nl(response.description)) +
                         '</div><div class="members">' + response.type + '</div><div class="members">' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</div><div class="members">' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</div></div><div class="clear"></div></div>';
             } else {
                 if (i > 0) {
@@ -906,7 +920,7 @@ function loadSuggestCommunity(response, statusText, target) {
     } else {
         if (response.error.code === 404) {
             if (target.loadImage) {
-                $("#pageTitle").html("Sugested Community");
+                $("#pageTitle").html("Suggested Community");
             }
             $(target.target).html("<p>Opps! We cannot suggest community to you at the moment. <a href='create-community'>Start your own community</a>.</p>");
         } else {
@@ -972,7 +986,7 @@ function loadPost(response, statusText, target) {
                     prepareDynamicDates();
                     $(".timeago").timeago();
                     $("#numComnt-" + postId).html(parseInt($("#numComnt-" + postId).html()) + 1);
-                    $(toggleId).click(function(){
+                    $(toggleId).click(function() {
                         showOption(this);
                     });
                 }
@@ -1065,7 +1079,7 @@ function loadFriends(response, statusText, target) {
         $.each(response, function(i, responseItem) {
             if (target.target === "#aside-friends-list") {
                 if (target.friendPage) {
-                    friendsPage += '<div class="individual-friend-box"><a class= "fancybox " id="inline" href="#' + responseItem.username + '">' +
+                    friendsPage += '<div class="individual-friend-box"><a class= "fancyboxAlert" id="inline" href="#' + responseItem.username + '">' +
                             '<div class="friend-image"><img src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail50) + '"></div><div class="friend-text">' +
                             '<div class="friend-name">' + responseItem.firstname.concat(" ", responseItem.lastname) + '</div>' +
                             '<div class="friend-location">' + responseItem.location + '</div></div>' +
@@ -1076,12 +1090,12 @@ function loadFriends(response, statusText, target) {
                             '</table><div class="clear"></div>' +
                             '<div class="profile-meta-functions button" id="wink-f-' + responseItem.id + '"><span class="icon-16-eye"></span> Wink</div>' +
                             '<div class="profile-meta-functions button"><a href="messages/' + responseItem.username + '"><span class="icon-16-mail"></span> Send Message</a></div>' +
-                            '<div class="profile-meta-functions button" id="unfriend-f-' + responseItem.id + '"><span class="icon-16-checkmark"></span> <span id="unfriend-f-' + responseItem.id + '-text">Unfriend</a></div><span id="friend-action-loading"></span>' +
+                            '<div class="profile-meta-functions button" id="unfriend-f-' + responseItem.id + '"><span class="icon-16-checkmark"></span> <span id="unfriend-f-' + responseItem.id + '-text">Unfriend</a></div><span id="loadImage-' + response.id + '"></span>' +
                             '<div class="clear"></div></div></div></div></a></div>';
                     unfriend += "#unfriend-f-" + responseItem.id;
                     unfriend += ",#wink-f-" + responseItem.id;
                 }
-                htmlstr += '<a class= "fancybox " id="aside-friend-' + responseItem.id + '" href="#' + responseItem.username + '">' +
+                htmlstr += '<a class= "fancyboxAlert" id="aside-friend-' + responseItem.id + '" href="#' + responseItem.username + '">' +
                         '<img class= "friends-thumbnails" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail50) + '">' +
                         '<div style="display:none"><div id="' + responseItem.username + '"><div class="aside-wrapper">' +
                         '<img class="profile-pic" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail150) + '"><table><tr><td></td><td>' +
@@ -1095,7 +1109,7 @@ function loadFriends(response, statusText, target) {
                         '<div class="clear"></div></div>' +
                         '<div class="clear"></div><div class="profile-meta-functions button" id="wink-' + responseItem.id + '"><span class="icon-16-eye"></span> Wink</div>' +
                         '<div class="profile-meta-functions button"><a href="messages/' + responseItem.username + '"><span class="icon-16-mail"></span> Send Message</a></div>' +
-                        '<div class="profile-meta-functions button" id="unfriend-' + responseItem.id + '"><span class="icon-16-cross"></span> <span id="unfriend-' + responseItem.id + '-text">Unfriend</span></div><span id="friend-action-loading"></span>' +
+                        '<div class="profile-meta-functions button" id="unfriend-' + responseItem.id + '"><span class="icon-16-cross"></span> <span id="unfriend-' + responseItem.id + '-text">Unfriend</span></div><span id="loadImage-' + response.id + '"></span>' +
                         '<div class="clear"></div></div></div></div></a>';
                 if (i > 0 || unfriend !== "") {
                     unfriend += ",";
@@ -1118,6 +1132,11 @@ function loadFriends(response, statusText, target) {
             }
         } else {
             $(target.target).html(htmlstr);
+            $(".fancyboxAlert").fancybox({
+                openEffect: 'none',
+                closeEffect: 'none',
+                minWidth: 400
+            });
             if (target.friendPage) {
                 if (friendsPage !== "") {
                     $(target.friendPage).html(friendsPage);
@@ -1153,7 +1172,7 @@ function loadSuggestFriends(response, statusText, target) {
     if (!response.error) {
         var htmlstr = "";
         $.each(response, function(i, response) {
-            htmlstr += '<div class="individual-friend-box" id="aside-sugfriend-' + response.id + '"><a class= "fancybox" href="#' + response.username + '"><div class="friend-image">';
+            htmlstr += '<div class="individual-friend-box" id="aside-sugfriend-' + response.id + '"><a class= "fancyboxAlert" href="#' + response.username + '"><div class="friend-image">';
             if (response.photo.id) {
                 htmlstr += '<img src = "' + (response.photo.thumbnail50 === "" ? response.photo.original : response.photo.thumbnail50) + '" >';
             } else {
@@ -1177,7 +1196,7 @@ function loadSuggestFriends(response, statusText, target) {
                     '<div class="profile-summary-wrapper"><a href="communities"><p class="number">' + response.ministat.cc + ' </p> <p class="type">Communities</p></a></div>' +
                     '<div class="profile-summary-wrapper"><a href="friends"><p class="number">' + response.ministat.fc + ' </p> <p class="type">Friends</p></a></div>' +
                     '<div class="clear"></div></div>' +
-                    '<button class="profile-meta-functions button" id="unfriend-' + response.id + '"><span class="icon-16-user-add"></span> <span id="unfriend-' + response.id + '-text">Send Friend Request</span></button>' +
+                    '<button class="profile-meta-functions button" id="unfriend-' + response.id + '"><span class="icon-16-user-add"></span> <span id="unfriend-' + response.id + '-text">Send Friend Request</span></button><span id="loadImage-' + response.id + '"></span>' +
                     '<div class="clear"></div></div></div></div>';
             htmlstr += '</a></div>';
             if (i > 0) {
@@ -1186,6 +1205,11 @@ function loadSuggestFriends(response, statusText, target) {
             unfriend += "#unfriend-" + response.id;
         });
         $(target.target).html(htmlstr);
+        $(".fancyboxAlert").fancybox({
+            openEffect: 'none',
+            closeEffect: 'none',
+            minWidth: 250
+        });
         $(unfriend).click(function() {
             showOption(this);
         });
@@ -1409,6 +1433,8 @@ function showOption(obj) {
             } else if ((obj.id).indexOf("deletePost-") >= 0) {
                 sendData("deletePost", {uid: readCookie("user_auth"), target: "#post-" + postId, post_id: postId});
             }
+        } else {
+            humane.log("Request sent already", {timeout: 3000, clickToClose: true, addnCls: 'humane-error'});
         }
     } else if ((obj.id).indexOf("continue-") >= 0) {
         $("#pop-up-gossbag").toggle(false);
@@ -1426,14 +1452,27 @@ function showOption(obj) {
             $("#" + obj.id).html("continue reading...");
         }
         $("#continuereading-" + postId).toggle();
-    } else if (obj.id === "joinleave") {
-        sendData("leaveJoinCommunity", {target: "", uid: readCookie("user_auth"), comid: $("#joinleave-comid").val(), param: $("#joinleave-text").html()})
+    } else if (obj.id === "joinleave" || (obj.id).indexOf("joinCom-") >= 0) {
+        if ((obj.id).indexOf("joinCom-") >= 0) {
+            var comIdPos = (obj.id).lastIndexOf("-") + 1;
+            var comId = ((obj.id).substring(comIdPos));
+            if (!$("#" + obj.id).hasClass("loaded")) {
+                $("#" + obj.id).addClass("loaded");
+                sendData("leaveJoinCommunity", {target: "", uid: readCookie("user_auth"), comid: comId, param: "Join"})
+            } else {
+                humane.log("Request sent already", {timeout: 3000, clickToClose: true, addnCls: 'humane-error'});
+            }
+        } else {
+            sendData("leaveJoinCommunity", {target: "", uid: readCookie("user_auth"), comid: $("#joinleave-comid").val(), param: $("#joinleave-text").html()})
+        }
     } else if ((obj.id).indexOf("unfriend") >= 0) {
         var userIdPos = (obj.id).lastIndexOf("-") + 1;
         var userId = ((obj.id).substring(userIdPos));
         if (!$("#" + obj.id).hasClass("loaded")) {
-            $("#" + obj.id).addClass("loaded");
-            sendData("sendFriendRequest", {target: "#friend-action-loading", uid: readCookie("user_auth"), user: userId, param: $("#" + obj.id + "-text").html()});
+            $("#" + obj.id).addClass("loaded");//<span id="loadImage-' + response.id + '"></span>
+            sendData("sendFriendRequest", {target: "#loadImage-" + userId, uid: readCookie("user_auth"), user: userId, param: $("#" + obj.id + "-text").html(), loadImage: true});
+        } else {
+            humane.log("Request sent already", {timeout: 3000, clickToClose: true, addnCls: 'humane-error'});
         }
     } else if ((obj.id).indexOf("wink-") >= 0) {
         var userIdPos = (obj.id).lastIndexOf("-") + 1;
@@ -1441,10 +1480,12 @@ function showOption(obj) {
         if (!$("#" + obj.id).hasClass("loaded")) {
             $("#" + obj.id).addClass("loaded");
             if ((obj.id).indexOf("wink-text-") >= 0 || (obj.id).indexOf("wink-text-n-") >= 0) {
-                sendData("sendFriendRequest", {target: "#friend-action-loading", uid: readCookie("user_auth"), user: userId, param: "wink", resp: true});
+                sendData("sendFriendRequest", {target: "#loadImage-" + userId, uid: readCookie("user_auth"), user: userId, param: "wink", resp: true, loadImage: true});
             } else {
-                sendData("sendFriendRequest", {target: "#friend-action-loading", uid: readCookie("user_auth"), user: userId, param: "wink"});
+                sendData("sendFriendRequest", {target: "#loadImage-" + userId, uid: readCookie("user_auth"), user: userId, param: "wink", loadImage: true});
             }
+        } else {
+            humane.log("Request sent already", {timeout: 3000, clickToClose: true, addnCls: 'humane-error'});
         }
     } else if ((obj.id).indexOf("winkIgnore-text") >= 0) {
         var userIdPos = (obj.id).lastIndexOf("-") + 1;
@@ -1452,6 +1493,8 @@ function showOption(obj) {
         if (!$("#" + obj.id).hasClass("loaded")) {
             $("#" + obj.id).addClass("loaded");
             sendData("sendFriendRequest", {target: "#winkOption-" + userId, uid: readCookie("user_auth"), user: userId, param: "ignoreWink"});
+        } else {
+            humane.log("Request sent already", {timeout: 3000, clickToClose: true, addnCls: 'humane-error'});
         }
     } else if ((obj.id).indexOf("accept-frq-text") >= 0) {
         var text = $("#" + obj.id).html();
@@ -1460,14 +1503,18 @@ function showOption(obj) {
                 $("#" + obj.id).addClass("clicked");
                 var userIdPos = (obj.id).lastIndexOf("-") + 1;
                 var userId = ((obj.id).substring(userIdPos));
-                sendData("sendFriendRequest", {target: "#" + obj.id, uid: readCookie('user_auth'), user: userId, param: "Accept Request",loadImage:true});
+                sendData("sendFriendRequest", {target: "#" + obj.id, uid: readCookie('user_auth'), user: userId, param: "Accept Request", loadImage: true});
+            } else {
+                humane.log("Request sent already", {timeout: 3000, clickToClose: true, addnCls: 'humane-error'});
             }
         } else if (text === "Unfriend") {
             if (!$("#" + obj.id).hasClass("clicked")) {
                 $("#" + obj.id).addClass("clicked");
                 var userIdPos = (obj.id).lastIndexOf("-") + 1;
                 var userId = ((obj.id).substring(userIdPos));
-                sendData("sendFriendRequest", {target: "#" + obj.id, uid: readCookie('user_auth'), user: userId, param: "Unfriend",loadImage:true});
+                sendData("sendFriendRequest", {target: "#" + obj.id, uid: readCookie('user_auth'), user: userId, param: "Unfriend", loadImage: true});
+            } else {
+                humane.log("Request sent already", {timeout: 3000, clickToClose: true, addnCls: 'humane-error'});
             }
         }
     } else if ((obj.id).indexOf("frqIgnore-text-") >= 0) {
@@ -1476,7 +1523,9 @@ function showOption(obj) {
             $("#" + obj.id).addClass("clicked");
             var userIdPos = (obj.id).lastIndexOf("-") + 1;
             var userId = ((obj.id).substring(userIdPos));
-            sendData("sendFriendRequest", {target: "#" + obj.id, uid: readCookie('user_auth'), user: userId, param: "Ignore",loadImage:true});
+            sendData("sendFriendRequest", {target: "#" + obj.id, uid: readCookie('user_auth'), user: userId, param: "Ignore", loadImage: true});
+        } else {
+            humane.log("Request sent already", {timeout: 3000, clickToClose: true, addnCls: 'humane-error'});
         }
 
     } else if (obj.id === "inviteMemBtn") {

@@ -2,7 +2,49 @@
 session_start();
 //session_destroy();
 print_r($_SESSION);
-//include_once './Config.php';
+echo "<br/>" . $_SERVER['REMOTE_ADDR'];
+echo "<br/>";
+include_once './Config.php';
+$mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+if ($mysql->connect_errno > 0) {
+    throw new Exception("Connection to server failed!");
+} else {
+    $sql = "SELECT NOW() as time";
+    if ($result = $mysql->query($sql)) {
+        $row = $result->fetch_assoc();
+        echo $row['time'] . " - ";
+    }
+}
+echo "<br/>";
+//$var = GeoLocation("41.71.149.159", "34e6d3f396a1be972da92c290cf54b28e9076c11e1772cbf9d58d0764539b5c6");
+//echo $var;
+//
+//function GeoLocation($ip, $api) {
+//    $params = @file_get_contents("http://api.ipinfodb.com/v3/ip-city/?key=" . $api . "&ip=" . $ip . "&format=json");
+//    return $params;
+//}
+
+echo "<br/>";
+
+//$ip = "41.71.149.159"; //$_SERVER['REMOTE_ADDR']; // means we got user's IP address 
+//$json = @file_get_contents('http://smart-ip.net/geoip-json/' . $ip); // this one service we gonna use to obtain timezone by IP
+//// maybe it's good to add some checks (if/else you've got an answer and if json could be decoded, etc.)
+//$ipData = json_decode($json, true);
+//
+//if ($ipData['timezone']) {
+//    echo convert_time_zone($row['time'], $ipData['timezone']);
+//} else {
+//    date_default_timezone_set("Africa/Lagos");
+    echo convert_time_zone($row['time'], 'Africa/Lagos');
+//}
+
+function convert_time_zone($timeFromDatabase_time, $tz) {
+    $date = new DateTime($timeFromDatabase_time, new DateTimeZone(date_default_timezone_get()));
+    $date->setTimezone(new DateTimeZone($tz));
+    return $date->format('Y-m-d H:i:s');
+    // or return $userTime; // if you want to return a DateTime object.
+}
+
 //$email = "soladnnet@gmail.com";
 //$usernameTemp = explode('@', $email);
 //$username = FALSE;

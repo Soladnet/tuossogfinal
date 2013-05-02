@@ -21,12 +21,13 @@ if (isset($_COOKIE['user_auth'])) {
         <title>
             Gossout - Messages
         </title>
-        <link rel="stylesheet" href="css/jackedup.css">
+        
         <link rel="stylesheet" href="css/chosen.css" />
         <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
         <?php
         include ("head.php");
         ?>
+        <link rel="stylesheet" href="css/jackedup.css">
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
         <script src="scripts/test_helpers.js" type="text/javascript"></script>
 
@@ -60,8 +61,19 @@ if (isset($_COOKIE['user_auth'])) {
                 },
                 success: function(responseText, statusText, xhr, $form) {
                     $("#messageStatus").html("");
+                    $("#newMsgForm").clearForm();
+                    $('select').trigger('liszt:updated');
                     $("#msg").val("");
                     $.fancybox.close();
+                    if (!responseText.error) {
+                        if (responseText.status) {
+                            humane.log("Message sent successfully!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                        }else{
+                            humane.log("Message was not sent!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                        }
+                    }else{
+                        humane.log(responseText.error.message, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                    }
                 },
                 complete: function(response, statusText, xhr, $form) {
                     if (response.error) {

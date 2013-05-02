@@ -1,6 +1,12 @@
 <?php
 session_start();
-//print_r($_SESSION);
+$ip = $_SERVER['REMOTE_ADDR'];
+$json = @file_get_contents('http://smart-ip.net/geoip-json/' . $ip);
+$ipData = json_decode($json, true);
+$timezone = "Africa/Lagos";
+if ($ipData['timezone']) {
+    $timezone = $ipData['timezone'];
+}
 ?>
 <!doctype html>
 <html>
@@ -26,11 +32,11 @@ session_start();
         ?>
         <script type="text/javascript">
             function getTimeZone() {
-                var timezone = (-(new Date().getTimezoneOffset()))/60;
+                var timezone = (-(new Date().getTimezoneOffset())) / 60;
                 return timezone;
             }
-            $(document).ready(function(){
-                $("#tz").val(getTimeZone());
+            $(document).ready(function() {
+                $("#tz").val("<?php echo $timezone ?>");
             });
         </script>
     </head>

@@ -7,7 +7,7 @@ include_once './Post.php';
 
 class GossoutUser {
 
-    var $id, $fname, $lname, $fullname, $location, $gender, $url, $tel, $email, $screenName = "", $dob, $pix = array();
+    var $id, $fname, $lname, $fullname, $location, $gender, $url, $tel, $email, $screenName = "", $dob, $pix = array(), $tz;
 
     /**
      * @author Soladnet Software
@@ -121,6 +121,10 @@ class GossoutUser {
         } else {
             $this->id = $newUid;
         }
+    }
+
+    public function setTimezone($newTimezone) {
+        $this->tz = $newTimezone;
     }
 
     public function setScreenName($user) {
@@ -556,6 +560,7 @@ class GossoutUser {
                         } else {
                             $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
                         }
+                        $row['time'] = $this->convert_time_zone($row['time'], $this->tz);
                         $temp[$row['sender_id']] = $row;
                         if ($row['status'] == "N" && $flag) {
                             $mysql->query("UPDATE `privatemessae` SET `status`='D' WHERE `id`=$row[id]");
@@ -573,7 +578,7 @@ class GossoutUser {
             $result = $mysql->query("SELECT NOW() as time");
             $row = $result->fetch_assoc();
             $result->free();
-            $arrFetch['m_t'] = $row['time'];
+            $arrFetch['m_t'] = $this->convert_time_zone($row['time'], $this->tz);
         }
         $mysql->close();
         return $arrFetch;
@@ -594,6 +599,7 @@ class GossoutUser {
                     $arrFetch['response']['receiver_id'] = $this->id;
                     $this->getProfile();
                     $arrFetch['response']['receiver_name'] = $this->getFullname();
+                    $arrFetch['response']['status'] = TRUE;
                     $user = new GossoutUser($sender_id);
                     $user->getProfile();
                     $pix = $user->getProfilePix();
@@ -606,9 +612,10 @@ class GossoutUser {
                     $result = $mysql->query("SELECT NOW() as time");
                     $row = $result->fetch_assoc();
                     $result->free();
-                    $arrFetch['response']['m_t'] = $row['time'];
+                    $arrFetch['response']['m_t'] = $this->convert_time_zone($row['time'], $this->tz);
                 } else {
                     $arrFetch['status'] = FALSE;
+                    $arrFetch['sql'] = $sql;
                 }
                 $mysql->close();
             } else {
@@ -662,7 +669,7 @@ class GossoutUser {
                         $row['id'] = $encrypt->safe_b64encode($row['id']);
                         $row['sender_id'] = $encrypt->safe_b64encode($row['sender_id']);
                         $row['receiver_id'] = $encrypt->safe_b64encode($row['receiver_id']);
-
+                        $row['time'] = $this->convert_time_zone($row['time'], $this->tz);
                         $arrFetch['message']['conversation'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
@@ -676,7 +683,7 @@ class GossoutUser {
             $result = $mysql->query("SELECT NOW() as time");
             $row = $result->fetch_assoc();
             $result->free();
-            $arrFetch['m_t'] = $row['time'];
+            $arrFetch['m_t'] = $this->convert_time_zone($row['time'], $this->tz);
         }
         $mysql->close();
         return $arrFetch;
@@ -698,10 +705,10 @@ class GossoutUser {
             //post notiif
             if (!$updateTime) {
                 $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where
- p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') AND p.time>=(SELECT `lastupdate` FROM user_time_update WHERE `user_id`=$this->id)";
+ p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') AND p.time>=(SELECT `lastupdate` FROM user_time_update WHERE `user_id`=$this->id) AND p.`deleteStatus`=0";
             } else {
                 $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where
- p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y')";
+ p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') AND p.`deleteStatus`=0";
             }
             if ($result = $mysql->query($sql1)) {
                 if ($result->num_rows > 0) {
@@ -714,6 +721,7 @@ class GossoutUser {
                         } else {
                             $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
                         }
+                        $row['time'] = $this->convert_time_zone($row['time'], $this->tz);
                         $arrFetch['bag'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
@@ -746,7 +754,7 @@ class GossoutUser {
                         } else {
                             $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
                         }
-
+                        $row['time'] = $this->convert_time_zone($row['time'], $this->tz);
                         $arrFetch['bag'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
@@ -775,6 +783,7 @@ class GossoutUser {
                         }
                         $row['id'] = $encrypt->safe_b64encode($row['id']);
                         $row['sender_id'] = $encrypt->safe_b64encode($row['sender_id']);
+                        $row['time'] = $this->convert_time_zone($row['time'], $this->tz);
                         $arrFetch['bag'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
@@ -802,6 +811,7 @@ class GossoutUser {
                             $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
                         }
                         $row['id'] = $encrypt->safe_b64encode($row['id']);
+                        $row['time'] = $this->convert_time_zone($row['time'], $this->tz);
                         $arrFetch['bag'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
@@ -863,6 +873,7 @@ class GossoutUser {
         } else {
             $encrypt = new Encryption();
             $user = new GossoutUser(0);
+            $com = new Community();
             //post notiif
             $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y')";
             if ($result = $mysql->query($sql1)) {
@@ -887,6 +898,7 @@ class GossoutUser {
                         if ($post_image['status']) {
                             $row['post_photo'] = $post_image['photo'];
                         }
+                        $row['time'] = $this->convert_time_zone($row['time'], $this->tz);
                         $arrFetch['timeline'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
@@ -910,6 +922,10 @@ class GossoutUser {
                         } else {
                             $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
                         }
+                        $com->setCommunityId($row['id']);
+                        $isAmember = $com->isAmember($this->id);
+                        $row['isAmember'] = $isAmember['status'];
+                        $row['time'] = $this->convert_time_zone($row['time'], $this->tz);
                         $arrFetch['timeline'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
@@ -935,6 +951,7 @@ class GossoutUser {
                         } else {
                             $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
                         }
+                        $row['time'] = $this->convert_time_zone($row['time'], $this->tz);
                         $arrFetch['timeline'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
@@ -1222,6 +1239,13 @@ class GossoutUser {
             }
         }
         return implode(' ', $exp);
+    }
+
+    private function convert_time_zone($timeFromDatabase_time, $tz) {
+        $date = new DateTime($timeFromDatabase_time, new DateTimeZone(date_default_timezone_get()));
+        $date->setTimezone(new DateTimeZone($tz));
+        return $date->format('Y-m-d H:i:s');
+        // or return $userTime; // if you want to return a DateTime object.
     }
 
 }

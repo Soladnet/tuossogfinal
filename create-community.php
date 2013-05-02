@@ -42,7 +42,6 @@ if (isset($_COOKIE['user_auth'])) {
                 var bar = $('.bar');
                 var percent = $('.percent');
                 var status = $('#status');
-
                 $('#creatForm').ajaxForm({
                     beforeSend: function() {
                         status.empty();
@@ -63,7 +62,7 @@ if (isset($_COOKIE['user_auth'])) {
                         if (responseText.status === "success") {
                             $("#creatForm").resetForm();
                             $("#noCom").hide();
-                            $("#cc").html(parseInt($("#cc").html())+1);
+                            $("#cc").html(parseInt($("#cc").html()) + 1);
                             $("#aside-community-list").prepend('<div class="community-listing"><span><a href="' + responseText.unique_name + '">' + responseText.name + '</a></span></div><hr>');
                             humane.log("Community created successfully", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
                         } else {
@@ -88,6 +87,14 @@ if (isset($_COOKIE['user_auth'])) {
 
                 });
                 sendData("loadNotificationCount", {uid: readCookie("user_auth"), title: document.title});
+                var countDesc = 2000;
+                $("#desc").keyup(function() {
+                    if (!($("#desc").val().length > 2000)) {
+                        $("#countDesc").html(countDesc - $("#desc").val().length);
+                    }else{
+                        $("#desc").val($("#desc").val().substring(0,2000));
+                    }
+                });
             });
         </script>
         <style>
@@ -108,11 +115,9 @@ if (isset($_COOKIE['user_auth'])) {
                 <div class="create-community">
                     <h1>Create Community</h1>
                     <hr>
-                    <h3>Some surutu and turance...! :D Lorem ipsum dolor sit amet, consectetur 
-                        adipisicing elit, sed do eiusmod
-                        tempor incididunt ut labore et dolore magna aliqua. </h3>
-                    <h3 class="notice">Please, NOTE that Communities are deleted 
-                        after <strong>XX</strong> days of inactivity.</h3>
+                    <h3 class="success">Go the best way on gossout! Create and join communities of your interest to make more friends and meet people. It is free!.</h3>
+                    <!--                    <h3 class="notice">Please, NOTE that Communities are deleted 
+                                            after <strong>XX</strong> days of inactivity.</h3>-->
                     <hr>
                     <form method="POST" action="tuossog-api-json.php" id="creatForm">
                         <div class="individual-detail">
@@ -124,13 +129,13 @@ if (isset($_COOKIE['user_auth'])) {
                         <div class="individual-detail">
                             <h2>2. Name</h2>
                             <p class="desc">This name would be used to identify the community</p>
-                            <input type="text" name="name" class="validate[required] text-input input-fields">
+                            <input type="text" name="name" class="validate[required,maxSize[100]] text-input input-fields">
                         </div>
 
                         <div class="individual-detail">
                             <h2>3. About</h2>
-                            <p class="desc">Give a short description of the community</p>
-                            <textarea name="desc" class="input-fields validate[required]"></textarea>
+                            <p class="desc">Give a short description of the community ( <span id="countDesc">2000</span> )</p>
+                            <textarea name="desc" class="input-fields validate[required,maxSize[2000]]" id="desc"></textarea>
                         </div>
 
 

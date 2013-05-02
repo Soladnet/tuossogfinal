@@ -10,6 +10,14 @@ if (isset($_POST['param'])) {
 
             if (is_numeric($id)) {
                 $user = new GossoutUser($id);
+                if (isset($_COOKIE['tz'])) {
+                    $tz = decodeText($_COOKIE['tz']);
+                } else if (isset($_SESSION['auth']['tz'])) {
+                    $tz = decodeText($_SESSION['auth']['tz']);
+                } else {
+                    $tz = "Africa/Lagos";
+                }
+                $user->setTimezone($tz);
                 $profile = $user->getProfile();
                 if ($profile['status']) {
                     echo json_encode($profile['user']);
@@ -28,6 +36,14 @@ if (isset($_POST['param'])) {
             $id = decodeText($_POST['uid']);
             if (is_numeric($id)) {
                 $user = new GossoutUser($id);
+                if (isset($_COOKIE['tz'])) {
+                    $tz = decodeText($_COOKIE['tz']);
+                } else if (isset($_SESSION['auth']['tz'])) {
+                    $tz = decodeText($_SESSION['auth']['tz']);
+                } else {
+                    $tz = "Africa/Lagos";
+                }
+                $user->setTimezone($tz);
                 $start = 0;
                 $limit = 10;
                 $status = "Y";
@@ -110,6 +126,14 @@ if (isset($_POST['param'])) {
             $id = decodeText($_POST['uid']);
             if (is_numeric($id)) {
                 $msg = new GossoutUser($id);
+                if (isset($_COOKIE['tz'])) {
+                    $tz = decodeText($_COOKIE['tz']);
+                } else if (isset($_SESSION['auth']['tz'])) {
+                    $tz = decodeText($_SESSION['auth']['tz']);
+                } else {
+                    $tz = "Africa/Lagos";
+                }
+                $msg->setTimezone($tz);
                 $msg->getProfile();
                 $start = 0;
                 $limit = 10;
@@ -161,6 +185,14 @@ if (isset($_POST['param'])) {
             $id = decodeText($_POST['uid']);
             if (is_numeric($id)) {
                 $bag = new GossoutUser($id);
+                if (isset($_COOKIE['tz'])) {
+                    $tz = decodeText($_COOKIE['tz']);
+                } else if (isset($_SESSION['auth']['tz'])) {
+                    $tz = decodeText($_SESSION['auth']['tz']);
+                } else {
+                    $tz = "Africa/Lagos";
+                }
+                $bag->setTimezone($tz);
                 $start = 0;
                 $limit = 3;
                 if (isset($_POST['start']) && is_numeric($_POST['start'])) {
@@ -190,6 +222,14 @@ if (isset($_POST['param'])) {
             $id = decodeText($_POST['uid']);
             if (is_numeric($id)) {
                 $timeline = new GossoutUser($id);
+                if (isset($_COOKIE['tz'])) {
+                    $tz = decodeText($_COOKIE['tz']);
+                } else if (isset($_SESSION['auth']['tz'])) {
+                    $tz = decodeText($_SESSION['auth']['tz']);
+                } else {
+                    $tz = "Africa/Lagos";
+                }
+                $timeline->setTimezone($tz);
                 $start = 0;
                 $limit = 10;
                 if (isset($_POST['start']) && is_numeric($_POST['start'])) {
@@ -267,6 +307,14 @@ if (isset($_POST['param'])) {
             $id = decodeText($_POST['uid']);
             if (is_numeric($id)) {
                 $bag = new GossoutUser($id);
+                if (isset($_COOKIE['tz'])) {
+                    $tz = decodeText($_COOKIE['tz']);
+                } else if (isset($_SESSION['auth']['tz'])) {
+                    $tz = decodeText($_SESSION['auth']['tz']);
+                } else {
+                    $tz = "Africa/Lagos";
+                }
+                $bag->setTimezone($tz);
                 $user_notif = $bag->getNotificationSummary();
                 echo json_encode($user_notif);
             } else {
@@ -312,6 +360,14 @@ if (isset($_POST['param'])) {
                     } else if ($opt == "mf") {
                         include_once './GossoutUser.php';
                         $user = new GossoutUser($id);
+                        if (isset($_COOKIE['tz'])) {
+                            $tz = decodeText($_COOKIE['tz']);
+                        } else if (isset($_SESSION['auth']['tz'])) {
+                            $tz = decodeText($_SESSION['auth']['tz']);
+                        } else {
+                            $tz = "Africa/Lagos";
+                        }
+                        $user->setTimezone($tz);
                         $response = $user->getFriends(0, 20);
                     } else {
                         $response = $search->search($term, $start, $limit, $opt);
@@ -351,6 +407,14 @@ if (isset($_POST['param'])) {
             $limit = 3;
             if (is_numeric($id)) {
                 $user = new GossoutUser($id);
+                if (isset($_COOKIE['tz'])) {
+                    $tz = decodeText($_COOKIE['tz']);
+                } else if (isset($_SESSION['auth']['tz'])) {
+                    $tz = decodeText($_SESSION['auth']['tz']);
+                } else {
+                    $tz = "Africa/Lagos";
+                }
+                $user->setTimezone($tz);
                 $sug = $user->suggestFriend();
                 if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
                     $limit = $_POST['limit'];
@@ -420,7 +484,15 @@ if (isset($_POST['param'])) {
                 include_once './Post.php';
                 $post = new Post();
                 $post->setCommunity(clean($_POST['cid']));
-                $load = $post->loadPost($_SESSION['auth']['timezone']);
+                if (isset($_COOKIE['tz'])) {
+                    $tz = decodeText($_COOKIE['tz']);
+                } else if (isset($_SESSION['auth']['tz'])) {
+                    $tz = decodeText($_SESSION['auth']['tz']);
+                } else {
+                    $tz = "Africa/Lagos";
+                }
+                $post->setTimezone($tz);
+                $load = $post->loadPost();
                 if ($load['status']) {
                     echo json_encode($load['post']);
                 } else {
@@ -479,6 +551,14 @@ if (isset($_POST['param'])) {
             if (is_numeric($id) && is_numeric($_POST['pid'])) {
                 include_once './Post.php';
                 $post = new Post();
+                if (isset($_COOKIE['tz'])) {
+                    $tz = decodeText($_COOKIE['tz']);
+                } else if (isset($_SESSION['auth']['tz'])) {
+                    $tz = decodeText($_SESSION['auth']['tz']);
+                } else {
+                    $tz = "Africa/Lagos";
+                }
+                $post->setTimezone($tz);
                 $load = $post->loadComment(clean($_POST['pid']));
                 if ($load['status']) {
                     echo json_encode($load['comment']);
@@ -497,6 +577,14 @@ if (isset($_POST['param'])) {
             if (is_numeric($id) && is_numeric($_GET['pid']) && trim($_POST['comment']) != "") {
                 include_once './Post.php';
                 $post = new Post();
+                if (isset($_COOKIE['tz'])) {
+                    $tz = decodeText($_COOKIE['tz']);
+                } else if (isset($_SESSION['auth']['tz'])) {
+                    $tz = decodeText($_SESSION['auth']['tz']);
+                } else {
+                    $tz = "Africa/Lagos";
+                }
+                $post->setTimezone($tz);
                 $load = $post->comment($_GET['pid'], $id, clean($_POST['comment']));
                 if ($load['status']) {
                     echo json_encode($load['comment']);
@@ -515,6 +603,14 @@ if (isset($_POST['param'])) {
             if (is_numeric($id) && trim($_POST['post']) != "" && isset($_POST['comid'])) {
                 include_once './Post.php';
                 $post = new Post();
+                if (isset($_COOKIE['tz'])) {
+                    $tz = decodeText($_COOKIE['tz']);
+                } else if (isset($_SESSION['auth']['tz'])) {
+                    $tz = decodeText($_SESSION['auth']['tz']);
+                } else {
+                    $tz = "Africa/Lagos";
+                }
+                $post->setTimezone($tz);
                 if (isset($_FILES['photo'])) {
                     if (!($_FILES['photo']['error'][0] > 0)) {
                         $allowedExts = array("jpeg", "jpg", "png", "gif", "JPEG", "JPG", "PNG");
@@ -694,21 +790,31 @@ if (isset($_POST['param'])) {
             displayError(400, "The request cannot be fulfilled due to bad syntax");
         }
     } else if ($_POST['param'] == "Send Message") {
-        if (isset($_POST['uid'])) {
+        if (isset($_POST['uid']) && isset($_POST['user'])) {
             $id = decodeText($_POST['uid']);
             if (is_numeric($id)) {
                 $msg = $_POST['message'];
                 $user = $_POST['user'];
                 include_once './GossoutUser.php';
                 $gUser = new GossoutUser(0);
+                if (isset($_COOKIE['tz'])) {
+                    $tz = decodeText($_COOKIE['tz']);
+                } else if (isset($_SESSION['auth']['tz'])) {
+                    $tz = decodeText($_SESSION['auth']['tz']);
+                } else {
+                    $tz = "Africa/Lagos";
+                }
+                $gUser->setTimezone($tz);
                 $response = array();
                 if (is_array($user)) {
                     foreach ($user as $receiverId) {
-                        if (is_numeric($receiverId)) {
-                            $gUser->setUserId($receiverId);
+                        $rid = decodeText($receiverId);
+                        if (is_numeric($rid)) {
+                            $gUser->setUserId($rid);
                             $res = $gUser->sendMessage($id, clean(htmlentities($msg)));
                             if ($res['status']) {
-                                echo json_encode($res['response']);
+                                $response['status'] = TRUE;
+                                //echo json_encode($res['response']);
                             } else {
                                 $response['status'] = FALSE;
                             }
@@ -716,7 +822,6 @@ if (isset($_POST['param'])) {
                             $response['status'] = FALSE;
                         }
                     }
-
                     echo json_encode($response);
                 } else {
                     $gUser->setScreenName($user);
@@ -776,6 +881,14 @@ if (isset($_POST['param'])) {
             $login = new Login();
             include_once './GossoutUser.php';
             $user = new GossoutUser($id);
+            if (isset($_COOKIE['tz'])) {
+                $tz = decodeText($_COOKIE['tz']);
+            } else if (isset($_SESSION['auth']['tz'])) {
+                $tz = decodeText($_SESSION['auth']['tz']);
+            } else {
+                $tz = "Africa/Lagos";
+            }
+            $user->setTimezone($tz);
             if (is_numeric($id) && isset($_POST['email'])) {
                 if (isset($_POST['email']) && isset($_POST['fname']) && isset($_POST['lname']) && isset($_POST['pass']) && isset($_POST['uid'])) {
                     $login->setUsername($_POST['email']);
@@ -838,6 +951,14 @@ if (isset($_POST['param'])) {
             if (is_numeric($id) && is_numeric($userId)) {
                 include_once './GossoutUser.php';
                 $user = new GossoutUser($id);
+                if (isset($_COOKIE['tz'])) {
+                    $tz = decodeText($_COOKIE['tz']);
+                } else if (isset($_SESSION['auth']['tz'])) {
+                    $tz = decodeText($_SESSION['auth']['tz']);
+                } else {
+                    $tz = "Africa/Lagos";
+                }
+                $user->setTimezone($tz);
                 if ($_POST['param'] == "Unfriend" || $_POST['param'] == "Cancel Request" || $_POST['param'] == "Ignore") {
                     $response = $user->unfriend($userId);
                 } else if ($_POST['param'] == "Send Friend Request") {

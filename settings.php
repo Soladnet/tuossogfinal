@@ -56,8 +56,23 @@ if (isset($_COOKIE['user_auth'])) {
                     }
                 });
                 $("#imageUploadForm,#profileForm,#changePassForm").validationEngine();
+                var bar = $('.bar');
+                var percent = $('.percent');
                 $("#imageUploadForm").ajaxForm({
+                    beforeSend: function() {
+                        $("#photoProgress").show();
+                        var percentVal = '0%';
+                        bar.width(percentVal)
+                        percent.html(percentVal);
+                    }, uploadProgress: function(event, position, total, percentComplete) {
+                        var percentVal = percentComplete + '%';
+                        bar.width(percentVal)
+                        percent.html(percentVal);
+                    },
                     success: function(responseText, statusText, xhr, $form) {
+                        var percentVal = '100%';
+                        bar.width(percentVal)
+                        percent.html(percentVal);
                         if (responseText.status) {
                             $("#imageUploadForm").resetForm();
                             document.getElementById("user-img").src = document.getElementById("profile-pic").src = responseText.thumb;
@@ -71,10 +86,24 @@ if (isset($_COOKIE['user_auth'])) {
                         }
                     },
                     complete: function(xhr) {
+                        $("#photoProgress").hide();
                     }
                 });
                 $("#profileForm,#changePassForm").ajaxForm({
+                    beforeSend: function() {
+                        $("#profileText").show();
+                        var percentVal = '0%';
+                        bar.width(percentVal)
+                        percent.html(percentVal);
+                    }, uploadProgress: function(event, position, total, percentComplete) {
+                        var percentVal = percentComplete + '%';
+                        bar.width(percentVal)
+                        percent.html(percentVal);
+                    },
                     success: function(responseText, statusText, xhr, $form) {
+                        var percentVal = '100%';
+                        bar.width(percentVal)
+                        percent.html(percentVal);
                         if (responseText.status) {
                             $("#asideName,#more-fullname").html($("#fname").val() + " " + $("#lname").val());
                             var msg = responseText.message ? responseText.message : "Profile updated successfully";
@@ -90,6 +119,7 @@ if (isset($_COOKIE['user_auth'])) {
                         $(":password").val("");
                     },
                     complete: function(xhr) {
+                        $("#profileText").hide();
                     },
                     data: {
                         param: "settings",
@@ -98,6 +128,11 @@ if (isset($_COOKIE['user_auth'])) {
                 });
             });
         </script>
+        <style>
+            .progress { position:relative; width:400px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
+            .bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
+            .percent { position:absolute; display:inline-block; top:3px; left:48%; }
+        </style>
     </head>
     <body>
         <div class="page-wrapper">
@@ -124,6 +159,10 @@ if (isset($_COOKIE['user_auth'])) {
                         <form id="imageUploadForm" method="Post" action="files-raw.php">
                             <p></p>
                             <center><input type="file" name="myfile" class="input-fields validate[required]" id="uploadField" style="position: absolute;left: -9999px;"><div class="button" id="clickToFileUpload"><span class="icon-16-camera"></span> Click to choose image</div><input type="submit" class="button" value="Upload photo"></center>
+                            <div class="progress" id="photoProgress" style="display: none">
+                                <div class="bar"></div >
+                                <div class="percent">0%</div >
+                            </div>
                         </form>
                         <hr>
                     </div>
@@ -144,7 +183,11 @@ if (isset($_COOKIE['user_auth'])) {
                             <h2>Password</h2>
                             <input type="password" name="pass" class="input-fields validate[required]">
                         </div>
-                        <input type="submit" class="button" value="Save Changes">	
+                        <input type="submit" class="button" value="Save Changes">
+                        <div class="progress" id="profileText" style="display: none">
+                            <div class="bar"></div >
+                            <div class="percent">0%</div >
+                        </div>
                     </form>
                     <hr/>
                     <hr/>

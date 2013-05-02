@@ -93,6 +93,28 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                             uid: readCookie('user_auth')
                         }
                     });
+                    $('#all').addClass('active');
+                    $("#all").click(function() {
+                        $('#my-communities-list').show();
+                        $('#suggestion-list').show();
+                        $('#my-communities').removeClass('active');
+                        $('#suggestions').removeClass('active');
+                        $('#all').addClass('active');
+                    });
+                    $("#suggestions").click(function() {
+                        $('#my-communities-list').hide();
+                        $('#suggestion-list').show();
+                        $('#all').removeClass('active');
+                        $('#my-communities').removeClass('active');
+                        $('#suggestions').addClass('active');
+                    });
+                    $("#my-communities").click(function() {
+                        $('#suggestion-list').hide();
+                        $('#my-communities-list').show();
+                        $('#all').removeClass('active');
+                        $('#suggestions').removeClass('active');
+                        $('#my-communities').addClass('active');
+                    });
 
 
     <?php
