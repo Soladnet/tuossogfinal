@@ -2,9 +2,13 @@
 
 if (isset($_GET['page'])) {
     if ($_GET['page'] == "index") {
-        echo "include Homepage here!";
+        include_once './searchIndex.php';
     } else if ($_GET['page'] == "home") {
-        include './home.php';
+        if (isset($_COOKIE['user_auth'])) {
+            include_once './home.php';
+        } else {
+            include_once './searchIndex.php';
+        }
     } else if ($_GET['page'] == "communities") {
         include_once './communities.php';
     } else if ($_GET['page'] == "messages") {
@@ -31,14 +35,20 @@ if (isset($_GET['page'])) {
         include_once './create-community.php';
     } else if ($_GET['page'] == "community-settings") {
         include_once './community-settings.php';
-    }else {
+    } else if ($_GET['page'] == "password-recovery") {
+        include_once './password-recovery.php';
+    } else if ($_GET['page'] == "password-recovery-confirm") {
+        include_once './password-recovery-confirm.php';
+    } else if ($_GET['page'] == "password-reset") {
+        include_once './password-reset.php';
+    } else {
         header("Location: communities/$_GET[page]");
     }
 } else {
     if (isset($_COOKIE['user_auth'])) {
         include_once './home.php';
     } else {
-        echo "include Homepage here!";
+        include_once './searchIndex.php';
     }
 }
 ?>

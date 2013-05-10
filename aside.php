@@ -3,15 +3,15 @@ $countStat = isset($user) ? $user->getMiniStat() : array("fc" => 0, "cc" => 0, "
 ?>
 <div class="aside">
     <div class="aside-wrapper">
-        <img class="profile-pic" id="profile-pic" src="<?php
-        $pix = $user->getPix();
-        echo isset($pix['thumbnail150']) ? $pix['thumbnail150'] : "images/no-pic.png"
-        ?>">
+        <div class="profile-pic"><img class="holdam" id="profile-pic" src="<?php
+            $pix = $user->getPix();
+            echo isset($pix['thumbnail150']) ? $pix['thumbnail150'] : "images/no-pic.png"
+            ?>"></div>
         <table>
-            <tr><td></td><td><h3><a id="asideName"><?php echo isset($user) ? $user->getFullname() : "GUEST"; ?></a></h3></td></tr>
+            <tr><td></td><td><h3><a id="asideName"><?php echo isset($user) ? $user->getId() == 0 ? "GUEST" : $user->getFullname()  : "GUEST"; ?></a></h3></td></tr>
             <!--<tr><td><span class="icon-16-location"></span></td><td class="profile-meta"><?php echo isset($user) ? $user->getLocation() != "" ? $user->getLocation() : "Set your location"  : ""; ?></td></tr>-->
             <!--<tr><td><span class="icon-16-calendar"></span></td><td class="profile-meta">Joined on Feb 18, 2013 </td></tr>-->
-            <tr><td><span class="icon-16-male"></span></td><td class="profile-meta"><?php echo isset($user) ? $user->getGender() == "M" ? "Male" : "Female"  : "N/A"; ?></td></tr>
+            <?php ?><tr><td><span class="icon-16-male"></span></td><td class="profile-meta"><?php echo isset($user) ? $user->getId() == 0 ? "GUEST" : ($user->getGender() == "M" ? "Male" : "Female")  : "GUEST"; ?></td></tr>
             <!--<tr><td><span class="icon-16-female"></span></td><td class="profile-meta">Female</td></tr>-->
             <tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a id="show-full-profile"> View Full Profile</a> </td></tr>
         </table>
@@ -44,51 +44,55 @@ $countStat = isset($user) ? $user->getMiniStat() : array("fc" => 0, "cc" => 0, "
             <p><b>College</b></p>-->
         </div>
     </div>
-
-    <div class="aside-wrapper">
-        <h3><a href="communities">Communities</a></h3>
-        <span id="aside-community-list"></span>
-        <p class="community-listing">
-            <span>
-                <?php
-                if ($countStat['cc'] > 5) {
-                    ?>
-                    <span><span class="icon-16-dot"></span><a href="communities">Show all</a></span>
+    <?php if ($user->getId() != 0) { ?>
+        <div class="aside-wrapper" id="aside-wrapper-comm">
+            <h3><a href="communities">Communities</a></h3>
+            <span id="aside-community-list"></span>
+            <p class="community-listing">
+                <span>
                     <?php
-                }
-                ?>
-                <span><span class="icon-16-dot"></span><a id="show-suggested-community">Suggest Communities</a></span>
-            </span>
-        </p>
-    </div>
-    <div id= "suggested-community" class="no-display aside-wrapper" > 
-        <h3>Suggested Community </h3>
-        <span id="aside-suggest-community">
-        </span>
-    </div>
-    <div class="aside-wrapper"><h3><a href="friends">Friends</a></h3>
-        <script>
-            $(document).ready(function() {
-                sendData("loadFriends", {target: "#aside-friends-list", uid: readCookie('user_auth'), loadImage: true <?php echo isset($_GET['page']) ? $_GET['page'] == "friends" ? ",friendPage:'#individual-friend-box'" : "" : "" ?>});
-                sendData("loadCommunity", {target: "#aside-community-list", uid: readCookie('user_auth'), loadImage: true, max: "", start: 0, limit: 5});
-            });
-        </script>
-        <span id="aside-friends-list"></span>
-        <p class="community-listing">
-            <span>
-                <?php
-                if ($countStat['fc'] > 6) {
+                    if ($countStat['cc'] > 5) {
+                        ?>
+                        <span><span class="icon-16-dot"></span><a href="communities">Show all</a></span>
+                        <?php
+                    }
                     ?>
-                    <span><span class="icon-16-dot"></span><a href="friends">Show all</a></span>
-                    <?php
-                }
-                ?>
-                <span><span class="icon-16-dot"></span><a id="show-suggested-friends">Suggest Friends</a></span>
-
+                    <span><span class="icon-16-dot"></span><a id="show-suggested-community">Suggest Communities</a></span>
+                </span>
+            </p>
+        </div>
+        <div id= "suggested-community" class="no-display aside-wrapper" > 
+            <h3>Suggested Community </h3>
+            <span id="aside-suggest-community">
             </span>
-        </p>
-    </div>
-    <?php
+        </div>
+        <div class="aside-wrapper" id="aside-wrapper-frnd"><h3><a href="friends">Friends</a></h3>
+            <script>
+                $(document).ready(function() {
+                    var user = readCookie('user_auth');
+                    if (user !== 0) {
+                        sendData("loadFriends", {target: "#aside-friends-list", loadImage: true <?php echo isset($_GET['page']) ? $_GET['page'] == "friends" ? ",friendPage:'#individual-friend-box'" : ""  : "" ?>});
+                        sendData("loadCommunity", {target: "#aside-community-list", loadImage: true, max: "", start: 0, limit: 5});
+                    }
+                });
+            </script>
+            <span id="aside-friends-list"></span>
+            <p class="community-listing">
+                <span>
+                    <?php
+                    if ($countStat['fc'] > 6) {
+                        ?>
+                        <span><span class="icon-16-dot"></span><a href="friends">Show all</a></span>
+                        <?php
+                    }
+                    ?>
+                    <span><span class="icon-16-dot"></span><a id="show-suggested-friends">Suggest Friends</a></span>
+
+                </span>
+            </p>
+        </div> 
+        <?php
+    }
     include("suggested-friends.php");
     ?>
     <!--    <div class="aside-wrapper">

@@ -10,7 +10,7 @@ include_once './encryptionClass.php';
  */
 class Post {
 
-    var $uid, $comId, $postId, $tz;
+    var $uid, $comId, $postId, $tz, $start = 0, $limit = 5;
 
     public function __construct() {
         
@@ -23,7 +23,7 @@ class Post {
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "SELECT count(`id`) as count FROM `post` WHERE `sender_id` = $this->uid";
+            $sql = "SELECT count(`id`) as count FROM `post` WHERE `sender_id` = $this->uid AND `deleteStatus`=0";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     $row = $result->fetch_assoc();
@@ -97,7 +97,8 @@ class Post {
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
-                        $row['post'] = nl2br($row['post']);
+                        $row['firstname'] = $this->toSentenceCase($row['firstname']);
+                        $row['lastname'] = $this->toSentenceCase($row['lastname']);
                         $comCount = $this->getCommentCountFor($row['id']);
                         if ($comCount['status']) {
                             $row['numComnt'] = $comCount['count'];
@@ -186,6 +187,8 @@ class Post {
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
+                        $row['firstname'] = $this->toSentenceCase($row['firstname']);
+                        $row['lastname'] = $this->toSentenceCase($row['lastname']);
                         $row['comment'] = nl2br($row['comment']);
                         include_once './GossoutUser.php';
                         $user = new GossoutUser($row['sender_id']);
@@ -268,6 +271,14 @@ class Post {
         $this->postId = $newPost;
     }
 
+    public function setStart($newStart) {
+        $this->start = $newStart;
+    }
+
+    public function setLimit($newLimit) {
+        $this->limit = $newLimit;
+    }
+
     public function setTimezone($newTimeZone) {
         $this->tz = $newTimeZone;
     }
@@ -312,6 +323,71 @@ class Post {
         }
         $mysql->close();
         return $arrFetch;
+    }
+
+    public function searchPost($term) {
+        $arrFetch = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $encrypt = new Encryption();
+            $sql = "SELECT p.id,p.post,p.`time`,p.status,p.sender_id,u.firstname,u.lastname FROM post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id WHERE post LIKE '%$term%' AND c.`type`='Public' LIMIT $this->start,$this->limit";
+            if ($result = $mysql->query($sql)) {
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $row['firstname'] = $this->toSentenceCase($row['firstname']);
+                        $row['lastname'] = $this->toSentenceCase($row['lastname']);
+                        include_once './GossoutUser.php';
+                        $user = new GossoutUser($row['sender_id']);
+                        $pix = $user->getProfilePix();
+                        if ($pix['status']) {
+                            $row['photo'] = $pix['pix'];
+                        } else {
+                            $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
+                        }
+                        $comCount = $this->getCommentCountFor($row['id']);
+                        if ($comCount['status']) {
+                            $row['numComnt'] = $comCount['count'];
+                        } else {
+                            $row['numComnt'] = 0;
+                        }
+                        $post_image = $this->loadPostImage($row['id']);
+                        if ($post_image['status']) {
+                            $row['post_photo'] = $post_image['photo'];
+                        }
+                        $row['sender_id'] = $encrypt->safe_b64encode($row['sender_id']);
+                        $row['time'] = $this->convert_time_zone($row['time'], $this->tz);
+                        $arrFetch['post'][] = $row;
+                    }
+                    $arrFetch['status'] = TRUE;
+                } else {
+                    $arrFetch['status'] = FALSE;
+                }
+                $result->free();
+            } else {
+                $arrFetch['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arrFetch;
+    }
+
+    public function toSentenceCase($str) {
+        $arr = explode(' ', $str);
+        $exp = array();
+        foreach ($arr as $x) {
+            if (strtolower($x) == "of") {
+                $exp[] = strtolower($x);
+            } else {
+                if (strlen($x) > 0) {
+                    $exp[] = strtoupper($x[0]) . substr($x, 1);
+                } else {
+                    $exp[] = strtoupper($x);
+                }
+            }
+        }
+        return implode(' ', $exp);
     }
 
     private function convert_time_zone($timeFromDatabase_time, $tz) {

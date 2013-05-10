@@ -10,7 +10,15 @@ if (isset($_COOKIE['user_auth'])) {
         $userProfile = $user->getProfile();
     }
 } else {
-    header("Location: login");
+    include_once './GossoutUser.php';
+    $user = new GossoutUser(0);
+    $userProfile = $user->getProfile();
+//    $host = $_SERVER['HTTP_HOST'];
+//    if ($host == "localhost") {
+//        header("Location: http://$host/gossoutfinal/login");
+//    } else {
+//        header("Location: http://$host/login");
+//    }
 }
 ?>
 <!doctype html>
@@ -20,6 +28,8 @@ if (isset($_COOKIE['user_auth'])) {
         include_once './webbase.php';
         ?>
         <title>Gossout - Communities</title>
+        <meta http-equiv="Pragma" http-equiv="no-cache" />
+        <meta http-equiv="Expires" content="-1" />
         <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
         <?php
         include ("head.php");
@@ -51,11 +61,11 @@ if (isset($_COOKIE['user_auth'])) {
 <?php
 if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FALSE) {
     ?>
-                    sendData("loadCommunity", {target: "#rightcolumn", uid: readCookie('user_auth'), loadImage: true, max: true, loadAside: true, comname: '<?php echo $_GET['param'] ?>'});
+                    sendData("loadCommunity", {target: "#rightcolumn", loadImage: true, max: true, loadAside: true, comname: '<?php echo $_GET['param'] ?>'});
     <?php
 } else {
     ?>
-                    sendData("loadCommunity", {target: ".community-box", uid: readCookie('user_auth'), loadImage: true, max: true});
+                    sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true});
                     $("#searchForm").validationEngine();
                     $("#searchForm").ajaxForm({
                         beforeSend: function() {
@@ -73,7 +83,7 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                                         htmlstr += '<div class="community-box-wrapper"><div class="community-image">' +
                                                 '<img src="' + response.thumbnail100 + '">' +
                                                 '</div><div class="community-text"><div class="community-name">' +
-                                                '<a href="' + response.unique_name + '">' + response.name + '</a> </div><hr><div class="details">' + br2nl(response.description) +
+                                                '<a href="' + response.unique_name + '">' + response.name + '</a> </div><hr><div class="details">' + (br2nl(response.description).length > 100 ? br2nl(response.description).substring(0, 100) + "..." : br2nl(response.description)) +
                                                 '</div><div class="members">' + response.type + '</div><div class="members">' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</div><div class="members">' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</div></div><div class="clear"></div></div>';
                                     });
                                     $(".community-box").html(htmlstr);
@@ -120,7 +130,10 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
     <?php
 }
 ?>
-                sendData("loadNotificationCount", {uid: readCookie("user_auth"), title: document.title});
+                var user = readCookie('user_auth');
+                if (user !== 0) {
+                    sendData("loadNotificationCount", {title: document.title});
+                }
                 $(".fancybox").fancybox({
                     openEffect: 'none',
                     closeEffect: 'none',
@@ -151,9 +164,9 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                         <div class="clear"></div>
                         <hr/>
                         <div id="creatComDiv">
-                            <h3>Would you like to create one? It's very easy! 
+                            <h3>Would you like to create one? It's very easy and free! 
                                 <br>
-                                <div class="button"><a href="create-community">New Community</a></div>
+                                <div class="button"><a href="create-community">Start a Community</a></div>
                             </h3>
                         </div>
                         <div class="community-box">

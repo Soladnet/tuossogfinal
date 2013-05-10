@@ -42,8 +42,13 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) && isset($_POST['g
         <script src="scripts/languages/jquery.validationEngine-en.js" type="text/javascript"></script>
         <script src="scripts/jquery.validationEngine.js" type="text/javascript"></script>
         <script>
-            jQuery(document).ready(function() {
+            $(document).ready(function() {
                 jQuery("#formID").validationEngine();
+                if (Modernizr.inlinesvg) {
+                    $('#logo').html('<a href="index"><img src="images/gossout-logo-text-and-image-svg.svg" alt="Gossout" /></a>');
+                } else {
+                    $('#logo').html('<a href="index"><img src="images/gossout-logo-text-and-image-svg.png" alt="Gossout" /></a>');
+                }
             });
         </script>
     </head>
@@ -54,9 +59,7 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) && isset($_POST['g
                 <div class="clear"></div>
             </div>
             <div class="index-banner">
-                <div class="index-logo">
-                    <img src="images/gossout-logo-text-and-image-svg.svg" alt="logo" >
-                </div>
+                <div class="logo" id="logo"><img alt=""></div>
             </div>
             <div class="index-intro">	
                 <div class="index-intro-2">
@@ -85,7 +88,7 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) && isset($_POST['g
                                 </li>
                             </ul>
                             <br>
-                            <button class="button-big">Next!</button>
+                            <input class="button-big" type="submit" value="Next!"/>
                         </form>
                         <div class="clear"></div>
                     </div>

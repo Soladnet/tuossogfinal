@@ -17,11 +17,22 @@ session_start();
             <link rel="stylesheet" href="css/jackedup.css">
             <script type="text/javascript" src="scripts/humane.min.js"></script>
             <script>
-                humane.log("<?php echo $_SESSION['signup_perosnal_error']['message']; ?>", {timeout: 10000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                $(document).ready(function() {
+                    humane.log("<?php echo $_SESSION['signup_perosnal_error']['message']; ?>", {timeout: 10000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                });
             </script>
             <?php
         }
         ?>
+        <script>
+            $(document).ready(function() {
+                if (Modernizr.inlinesvg) {
+                    $('#logo').html('<a href="index"><img src="images/gossout-logo-text-and-image-svg.svg" alt="Gossout" /></a>');
+                } else {
+                    $('#logo').html('<a href="index"><img src="images/gossout-logo-text-and-image-svg.png" alt="Gossout" /></a>');
+                }
+            });
+        </script>
     </head>
     <body>
         <div class="index-page-wrapper">	
@@ -90,7 +101,7 @@ session_start();
                                 </li>
                             </ul>
                             <br>
-                            <button class="button-big">Next!</button>
+                            <input class="button-big" type="submit" value="Next!"/>
                         </form>
                         <div class="clear"></div>
                     </div>

@@ -47,6 +47,8 @@ class Search {
                 if ($result = $mysql->query($sql)) {
                     if ($result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
+                            $row['firstname'] = $this->toSentenceCase($row['firstname']);
+                    $row['lastname'] = $this->toSentenceCase($row['lastname']);
                             $response['people'][] = $row;
                         }
                         $response['status'] = TRUE;
@@ -61,7 +63,7 @@ class Search {
                 $response['status'] = FALSE;
             }
             if ($opt == "community" || $opt == "both") {
-                $sqlCommunity = "SELECT `id`, `name`, `category`, `description` FROM `community` WHERE `name` LIKE '%$term%' Limit $start,$limit";
+                $sqlCommunity = "SELECT `id`,unique_name, `name`, `category`, `description` FROM `community` WHERE `name` LIKE '%$term%' Limit $start,$limit";
                 if ($result = $mysql->query($sqlCommunity)) {
                     if ($result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
@@ -82,7 +84,7 @@ class Search {
                     $response['status'] = FALSE;
             }
             if ($opt == "mc") {
-                $sqlCommunity = "SELECT c.`id`, c.`type`,c.`name`,c.thumbnail100,c.thumbnail150, c.`description` FROM `community` as c JOIN community_subscribers as cs ON c.id=cs.community_id WHERE (c.`name` LIKE '%$term%' OR c.unique_name='$term') AND cs.`user`=$this->uid AND cs.leave_status=0 Limit $start,$limit";
+                $sqlCommunity = "SELECT c.`id`, c.`type`,c.unique_name,c.`name`,c.thumbnail100,c.thumbnail150, c.`description` FROM `community` as c JOIN community_subscribers as cs ON c.id=cs.community_id WHERE (c.`name` LIKE '%$term%' OR c.unique_name='$term') AND cs.`user`=$this->uid AND cs.leave_status=0 Limit $start,$limit";
                 if ($result = $mysql->query($sqlCommunity)) {
                     if ($result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
@@ -135,6 +137,8 @@ class Search {
                 if ($result = $mysql->query($sql)) {
                     if ($result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
+                            $row['firstname'] = $this->toSentenceCase($row['firstname']);
+                    $row['lastname'] = $this->toSentenceCase($row['lastname']);
                             $row['sql'] = $sql;
                             $user->setUserId($row['id']);
                             $pix = $user->getProfilePix();
@@ -160,6 +164,23 @@ class Search {
         }
         $mysql->close();
         return $response;
+    }
+
+    public function toSentenceCase($str) {
+        $arr = explode(' ', $str);
+        $exp = array();
+        foreach ($arr as $x) {
+            if (strtolower($x) == "of") {
+                $exp[] = strtolower($x);
+            } else {
+                if (strlen($x) > 0) {
+                    $exp[] = strtoupper($x[0]) . substr($x, 1);
+                } else {
+                    $exp[] = strtoupper($x);
+                }
+            }
+        }
+        return implode(' ', $exp);
     }
 
 }

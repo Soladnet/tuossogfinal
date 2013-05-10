@@ -13,10 +13,12 @@
         $.ajaxSetup({
             url: 'tuossog-api-json.php',
             dataType: "json",
-            timeout: 60000 * 10,
-            type: "post",
+            type: "POST",
             error: function(jqXHR, textStatus, errorThrown) {
-                manageError(jqXHR, textStatus, errorThrown, {uid: readCookie("user_auth")});
+                manageError(jqXHR, textStatus, errorThrown);
+            },
+            data: {
+                uid: readCookie("user_auth")
             }
         });
         if (Modernizr.inlinesvg) {

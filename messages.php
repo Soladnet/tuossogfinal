@@ -21,7 +21,7 @@ if (isset($_COOKIE['user_auth'])) {
         <title>
             Gossout - Messages
         </title>
-        
+
         <link rel="stylesheet" href="css/chosen.css" />
         <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
         <?php
@@ -38,8 +38,8 @@ if (isset($_COOKIE['user_auth'])) {
         <script src="scripts/chosen.jquery.min.js" type="text/javascript"></script>
         <script type="text/javascript">
             $(document).ready(function() {
-                sendData("loadNotificationCount", {uid: readCookie("user_auth"), title: document.title});
-                sendData("loadNavMessages", {uid: readCookie("user_auth"), target: "#individual-message-box", loadImage: true <?php echo isset($_GET['param']) ? $_GET['param'] != "" ? ",cw:'" . $_GET['param'] . "'" : ""  : "" ?>});
+                sendData("loadNotificationCount", {title: document.title});
+                sendData("loadNavMessages", {target: "#individual-message-box", loadImage: true <?php echo isset($_GET['param']) ? $_GET['param'] != "" ? ",cw:'" . $_GET['param'] . "'" : ""  : "" ?>});
                 $(".fancybox").fancybox({
                     openEffect: 'none',
                     closeEffect: 'none',
@@ -68,10 +68,10 @@ if (isset($_COOKIE['user_auth'])) {
                     if (!responseText.error) {
                         if (responseText.status) {
                             humane.log("Message sent successfully!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
-                        }else{
+                        } else {
                             humane.log("Message was not sent!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
                         }
-                    }else{
+                    } else {
                         humane.log(responseText.error.message, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
                     }
                 },

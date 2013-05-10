@@ -30,36 +30,33 @@ if ($type == 'xml') {
             $image = new SimpleImage();
             $image->load($_FILES["myfile"]["tmp_name"]);
             list($width, $height) = getimagesize($_FILES["myfile"]["tmp_name"]);
-//            if ($width > $height * 2 || $height > $width * 2) {
-                $image->resize(150, 150);
+//            $image->resize(150, 150);
+//            $image->save($thumbnail150);
+//            $image->resize(75, 75);
+//            $image->save($thumbnail75);
+//            $image->resize(50, 50);
+//            $image->save($thumbnail50);
+//            $image->resize(45, 45);
+//            $image->save($thumbnail45);
+            if ($width > $height) {
+                $image->resizeToWidth(150);
                 $image->save($thumbnail150);
-                $image->resize(75, 75);
+                $image->resizeToWidth(75);
                 $image->save($thumbnail75);
-                $image->resize(50, 50);
+                $image->resizeToWidth(50);
                 $image->save($thumbnail50);
-                $image->resize(45, 45);
+                $image->resizeToWidth(45);
                 $image->save($thumbnail45);
-//            }  else {
-//                if ($width > $height) {
-//                    $image->resizeToWidth(150);
-//                    $image->save($thumbnail150);
-//                    $image->resizeToWidth(75);
-//                    $image->save($thumbnail75);
-//                    $image->resizeToWidth(50);
-//                    $image->save($thumbnail50);
-//                    $image->resizeToWidth(45);
-//                    $image->save($thumbnail45);
-//                } else {
-//                    $image->resizeToHeight(150);
-//                    $image->save($thumbnail150);
-//                    $image->resizeToHeight(75);
-//                    $image->save($thumbnail75);
-//                    $image->resizeToHeight(50);
-//                    $image->save($thumbnail50);
-//                    $image->resizeToHeight(45);
-//                    $image->save($thumbnail45);
-//                }
-//            }
+            } else {
+                $image->resizeToHeight(150);
+                $image->save($thumbnail150);
+                $image->resizeToHeight(75);
+                $image->save($thumbnail75);
+                $image->resizeToHeight(50);
+                $image->save($thumbnail50);
+                $image->resizeToHeight(45);
+                $image->save($thumbnail45);
+            }
             move_uploaded_file($_FILES["myfile"]["tmp_name"], $newPath);
             include_once './GossoutUser.php';
             $userUploader = new GossoutUser($_SESSION['auth']['id']);
@@ -67,7 +64,7 @@ if ($type == 'xml') {
             if ($response['status']) {
                 $userUploader->updateThumbnail($response['id'], $thumbnail45, $thumbnail50, $thumbnail75, $thumbnail150);
                 header('Content-type: application/json');
-                echo json_encode(array('thumb' => $thumbnail150,"status"=>TRUE));
+                echo json_encode(array('thumb' => $thumbnail150, "status" => TRUE));
             } else {
                 unlink($newPath);
                 unlink($thumbnail150);

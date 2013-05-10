@@ -48,37 +48,74 @@ if (isset($_COOKIE['user_auth'])) {
             ?>
             <script type="text/javascript">
                 $(document).ready(function() {
-                    sendData("loadCommunity", {target: "#rightcolumn", uid: readCookie('user_auth'), loadImage: true, max: true, loadAside: true, comname: '<?php echo $_GET['param'] ?>', settings: true});
-                    sendData("loadNotificationCount", {uid: readCookie("user_auth"), title: document.title});
+                    var countDesc = 2000;
+                    $("#commDescription").keyup(function() {
+                        if (!($("#commDescription").val().length > countDesc)) {
+                            $("#countDesc").html(countDesc - $("#commDescription").val().length);
+                        } else {
+                            $("#commDescription").val($("#commDescription").val().substring(0, 2000));
+                        }
+                    });
+                    sendData("loadCommunity", {target: "#rightcolumn", loadImage: true, max: true, loadAside: true, comname: '<?php echo $_GET['param'] ?>', settings: true});
+                    sendData("loadNotificationCount", {title: document.title});
                     $("#settingsForm,#imageChangeForm").validationEngine();
                     $("#settingsForm").ajaxForm({
+                        beforeSend: function() {
+                            $("#profileText").show();
+                            var percentVal = '0%';
+                            bar.width(percentVal)
+                            percent.html(percentVal);
+                        }, uploadProgress: function(event, position, total, percentComplete) {
+                            var percentVal = percentComplete + '%';
+                            bar.width(percentVal)
+                            percent.html(percentVal);
+                        },
                         success: function(responseText, statusText, xhr, $form) {
+                            var percentVal = '100%';
+                            bar.width(percentVal)
+                            percent.html(percentVal);
                             if (!responseText.error) {
                                 $("#commTitle").html(responseText.name);
-                                $("#commDesc").html(responseText.desc);
-                                humane.log(responseText.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                                $("#commDesc").html(nl2br(linkify(responseText.desc)));
+                                humane.log(responseText.message, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
                             } else {
-                                humane.log(responseText.error.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                                humane.log(responseText.error.message, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
                             }
                         },
                         complete: function(xhr) {
+                            $("#profileText").hide();
                         }
                     });
+                    var bar = $('.bar');
+                    var percent = $('.percent');
                     $("#imageChangeForm").ajaxForm({
-                        success: function(responseText, statusText, xhr, $form) {
+                        beforeSend: function() {
+                            $("#photoProgress").show();
+                            var percentVal = '0%';
+                            bar.width(percentVal)
+                            percent.html(percentVal);
+                        }, uploadProgress: function(event, position, total, percentComplete) {
+                            var percentVal = percentComplete + '%';
+                            bar.width(percentVal)
+                            percent.html(percentVal);
+                        }, success: function(responseText, statusText, xhr, $form) {
+                            var percentVal = '100%';
+                            bar.width(percentVal)
+                            percent.html(percentVal);
                             if (responseText.status) {
                                 $("#imageChangeForm").resetForm();
                                 document.getElementById("commPix").src = document.getElementById("com-img").src = responseText.thumb;
-                                humane.log(responseText.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                                humane.log(responseText.message, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
                             } else {
                                 if (responseText.error) {
-                                    humane.log(responseText.error.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                                    humane.log(responseText.error.message, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
                                 } else {
-                                    humane.log(responseText.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                                    humane.log(responseText.message, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
                                 }
                             }
                         },
                         complete: function(xhr) {
+                            $("#photoProgress").hide();
                         },
                         data: {
                             name: ""
@@ -92,6 +129,11 @@ if (isset($_COOKIE['user_auth'])) {
             <?php
         }
         ?>
+        <style>
+            .progress { position:relative; width:400px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
+            .bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
+            .percent { position:absolute; display:inline-block; top:3px; left:48%; }
+        </style>
     </head>
     <body>
         <div class="page-wrapper">
@@ -121,6 +163,10 @@ if (isset($_COOKIE['user_auth'])) {
                             <p class="desc">Logo, Badge, whatever image that best represents your community
                                 Image must be of the following type: .jpg, .png or .jpeg and must not be more than 2MB of size</p>
                             <input type="submit" class="button" value="Upload photo">
+                            <div class="progress" id="photoProgress" style="display: none">
+                                <div class="bar"></div >
+                                <div class="percent">0%</div >
+                            </div>
                             <hr>
                         </div>
                     </form>
@@ -132,11 +178,11 @@ if (isset($_COOKIE['user_auth'])) {
                         </div>
                         <div class="individual-setting">
                             <h2>Name</h2>
-                            <input type="text" name="name" id="commName" class="validate[required]">
+                            <input type="text" name="name" id="commName" class="validate[required,maxSize[100]]">
                         </div>
                         <div class="individual-setting">
-                            <h2>Description</h2>
-                            <textarea name="desc" id="commDescription" rows="5" class="validate[required]">
+                            <h2>Description ( <span id="countDesc">2000</span> )</h2>
+                            <textarea name="desc" id="commDescription" rows="5" class="validate[required,maxSize[2000]">
 
                             </textarea>
                         </div>
@@ -151,6 +197,10 @@ if (isset($_COOKIE['user_auth'])) {
                                             </div>-->
                         <div class="button"><a id="setting_cancel">Cancel</a></div>
                         <input type="submit" class="button submit" value="Save Changes"><input type="hidden" name="param" value="Update Community"/>
+                        <div class="progress" id="profileText" style="display: none">
+                            <div class="bar"></div >
+                            <div class="percent">0%</div >
+                        </div>
                     </form>
                 </div>
                 <?php

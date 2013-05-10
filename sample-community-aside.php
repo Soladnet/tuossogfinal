@@ -1,6 +1,6 @@
 <div class="aside">
     <div class="aside-wrapper">
-        <img class="profile-pic" src="images/no-pic.png" id="commPix">
+        <div class="profile-pic"><img class="holdam" src="images/no-pic.png" id="commPix"></div>
         <table>
             <tr><td colspan="2"><h3 id="commTitle">Loading...</h3></td></tr>
             <tr><td id="comType"><span class="icon-16-lock"></span>Loading...</td></tr>
@@ -26,7 +26,7 @@
         </span>
         <script>
             $(document).ready(function() {
-                sendData("loadCommunityMembers", {target: "#commember-aside", comname: '<?php echo $_GET['param'] ?>', uid: readCookie('user_auth')});
+                sendData("loadCommunityMembers", {target: "#commember-aside", comname: '<?php echo $_GET['param'] ?>'});
             });
         </script>
         <p class="community-listing">

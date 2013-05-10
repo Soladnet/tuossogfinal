@@ -144,6 +144,15 @@ function clean($value) {
         <script src="scripts/jquery-1.9.1.min.js" type="text/javascript"></script>
         <script src="scripts/languages/jquery.validationEngine-en.js" type="text/javascript"></script>
         <script src="scripts/jquery.validationEngine.js" type="text/javascript"></script>
+        <script>
+            $(document).ready(function() {
+                if (Modernizr.inlinesvg) {
+                    $('#logo').html('<a href="index"><img src="images/gossout-logo-text-and-image-svg.svg" alt="Gossout" /></a>');
+                } else {
+                    $('#logo').html('<a href="index"><img src="images/gossout-logo-text-and-image-svg.png" alt="Gossout" /></a>');
+                }
+            });
+        </script>
         <style>
             .progress { position:relative; width:400px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
             .bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
@@ -157,9 +166,7 @@ function clean($value) {
                 <div class="clear"></div>
             </div>
             <div class="index-banner">
-                <div class="index-logo">
-                    <img src="images/gossout-logo-text-and-image-svg.svg" alt="logo" >
-                </div>
+                <div class="logo" id="logo"><img alt=""></div>
             </div>
             <div class="index-intro">	
                 <div class="index-intro-2">
@@ -244,7 +251,7 @@ function clean($value) {
                     complete: function(xhr, textStatus) {
                         var response = JSON.parse(xhr.responseText);
                         if (!response.error) {
-                            status.html("Upload Successfull");
+                            status.html("Upload Successful");
                         } else {
                             status.html("Upload Failed. " + response.error.message);
                         }

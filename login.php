@@ -48,7 +48,7 @@ if ($ipData['timezone']) {
             </div>
             <div class="index-banner">
                 <div class="index-logo">
-                    <img src="images/gossout-logo-text-and-image-svg.svg" alt="logo" >
+                    <a href="index"><img src="images/gossout-logo-text-and-image-svg.svg" alt="logo" ></a>
                 </div>
             </div>
             <div class="index-intro">
@@ -75,7 +75,7 @@ if ($ipData['timezone']) {
                                 </li>
                                 <li><input type="checkbox" name="remember" value="TRUE"> Remember me</li>
                             </ul>
-                            <button class="button-big">Login</button>
+                            <input class="button-big" type="submit" value="Login">
                             <p class="float-right"><a href="password-recovery">Forgot Password?...</a></p>
                             <div class="clear"></div>						
                         </form>

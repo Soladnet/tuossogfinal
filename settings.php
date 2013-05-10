@@ -43,7 +43,7 @@ if (isset($_COOKIE['user_auth'])) {
         <script src="scripts/languages/jquery.validationEngine-en.js" type="text/javascript"></script>
         <script>
             $(document).ready(function() {
-                sendData("loadNotificationCount", {uid: readCookie("user_auth"), title: document.title});
+                sendData("loadNotificationCount", {title: document.title});
                 $(".fancybox").fancybox({
                     openEffect: 'none',
                     closeEffect: 'none'

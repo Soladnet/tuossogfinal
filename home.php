@@ -23,12 +23,18 @@ if (isset($_COOKIE['user_auth'])) {
         include_once './webbase.php';
         ?>
         <title>Gossout</title>
+        <meta http-equiv="Pragma" http-equiv="no-cache" />
+        <meta http-equiv="Expires" content="-1" />
         <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
         <?php
         include ("head.php");
         ?>
         <link rel="stylesheet" href="css/jackedup.css" />
         <link rel="stylesheet" href="css/chosen.css" />
+        <link rel=" stylesheet" type="text/css" href="css/joyride-2.0.3.css">
+<!--        <script src="scripts/jquery.min.js"></script>-->
+        <script type="text/javascript" src="scripts/modernizr.custom.77319.js"></script>
+        <script src="scripts/jquery.joyride-2.0.3.js"></script>
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
         <script src="scripts/test_helpers.js" type="text/javascript"></script>
         <script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
@@ -45,8 +51,8 @@ if (isset($_COOKIE['user_auth'])) {
                 }
             }
             $(document).ready(function() {
-                sendData("loadNotificationCount", {uid: readCookie("user_auth"), title: document.title});
-                sendData("loadTimeline", {uid: readCookie("user_auth"), target: ".timeline-container", loadImage: true});
+                sendData("loadNotificationCount", {title: document.title});
+                sendData("loadTimeline", {target: ".timeline-container", loadImage: true});
                 $(".chzn-select").chosen();
                 $(".fancybox").fancybox({
                     openEffect: 'none',
@@ -125,6 +131,57 @@ if (isset($_COOKIE['user_auth'])) {
                     }
                 });
             });</script>
+
+        <script>
+
+            function setCookie(c_name, value, exdays)
+            {
+                var exdate = new Date();
+                exdate.setDate(exdate.getDate() + exdays);
+                var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+                document.cookie = c_name + "=" + c_value;
+            }
+
+            function getCookie(c_name)
+            {
+                var c_value = document.cookie;
+                var c_start = c_value.indexOf(" " + c_name + "=");
+                if (c_start == -1)
+                {
+                    c_start = c_value.indexOf(c_name + "=");
+                }
+                if (c_start == -1)
+                {
+                    c_value = null;
+                }
+                else
+                {
+                    c_start = c_value.indexOf("=", c_start) + 1;
+                    var c_end = c_value.indexOf(";", c_start);
+                    if (c_end == -1)
+                    {
+                        c_end = c_value.length;
+                    }
+                    c_value = unescape(c_value.substring(c_start, c_end));
+                }
+                return c_value;
+            }
+
+            function callTour() {
+                $('#joyRideTipContent').joyride({
+                    autoStart: true
+                });
+            }
+
+            if (getCookie('home_user_status') === null) {
+                setCookie('home_user_status', 'new_user');
+                $(window).load(function() {
+                    $('#joyRideTipContent').joyride({
+                        autoStart: true
+                    });
+                });
+            }
+        </script>
         <style>
             .progress { position:relative; width:60%; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
             .bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
@@ -169,9 +226,58 @@ if (isset($_COOKIE['user_auth'])) {
                 include("aside.php");
                 ?>			
             </div>
-            <?php
-            include("footer.php");
-            ?>
+            <span id='footer-links'>
+                <?php
+                include("footer.php");
+                ?>
+            </span>
+        </div>
+
+        <div>
+            <ol id="joyRideTipContent">
+<!--                <li data-text="Next" data-id="communities" data-options="tipLocation:bottom;tipAnimation:fade">
+                    <h2>Communities!</h2>
+                    <p>Do more on communities, create, view and edit your communities.</p>
+                </li>-->
+                <li data-button="Next" data-options="tipLocation:bottom;tipAnimation:fade" data-id="gossbag-text">
+                    <h2>Gossbag!</h2>
+                    <p>Your Gossbag contains notifications on post, comments, and communities that may interest you.</p>
+                </li>
+                <li data-button="Next" data-options="tipLocation:bottom" data-id="messages-text">
+                    <h2>Messages!</h2>
+                    <p>This is your instant message inbox. Click to see unread messages. You can click <strong>Go to messages</strong> to see all conversations.</p>
+                </li>
+
+                <li data-button="Next" data-id="user-actions" data-options="tipLocation:left"> 
+                    <h2>Settings!</h2>
+                    <p>Edit and modify your profile information here. 
+                    </p>
+                </li>
+                <li data-id="show-full-profile" data-options="tipLocation:top">
+                    <h2>Show Profile!</h2>
+                    <p>This link shows your basic profile information when clicked.</p>
+                </li>
+                <li data-text="Next" data-id="post-box" data-options="tipLocation:left">
+                    <h2>Share!</h2>
+                    <p>Share what is new with your communities.</p>
+                </li>
+                <li data-text="Next" data-id="community-select-list" data-options="tipLocation:bottom">
+                    <h2>Where to Share</h2>
+                    <p>Select at least one community to share your interest with.</p>
+                </li>
+                <li data-text="Next" data-id="uploadImagePost" data-options="tipLocation:left">
+                    <h2>Add Photos!</h2>
+                    <p>Use this button to select single or multiple pictures to improve your readers' experience.</p>
+                </li>
+                <li data-id="aside-wrapper-comm" data-options="tipLocation:right">
+                    <h2>Your Communities!</h2>
+                    <p>Your first five(5) communities are listed here. To see more, click on <strong>Show all</strong>.<br/>Get suggestion by clicking on <strong>Suggest communities</strong>.</p>
+                </li>
+                <li data-id="aside-wrapper-frnd" data-options="tipLocation:left">
+                    <h2>Your Friends!</h2>
+                    <p>Your friends are listed here. Click <strong>Show all</strong> to see more of your friends or <strong>Suggested Friends</strong> to see  people you can connect with.</p>
+                </li>
+            </ol>
         </div>
         <script>
             $(document).ready(function() {

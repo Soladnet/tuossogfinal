@@ -9,14 +9,13 @@ include_once './GossoutUser.php';
 include_once './encryptionClass.php';
 
 /**
- * Description of Community
+ * Description of Communityf
  *
  * @author user
  */
 class Community {
 
-    var $uid;
-    var $id;
+    var $uid, $id, $start = 0, $limit = 5;
 
     public function __construct() {
         
@@ -94,7 +93,6 @@ class Community {
                             } else {
                                 $row['post_count'] = 0;
                             }
-                            $row['description'] = nl2br($row['description']);
                         }
                         $row['creator_id'] = $encrypt->safe_b64encode($row['creator_id']);
                         $arr['community_list'][] = $row;
@@ -178,6 +176,8 @@ class Community {
                     $encrytp = new Encryption();
                     $user = new GossoutUser(0);
                     while ($row = $result->fetch_assoc()) {
+                        $row['firstname'] = $this->toSentenceCase($row['firstname']);
+                        $row['lastname'] = $this->toSentenceCase($row['lastname']);
                         $user->setUserId($row['id']);
                         $pix = $user->getProfilePix();
                         if ($pix['status']) {
@@ -263,6 +263,12 @@ class Community {
      */
     public function setUser($newUid) {
         $this->uid = $newUid;
+    }
+    public function setStart($newStart) {
+        $this->start = $newStart;
+    }
+    public function setLimit($newLimit) {
+        $this->limit = $newLimit;
     }
 
     /**
@@ -406,6 +412,8 @@ class Community {
                 if ($result->num_rows > 0) {
                     $encrypt = new Encryption();
                     while ($row = $result->fetch_assoc()) {
+                        $row['firstname'] = $this->toSentenceCase($row['firstname']);
+                        $row['lastname'] = $this->toSentenceCase($row['lastname']);
                         $row['id'] = $encrypt->safe_b64encode($row['id']);
                         $arrFetch['friends'][] = $row;
                     }
@@ -579,6 +587,46 @@ class Community {
         }
         $mysql->close();
         return $arr;
+    }
+
+    public function searchCommunity($term) {
+        $arrFetch = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $encrypt = new Encryption();
+            $sql = "SELECT id,unique_name,`name`,`type`,description,thumbnail150 FROM community WHERE `name` LIKE '%$term%' AND `type`='Public' LIMIT $this->start,$this->limit";
+            if ($result = $mysql->query($sql)) {
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $this->setCommunityId($row['id']);
+                        $mem_count = $this->getMemberCount();
+                        if ($mem_count['status']) {
+                            $row['mem_count'] = $mem_count['count'];
+                        } else {
+                            $row['mem_count'] = 0;
+                        }
+                        $post_count = $this->getPostCount();
+                        if ($post_count['status']) {
+                            $row['post_count'] = $post_count['count'];
+                        } else {
+                            $row['post_count'] = 0;
+                        }
+//                        if ($row['mem_count'] != 0)
+                        $arrFetch['community'][] = $row;
+                    }
+                    $arrFetch['status'] = TRUE;
+                } else {
+                    $arrFetch['status'] = FALSE;
+                }
+                $result->free();
+            } else {
+                $arrFetch['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arrFetch;
     }
 
 }

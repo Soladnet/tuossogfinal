@@ -67,7 +67,7 @@ if (isset($_COOKIE['user_auth'])) {
                                             '<div class="friend-image"><img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"></div><div class="friend-text">' +
                                             '<div class="friend-name">' + response.firstname.concat(" ", response.lastname) + '</div>' +
                                             '<div class="friend-location">' + response.location + '</div></div>' +
-                                            '<div style="display:none"><div id="' + response.username + '"><div class="aside-wrapper"><img class="profile-pic" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail150) + '">' +
+                                            '<div style="display:none"><div id="' + response.username + '"><div class="aside-wrapper"><div class="profile-pic"><img class="holdam" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail150) + '"></div>' +
                                             '<table><tr><td></td><td><h3>' + response.firstname.concat(" ", response.lastname) + '</h3></td></tr>' +
                                             '<tr><td><span class="icon-16-map"></span></td><td class="profile-meta"> ' + response.location + '</td></tr>' +
                                             '<tr><td><span class="icon-16-' + (response.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta">' + (response.gender === "M" ? "Male" : "Female") + '</td></tr>' +
@@ -94,7 +94,7 @@ if (isset($_COOKIE['user_auth'])) {
                         uid: readCookie('user_auth')
                     }
                 });
-                sendData("loadNotificationCount", {uid: readCookie("user_auth"), title: document.title});
+                sendData("loadNotificationCount", {title: document.title});
             });
         </script>
     </head>

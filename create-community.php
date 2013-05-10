@@ -41,10 +41,9 @@ if (isset($_COOKIE['user_auth'])) {
                 });
                 var bar = $('.bar');
                 var percent = $('.percent');
-                var status = $('#status');
                 $('#creatForm').ajaxForm({
                     beforeSend: function() {
-                        status.empty();
+                        $(".progress").show();
                         var percentVal = '0%';
                         bar.width(percentVal)
                         percent.html(percentVal);
@@ -64,16 +63,17 @@ if (isset($_COOKIE['user_auth'])) {
                             $("#noCom").hide();
                             $("#cc").html(parseInt($("#cc").html()) + 1);
                             $("#aside-community-list").prepend('<div class="community-listing"><span><a href="' + responseText.unique_name + '">' + responseText.name + '</a></span></div><hr>');
-                            humane.log("Community created successfully", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                            humane.log("Community created successfully", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
                         } else {
                             if (responseText.status) {
-                                humane.log("Community was not created", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                                humane.log("Community was not created", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
                             } else {
-                                humane.log(responseText.error.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                                humane.log(responseText.error.message, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
                             }
                         }
                     },
                     complete: function(xhr) {
+                        $(".progress").hide();
                         $("#creatLoading").html("");
                     },
                     data: {
@@ -86,13 +86,13 @@ if (isset($_COOKIE['user_auth'])) {
                     closeEffect: 'none'
 
                 });
-                sendData("loadNotificationCount", {uid: readCookie("user_auth"), title: document.title});
+                sendData("loadNotificationCount", {title: document.title});
                 var countDesc = 2000;
                 $("#desc").keyup(function() {
                     if (!($("#desc").val().length > 2000)) {
                         $("#countDesc").html(countDesc - $("#desc").val().length);
-                    }else{
-                        $("#desc").val($("#desc").val().substring(0,2000));
+                    } else {
+                        $("#desc").val($("#desc").val().substring(0, 2000));
                     }
                 });
             });
@@ -154,7 +154,7 @@ if (isset($_COOKIE['user_auth'])) {
                             <!--<p></p>-->
                             <!--<input type="submit" class="button" value="Upload photo">-->
                         </div>
-                        <div class="progress">
+                        <div class="progress" style="display: none">
                             <div class="bar"></div >
                             <div class="percent">0%</div >
                         </div>

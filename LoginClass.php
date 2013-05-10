@@ -52,6 +52,8 @@ class Login {
             if ($result = $mysql->query($str)) {
                 if ($result->num_rows > 0 && $result->num_rows == 1) {
                     $row = $result->fetch_assoc();
+                    $row['firstname'] = $this->toSentenceCase($row['firstname']);
+                    $row['lastname'] = $this->toSentenceCase($row['lastname']);
                     $arrFetch['status'] = TRUE;
                     $arrFetch['user'] = $row['id'];
                     $encrypt = new Encryption();
@@ -138,11 +140,31 @@ class Login {
 //        if (isset($_SESSION['auth'])) {
         unset($_SESSION['auth']);
         unset($_SESSION['data']);
-        session_destroy();
         setcookie("user_auth", "", time() - 3600);
         setcookie("m_t", "", time() - 3600);
+        setcookie("tz", "", time() - 3600);
+        setcookie(session_id(), "", time() - 3600);
+        session_destroy();
+        session_write_close();
 //        }
         header("Location:login");
+    }
+
+    public function toSentenceCase($str) {
+        $arr = explode(' ', $str);
+        $exp = array();
+        foreach ($arr as $x) {
+            if (strtolower($x) == "of") {
+                $exp[] = strtolower($x);
+            } else {
+                if (strlen($x) > 0) {
+                    $exp[] = strtoupper($x[0]) . substr($x, 1);
+                } else {
+                    $exp[] = strtoupper($x);
+                }
+            }
+        }
+        return implode(' ', $exp);
     }
 
     public function clean($value) {

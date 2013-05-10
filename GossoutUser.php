@@ -7,7 +7,7 @@ include_once './Post.php';
 
 class GossoutUser {
 
-    var $id, $fname, $lname, $fullname, $location, $gender, $url, $tel, $email, $screenName = "", $dob, $pix = array(), $tz;
+    var $id, $fname, $lname, $fullname, $location, $gender, $url, $tel, $email, $screenName = "", $dob, $pix = array(), $tz, $start = 0, $limit = 5;
 
     /**
      * @author Soladnet Software
@@ -39,9 +39,105 @@ class GossoutUser {
                         }
                     }
                 }
+            } else if (isset($this->email) && $this->email != NULL) {
+                $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+                if ($mysql->connect_errno > 0) {
+                    throw new Exception("Connection to server failed!");
+                } else {
+                    $sql = "SELECT id FROM `user_personal_info` WHERE email = '$this->email'";
+                    if ($result = $mysql->query($sql)) {
+                        if ($result->num_rows > 0) {
+                            $row = $result->fetch_assoc();
+                            $response = $row['id'];
+                        }
+                    }
+                }
             }
             return $response;
         }
+    }
+
+    public function getToken() {
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        $response = "";
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "SELECT l.token FROM `user_login_details` as l JOIN user_personal_info as u ON u.id=l.id WHERE u.email= '$this->email' OR l.id=$this->id";
+            if ($result = $mysql->query($sql)) {
+                if ($result->num_rows > 0) {
+                    $row = $result->fetch_assoc();
+                    $response = $row['token'];
+                }
+                $result->free();
+            }
+            $mysql->close();
+        }
+        return $response;
+    }
+
+    public function getUnExpiredPasswordResetInfo() {
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        $response = array();
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "SELECT token,user_id,`time`,responded,TIMESTAMPDIFF(MONTH,password_recovery.time,NOW()) as monthOld,TIMESTAMPDIFF(YEAR,password_recovery.time,NOW()) as yrOld,TIMESTAMPDIFF(DAY,password_recovery.time,NOW()) as dayOld,TIMESTAMPDIFF(HOUR,password_recovery.time,NOW()) as hrOld,TIMESTAMPDIFF(MINUTE,password_recovery.time,NOW()) as minOld,TIMESTAMPDIFF(SECOND,password_recovery.time,NOW()) as secOld FROM password_recovery WHERE user_id=$this->id AND responded=0";
+            if ($result = $mysql->query($sql)) {
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $response = $row;
+                    }
+                    if ($response['yrOld'] == 0 && $response['monthOld'] == 0 && $response['dayOld'] == 0 && $response['hrOld'] < 24) {
+                        $response['status'] = TRUE;
+                    } else {
+                        $response['status'] = FALSE;
+                    }
+                } else {
+                    $response['status'] = FALSE;
+                }
+                $result->free();
+            }
+            $mysql->close();
+        }
+        return $response;
+    }
+
+    public function makePasswordTokenExpire($token) {
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        $response = array();
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "UPDATE password_recovery SET responded=1 WHERE user_id=$this->id AND token='$token'";
+            if ($mysql->query($sql)) {
+                $response['status'] = TRUE;
+            }
+        }
+    }
+
+    public function addResetInfor($token) {
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        $response = array();
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "INSERT INTO password_recovery(user_id,token) VALUES($this->id,'$token')";
+            if ($mysql->query($sql)) {
+                if ($mysql->affected_rows > 0) {
+                    $response['status'] = TRUE;
+                } else {
+                    $response['status'] = FALSE;
+                    $response['msg'] = $mysql->error;
+                }
+            }
+            $mysql->close();
+        }
+        return $response;
+    }
+
+    public function isActivated() {
+        return FALSE;
     }
 
     /**
@@ -123,8 +219,24 @@ class GossoutUser {
         }
     }
 
+    public function setEmail($newEmail) {
+        if (is_null($newEmail)) {
+            unset($this->email);
+        } else {
+            $this->email = $this->clean($newEmail);
+        }
+    }
+
     public function setTimezone($newTimezone) {
         $this->tz = $newTimezone;
+    }
+
+    public function setStart($newStart) {
+        $this->start = $newStart;
+    }
+
+    public function setLimit($newLimit) {
+        $this->limit = $newLimit;
     }
 
     public function setScreenName($user) {
@@ -249,8 +361,8 @@ class GossoutUser {
                         $arr['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
                     }
                     $response['user'] = $arr;
-                    $this->fname = $arr['firstname'];
-                    $this->lname = $arr['lastname'];
+                    $this->fname = $this->toSentenceCase($arr['firstname']);
+                    $this->lname = $this->toSentenceCase($arr['lastname']);
                     $this->gender = $arr['gender'];
                     $this->location = $arr['location'];
                     $this->url = $arr['url'];
@@ -385,6 +497,8 @@ class GossoutUser {
                     $user = new GossoutUser(0);
                     $encrypt = new Encryption();
                     while ($row = $result->fetch_assoc()) {
+                        $row['firstname'] = $this->toSentenceCase($row['firstname']);
+                        $row['lastname'] = $this->toSentenceCase($row['lastname']);
                         $user->setUserId($row['id']);
                         $pix = $user->getProfilePix();
                         if ($pix['status']) {
@@ -553,6 +667,8 @@ class GossoutUser {
                 if ($result->num_rows > 0) {
                     $user = new GossoutUser(0);
                     while ($row = $result->fetch_assoc()) {
+                        $row['firstname'] = $this->toSentenceCase($row['firstname']);
+                        $row['lastname'] = $this->toSentenceCase($row['lastname']);
                         $user->setUserId($row['sender_id']);
                         $pix = $user->getProfilePix();
                         if ($pix['status']) {
@@ -634,7 +750,7 @@ class GossoutUser {
             $user = new GossoutUser(0);
             $user->setScreenName($userCon);
             $user->getProfile();
-            $arrFetch['message']["cwn"] = trim($user->getFullname());
+            $arrFetch['message']["cwn"] = $this->toSentenceCase(trim($user->getFullname()));
             $sql = "SELECT p.id, p.sender_id, p.receiver_id, p.message, p.time, p.status,u.username as s_username, u.firstname as s_firstname, u.lastname as s_lastname,r.username as r_username, r.firstname as r_firstname, r.lastname as r_lastname FROM `privatemessae` as p JOIN user_personal_info as u ON u.id=p.sender_id JOIN user_personal_info as r ON r.id=p.receiver_id WHERE u.username ='$me' AND r.username='$userCon' OR u.username='$userCon' AND r.username='$me'";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
@@ -642,6 +758,10 @@ class GossoutUser {
                     $i = 0;
                     $encrypt = new Encryption();
                     while ($row = $result->fetch_assoc()) {
+                        $row['s_firstname'] = $this->toSentenceCase($row['s_firstname']);
+                        $row['s_lastname'] = $this->toSentenceCase($row['s_lastname']);
+                        $row['r_firstname'] = $this->toSentenceCase($row['r_firstname']);
+                        $row['r_lastname'] = $this->toSentenceCase($row['r_lastname']);
                         if ($i == 0) {
                             $user->setUserId($row['sender_id']);
                             $user->getProfile();
@@ -713,6 +833,8 @@ class GossoutUser {
             if ($result = $mysql->query($sql1)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
+                        $row['firstname'] = $this->toSentenceCase($row['firstname']);
+                        $row['lastname'] = $this->toSentenceCase($row['lastname']);
                         $row['type'] = "post";
                         $user->setUserId($row['sender_id']);
                         $pix = $user->getProfilePix();
@@ -745,6 +867,8 @@ class GossoutUser {
             if ($result = $mysql->query($sql2)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
+                        $row['firstname'] = $this->toSentenceCase($row['firstname']);
+                        $row['lastname'] = $this->toSentenceCase($row['lastname']);
                         $row['type'] = "comment";
                         $row['isMyPost'] = $row['post_sender_id'] == $this->id ? TRUE : FALSE;
                         $user->setUserId($row['sender_id']);
@@ -773,6 +897,8 @@ class GossoutUser {
                 if ($result->num_rows > 0) {
                     $user = new GossoutUser(0);
                     while ($row = $result->fetch_assoc()) {
+                        $row['firstname'] = $this->toSentenceCase($row['firstname']);
+                        $row['lastname'] = $this->toSentenceCase($row['lastname']);
                         $row['type'] = "TW";
                         $user->setUserId($row['sender_id']);
                         $pix = $user->getProfilePix();
@@ -802,6 +928,8 @@ class GossoutUser {
                 if ($result->num_rows > 0) {
                     $user = new GossoutUser(0);
                     while ($row = $result->fetch_assoc()) {
+                        $row['firstname'] = $this->toSentenceCase($row['firstname']);
+                        $row['lastname'] = $this->toSentenceCase($row['lastname']);
                         $row['type'] = "IV";
                         $user->setUserId($row['id']);
                         $pix = $user->getProfilePix();
@@ -830,6 +958,8 @@ class GossoutUser {
                 if ($result->num_rows > 0) {
                     $user = new GossoutUser(0);
                     while ($row = $result->fetch_assoc()) {
+                        $row['firstname'] = $this->toSentenceCase($row['firstname']);
+                        $row['lastname'] = $this->toSentenceCase($row['lastname']);
                         $row['type'] = "frq";
                         $user->setUserId($row['username1']);
                         $row['username1'] = $encrypt->safe_b64encode($row['username1']);
@@ -879,6 +1009,8 @@ class GossoutUser {
             if ($result = $mysql->query($sql1)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
+                        $row['firstname'] = $this->toSentenceCase($row['firstname']);
+                        $row['lastname'] = $this->toSentenceCase($row['lastname']);
                         $row['type'] = "post";
                         $user->setUserId($row['sender_id']);
                         $pix = $user->getProfilePix();
@@ -914,6 +1046,8 @@ class GossoutUser {
             if ($result = $mysql->query($sql1)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
+                        $row['firstname'] = $this->toSentenceCase($row['firstname']);
+                        $row['lastname'] = $this->toSentenceCase($row['lastname']);
                         $row['type'] = "comcrea";
                         $user->setUserId($row['creator_id']);
                         $pix = $user->getProfilePix();
@@ -1214,11 +1348,12 @@ class GossoutUser {
             return "";
         } else {
             $month = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
-            $arr = explode('-', $date);
+            $arr1 = explode(' ', $date);
+            $arr = explode('-', $arr1[0]);
             if ($withYear) {
-                $str = $arr[2] . " " . $month[$arr[1] - 1] . ", " . $arr[0];
+                $str = $month[$arr[1] - 1] . " " . intval($arr[2]) . ", " . $arr[0];
             } else {
-                $str = $arr[2] . " " . $month[$arr[1] - 1];
+                $str = $month[$arr[1] - 1] . " " . intval($arr[2]);
             }
             return $str;
         }
@@ -1246,6 +1381,70 @@ class GossoutUser {
         $date->setTimezone(new DateTimeZone($tz));
         return $date->format('Y-m-d H:i:s');
         // or return $userTime; // if you want to return a DateTime object.
+    }
+
+    public function clean($value) {
+        // If magic quotes not turned on add slashes.
+        if (!get_magic_quotes_gpc()) {
+            // Adds the slashes.
+            $value = addslashes($value);
+        }
+        // Strip any tags from the value.
+        $value = strip_tags($value);
+        // Return the value out of the function.
+        return $value;
+    }
+
+    public function searchPeople($term) {
+        $arrFetch = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $encrypt = new Encryption();
+            $arr = explode(' ', $term);
+            $searchCombination = "";
+            if (count($arr) == 1) {
+                $searchCombination = "`firstname` LIKE '%$arr[0]%' OR `lastname` LIKE '%$arr[0]%' OR email = '$arr[0]'";
+            } else if (count($arr) > 1) {
+                $merg = "";
+                for ($i = 1; $i < count($arr); $i++) {
+                    if ($i > 1) {
+                        $merg.=" ";
+                    }
+                    $merg.=$arr[$i];
+                }
+                $arr = array($arr[0], $merg);
+                $searchCombination = "((`firstname` = '$arr[0]' OR `firstname` = '$arr[1]') AND (`lastname` = '$arr[1]' OR `lastname` = '$arr[0]'))";
+            }
+            $sql = "SELECT id,firstname,lastname,location,gender,`dateJoined` FROM `user_personal_info` WHERE $searchCombination LIMIT $this->start,$this->limit";
+            if ($result = $mysql->query($sql)) {
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $row['firstname'] = $this->toSentenceCase($row['firstname']);
+                        $row['lastname'] = $this->toSentenceCase($row['lastname']);
+                        $this->setUserId($row['id']);
+                        $pix = $this->getProfilePix();
+                        if ($pix['status']) {
+                            $row['photo'] = $pix['pix'];
+                        } else {
+                            $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
+                        }
+                        $row['dateJoined'] = $this->dateToString($row['dateJoined'], TRUE);
+                        $row['id'] = $encrypt->safe_b64encode($row['id']);
+                        $arrFetch['people'][] = $row;
+                    }
+                    $arrFetch['status'] = TRUE;
+                } else {
+                    $arrFetch['status'] = FALSE;
+                }
+                $result->free();
+            } else {
+                $arrFetch['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arrFetch;
     }
 
 }

@@ -73,50 +73,53 @@ if (isset($_POST['param'])) {
         include_once './Community.php';
         if (isset($_POST['uid'])) {
             $id = decodeText($_POST['uid']);
-            if (is_numeric($id)) {
-                $comm = new Community();
-                $comm->setUser($id);
-                $start = 0;
-                $limit = 10;
+            if (is_numeric($id) || $_POST['uid'] == 0) {
+                if (isset($_POST['m'])) {
+                    $comm = new Community();
+                    $start = 0;
+                    $limit = 12;
 
-                if (isset($_POST['start']) && is_numeric($_POST['start'])) {
-                    $start = $_POST['start'];
-                }
-                if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
-                    $limit = $_POST['limit'];
-                }
-
-                $user_comm = $comm->userComm($start, $limit, $_POST['max'], $_POST['comname'] == "" ? FALSE : $_POST['comname']);
-                if ($user_comm['status']) {
-                    echo json_encode($user_comm['community_list']);
+                    if (isset($_POST['start']) && is_numeric($_POST['start'])) {
+                        $start = $_POST['start'];
+                    }
+                    if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
+                        $limit = $_POST['limit'];
+                    }
+                    if (is_numeric($id)) {
+                        $com_mem = $comm->getMembers(clean($_POST['m']), $id, $start, $limit);
+                    } else {
+                        $com_mem = $comm->getMembers(clean($_POST['m']), "", $start, $limit);
+                    }
+                    if ($com_mem['status']) {
+                        echo json_encode($com_mem['com_mem']);
+                    } else {
+                        displayError(404, "Not Found");
+                    }
                 } else {
-                    displayError(404, "Not Found");
+                    $comm = new Community();
+                    $comm->setUser($id);
+                    $start = 0;
+                    $limit = 10;
+
+                    if (isset($_POST['start']) && is_numeric($_POST['start'])) {
+                        $start = $_POST['start'];
+                    }
+                    if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
+                        $limit = $_POST['limit'];
+                    }
+
+                    $user_comm = $comm->userComm($start, $limit, $_POST['max'], isset($_POST['comname']) ? ($_POST['comname'] == "" ? FALSE : $_POST['comname']) : FALSE); //$_POST['comname'] == "" ? FALSE : $_POST['comname']
+                    if ($user_comm['status']) {
+                        echo json_encode($user_comm['community_list']);
+                    } else {
+                        displayError(404, "Not Found");
+                    }
                 }
             } else {
                 displayError(400, "The request cannot be fulfilled due to bad syntax");
             }
         } else if (isset($_POST['m']) && isset($_POST['user'])) {
-            $comm = new Community();
-            $start = 0;
-            $limit = 12;
-
-            if (isset($_POST['start']) && is_numeric($_POST['start'])) {
-                $start = $_POST['start'];
-            }
-            if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
-                $limit = $_POST['limit'];
-            }
-            $id = decodeText($_POST['user']);
-            if (is_numeric($id)) {
-                $com_mem = $comm->getMembers(clean($_POST['m']), $id, $start, $limit);
-            } else {
-                $com_mem = $comm->getMembers(clean($_POST['m']), "", $start, $limit);
-            }
-            if ($com_mem['status']) {
-                echo json_encode($com_mem['com_mem']);
-            } else {
-                displayError(404, "Not Found");
-            }
+            
         } else {
             displayError(400, "The request cannot be fulfilled due to bad syntax");
         }
@@ -435,7 +438,7 @@ if (isset($_POST['param'])) {
             $id = decodeText($_POST['uid']);
             include_once './Community.php';
             $limit = 5;
-            if (is_numeric($id)) {
+            if (is_numeric($id) || $_POST['uid'] == 0) {
                 $com = new Community();
                 $com->setUser($id);
                 $sug = $com->suggest();
@@ -453,11 +456,92 @@ if (isset($_POST['param'])) {
         } else {
             displayError(400, "The request cannot be fulfilled due to bad syntax");
         }
+    } else if ($_POST['param'] == "postResult") {
+        if (isset($_POST['g'])) {
+            include_once './Post.php';
+            $limit = 5;
+            $start = 0;
+            $post = new Post();
+            if (isset($_COOKIE['tz'])) {
+                $tz = decodeText($_COOKIE['tz']);
+            } else if (isset($_SESSION['auth']['tz'])) {
+                $tz = decodeText($_SESSION['auth']['tz']);
+            } else {
+                $tz = "Africa/Lagos";
+            }
+            $post->setTimezone($tz);
+            if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
+                $limit = $_POST['limit'];
+            }
+            if (isset($_POST['start']) && is_numeric($_POST['start'])) {
+                $start = $_POST['start'];
+            }
+            $post->setStart($start);
+            $post->setLimit($limit);
+            $result = $post->searchPost(clean($_POST['g']));
+
+            if ($result['status']) {
+                echo json_encode($result['post']);
+            } else {
+                displayError(404, "Not Found");
+            }
+        } else {
+            displayError(400, "The request cannot be fulfilled due to bad syntax");
+        }
+    } else if ($_POST['param'] == "communityResult") {
+        if (isset($_POST['g'])) {
+            include_once './Community.php';
+            $limit = 5;
+            $start = 0;
+            if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
+                $limit = $_POST['limit'];
+            }
+            if (isset($_POST['start']) && is_numeric($_POST['start'])) {
+                $start = $_POST['start'];
+            }
+            $com = new Community();
+            $com->setStart($start);
+            $com->setLimit($limit);
+            $result = $com->searchCommunity(clean($_POST['g']));
+            if ($result['status']) {
+                echo json_encode($result['community']);
+            } else {
+                displayError(404, "Not Found");
+            }
+        } else {
+            displayError(400, "The request cannot be fulfilled due to bad syntax");
+        }
+    } else if ($_POST['param'] == "peopleResult") {
+        if (isset($_POST['g'])) {
+            include_once './GossoutUser.php';
+            $limit = 5;
+            $start = 0;
+            $user = new GossoutUser(0);
+            if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
+                $limit = $_POST['limit'];
+            }
+            if (isset($_POST['start']) && is_numeric($_POST['start'])) {
+                $start = $_POST['start'];
+            }
+            $user->setLimit($limit);
+            $user->setStart($start);
+            $result = $user->searchPeople(clean($_POST['g']));
+            if ($result['status']) {
+                echo json_encode($result['people']);
+            } else {
+                displayError(404, "Not Found");
+            }
+        } else {
+            displayError(400, "The request cannot be fulfilled due to bad syntax");
+        }
     } else if ($_POST['param'] == "logError") {
         if (isset($_POST['uid'])) {
             $id = decodeText($_POST['uid']);
             if (is_numeric($id)) {
                 $data = $_POST;
+                $to = "Soladnet Team<rabiu@gossout.com>,Soladnet Team<ola@gossout.com>";
+                $subject = "Error Log: $data[errorThrown]";
+
                 $htmlHead = "<html><body>";
                 $htmlHead .= "User id: $data[uid]<br/>";
                 $htmlHead .= "errorThrown: $data[errorThrown]<br/>";
@@ -469,7 +553,12 @@ if (isset($_POST['param'])) {
                 $htmlHead .= "$data[responseText]";
                 $htmlHead .= "</body></html>";
 
-                @mail("Soladnet Team<rabiu@gossout.com>,Soladnet Team<ola@gossout.com>", "Error log: $data[errorThrown]", $htmlHead);
+                $headers = "From: Log Error<no-reply@gossout.com>\r\n";
+                $headers .= "CC: Soladnet Team<soladnet@gmail.com>\r\n";
+                $headers .= "MIME-Version: 1.0\r\n";
+                $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
+
+                @mail($to, $subject, $htmlHead, $headers);
                 echo json_encode($data);
             } else {
                 displayError(400, "The request cannot be fulfilled due to bad syntax");
@@ -478,9 +567,9 @@ if (isset($_POST['param'])) {
             displayError(400, "The request cannot be fulfilled due to bad syntax");
         }
     } else if ($_POST['param'] == "loadPost") {
-        if (isset($_POST['uid'])) {
+        if (isset($_POST['uid']) && isset($_POST['cid'])) {
             $id = decodeText($_POST['uid']);
-            if (is_numeric($id) && is_numeric($_POST['cid'])) {
+            if ((is_numeric($id) || $_POST['uid'] == 0) && is_numeric($_POST['cid']) && $_POST['cid'] != 0 && trim($_POST['cid']) != "") {
                 include_once './Post.php';
                 $post = new Post();
                 $post->setCommunity(clean($_POST['cid']));
@@ -548,7 +637,7 @@ if (isset($_POST['param'])) {
     } else if ($_POST['param'] == "loadComment") {
         if (isset($_POST['uid'])) {
             $id = decodeText($_POST['uid']);
-            if (is_numeric($id) && is_numeric($_POST['pid'])) {
+            if ((is_numeric($id) || $_POST['uid'] == 0) && is_numeric($_POST['pid'])) {
                 include_once './Post.php';
                 $post = new Post();
                 if (isset($_COOKIE['tz'])) {
@@ -915,13 +1004,14 @@ if (isset($_POST['param'])) {
             } else {
                 if (is_numeric($id)) {
                     $login->setUid($id);
-                    if (isset($_POST['opass']) || isset($_POST['npass']) || isset($_POST['cnpass'])) {
+                    if (isset($_POST['opass']) && isset($_POST['npass']) && isset($_POST['cnpass'])) {
                         $login->setPassword($_POST['opass']);
                         $status = $login->isValidPassword();
                         if ($status['status']) {
                             if ($_POST['npass'] == $_POST['cnpass']) {
                                 $status = $user->updatePassword(md5($_POST['npass']));
                                 if ($status['status']) {
+                                    $status['status'] = TRUE;
                                     $status['message'] = "Password changed successfully!";
                                 } else {
                                     $status['message'] = "No changes made!";
@@ -932,6 +1022,29 @@ if (isset($_POST['param'])) {
                             }
                         } else {
                             $status['message'] = "Wrong password";
+                        }
+                        echo json_encode($status);
+                    } else if (isset($_POST['npass']) || isset($_POST['cnpass'])) {
+                        if ($_POST['npass'] == $_POST['cnpass']) {
+                            $status = $user->updatePassword(md5($_POST['npass']));
+                            if ($status['status']) {
+                                $status['status'] = TRUE;
+                                $status['message'] = "Password changed successfully!";
+                                $user->getProfile();
+                                $fullname = trim($user->getFullname());
+                                $headers = "From: Password reset request<no-reply-reset-password@gossout.com>\r\n";
+                                $headers .= "MIME-Version: 1.0\r\n";
+                                $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
+                                $to = "$fullname<" . $user->getEmail() . ">";
+                                $subject = "Password Change Successful!";
+                                $htmlHead = "<!doctype html><html><head><meta charset='utf-8'><style>a:hover{color: #000;}a:active , a:focus{color: green;}.index-functions:hover{/*cursor: pointer;*/ color: #99C43D !important;-webkit-box-shadow: inset 0px 0px 1px 1px #ddd;box-shadow: inset 0px 0px 1px 1px #ddd;}.index-functions:active{color: #C4953D !important;-webkit-box-shadow: inset 0px 0px 1px 2px #ddd;box-shadow: inset 0px 0px 1px 2px #ddd;}</style></head><body style='font-family: 'Segoe UI',sans-serif;background-color: #f9f9f9;color: #000000;line-height: 2em;'><div style='max-width: 800px;margin: 0 auto;background-color: #fff;border: 1px solid #f2f2f2;padding: 10px'><div class='header'><img style='float: right;top: 0px;' src='http://service.gossout.com/images/gossout-logo-text-and-image-Copy.png'/><br><h2>Password Changed, </h2><p style='margin: 3px;'><span class='user-name'>Hey, <a style='color: #62a70f;text-decoration: none;'>$fullname</a></span>, your password have been changed successfully.</p><hr style='margin: .3em 0;width: 100%;height: 1px;border-width:0;color: #ddd;background-color: #ddd;'></div><div style='background-color: #fff;padding: 1em;'><p style='margin: 3px;font-size: .9em;'>Now you can gossout to your communities. <a style='color: #62a70f;text-decoration: none;' href='http://gossout.com/login'>Login here</a></p></div><hr style='margin: .3em 0;width: 100%;height: 1px;border-width:0;color: #ddd;background-color: #ddd;'><div style='background-color: #f9f9f9;padding: 10px;font-size: .8em;'><center><div class='index-intro-2'><div style='display: block;display: inline-block;padding: 1em;max-width: 200px;' class='index-functions'><div style='margin: 0 auto;width: 24px;height:1em'><span style='margin-right: .15em;display: inline-block;width: 24px;height: 24px;'><img src='http://service.gossout.com/images/community-resize.png'/></span></div><h3 style='text-align: center;height: 1em;'>Discover</h3><p style='margin: 3px;color: #777;line-height: 1.5;margin-bottom: 1em;padding-top: 1em;font-size: .8em;padding-top: 0;'>Communities &Friends</p></div><div style='display: block;display: inline-block;padding: 1em;max-width: 200px;' class='index-functions'><div style='margin: 0 auto;width: 24px;height:1em'><span style='margin-right: .15em;display: inline-block;width: 24px;height: 24px;'><img src='http://service.gossout.com/images/connect-pple.png'/></span></div><h3 style='text-align: center;height: 1em;'>Connect</h3><p style='margin: 3px;color: #777;line-height: 1.5;margin-bottom: 1em;padding-top: 1em;font-size: .8em;padding-top: 0;'>Meet People, Share Interests</p></div><div style='display: block;display: inline-block;padding: 1em;max-width: 200px;' class='index-functions'><div style='margin: 0 auto;width: 24px;height:1em'><span style='margin-right: .15em;display: inline-block;width: 24px;height: 24px;'><img src='http://service.gossout.com/images/search.png'/></span></div><h3 style='text-align: center;height: 1em;'>Search</h3><p style='margin: 3px;color: #777;line-height: 1.5;margin-bottom: 1em;padding-top: 1em;font-size: .8em;padding-top: 0;'>Communities, People and Posts</p></div></div></center><hr style='margin: .3em 0;width: 100%;height: 1px;border-width:0;color: #ddd;background-color: #ddd;'><table cellspacing='5px'><tr ><td colspan='3'> ©<?php echo date('Y');?><a style='color: #62a70f;text-decoration: none;' href='http://www.gossout.com'>Gossout</a></td></tr></table></div></div></body></html>";
+                                @mail($to, $subject, $htmlHead, $headers);
+                            } else {
+                                $status['message'] = "No changes made!";
+                            }
+                        } else {
+                            $status['status'] = FALSE;
+                            $status['message'] = "Password mismatch";
                         }
                         echo json_encode($status);
                     } else {
@@ -1089,7 +1202,7 @@ if (isset($_POST['param'])) {
                                 }
                                 echo json_encode(array("status" => TRUE, "message" => "Community image was changed successfully", "thumb" => $thumbnail150));
                             } else {
-                                echo json_encode(array("status" => FALSE, "message" => "Image change was not successfull..try again some other time"));
+                                echo json_encode(array("status" => FALSE, "message" => "Image change was not successful..try again some other time"));
                             }
                         } else {
                             displayError(404, "The request cannot be fulfilled due wrong image format");
@@ -1104,7 +1217,7 @@ if (isset($_POST['param'])) {
                             } else {
                                 $resp = $com->updatePrivacy("Public", clean($_POST['helve']));
                             }
-                            echo json_encode(array("status" => $resp['status'], "message" => $resp['status'] ? "Community Updated successfully" : "Community info not updated successfully", "name" => $_POST['name'], "desc" => nl2br($_POST['desc']), "privacy" => isset($_POST['privacy']) ? "Private" : "Public"));
+                            echo json_encode(array("status" => $resp['status'], "message" => $resp['status'] ? "Community Updated successfully" : "Community info not updated successfully", "name" => $_POST['name'], "desc" => $_POST['desc'], "privacy" => isset($_POST['privacy']) ? "Private" : "Public"));
                         } else {
                             echo json_encode(array("status" => $resp['status'], "message" => $resp['status'] ? "Community Updated successfully" : "Community info not updated successfully"));
                         }
@@ -1118,7 +1231,7 @@ if (isset($_POST['param'])) {
                         $resp = $com->updatePrivacy("Public", clean($_POST['helve']));
                     }
 
-                    echo json_encode(array("status" => $resp['status'], "message" => $resp['status'] ? "Community Updated successfully" : "Community info not updated successfully", "name" => $_POST['name'], "desc" => nl2br($_POST['desc']), "privacy" => isset($_POST['privacy']) ? "Private" : "Public"));
+                    echo json_encode(array("status" => $resp['status'], "message" => $resp['status'] ? "Community Updated successfully" : "Community info not updated successfully", "name" => $_POST['name'], "desc" => $_POST['desc'], "privacy" => isset($_POST['privacy']) ? "Private" : "Public"));
                 }
             } else {
                 displayError(400, "The request cannot be fulfilled due to bad syntax");
