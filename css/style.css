@@ -1466,7 +1466,7 @@
 }
 /* line 186, _index.scss */
 .index-functions:hover {
-  cursor: pointer;
+  /*cursor: pointer;*/
   color: #99C43D !important;
   -webkit-box-shadow: inset 0px 0px 1px 1px #ddd;
   box-shadow: inset 0px 0px 1px 1px #ddd;
@@ -2007,6 +2007,7 @@ body {
   display: block;
   border: 1px solid #ddd;
   max-width: 150px;
+  min-height: 150px;
   width: 100%;
   padding: .4em;
   margin: 0 auto;
@@ -2843,7 +2844,7 @@ input[type=checkbox] {
   position: absolute;
   right: -6px;
   min-width: 12em;
-  min-height: 100px;
+  /*min-height: 100px;*/
   top: 15px;
   border: 1px solid #bbb;
   text-align: left;
@@ -3091,6 +3092,7 @@ input[type=checkbox] {
 .post-comment {
   border-top: 1px solid #e3e3e3;
   padding: .4em;
+  font-size: .9em;
 }
 /* line 739, style.scss */
 .post-comment p {
@@ -3189,12 +3191,16 @@ input[type=checkbox] {
   border: 1px solid #ddd;
   max-width: 50px;
   width: 100%;
-  padding: .2em;
+  padding: .1em;
   margin: .2em auto !important;
   overflow: hidden;
+  max-height: 50px;
+  height: 50px;
+  display: inline-block;
+  text-align: center;
 }
 
-/* line 818, style.scss */
+/* line 818, style  .scss */
 .suggested-friend {
   padding: .2em;
 }
@@ -3227,10 +3233,18 @@ input[type=checkbox] {
 }
 /* line 843, style.scss */
 .aside-wrapper .profile-pic {
-  width: 150px;
+  width: 154px;
   height: 150px;
   float: left;
   margin: 0 .2em .2em 0;
+  text-align: center;
+  border: 1px solid #ddd;
+  padding: .1em;
+}
+.holdam{
+    
+    max-width: 150px;
+    max-height: 150px;
 }
 @media only screen and (max-width: 1024px) {
   /* line 843, style.scss */
