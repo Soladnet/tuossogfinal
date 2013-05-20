@@ -2007,7 +2007,7 @@ body {
   display: block;
   border: 1px solid #ddd;
   max-width: 150px;
-  min-height: 150px;
+  /*min-height: 150px;*/
   width: 100%;
   padding: .4em;
   margin: 0 auto;
@@ -2186,7 +2186,7 @@ a {
 @media only screen and (min-device-width: 1281px) {
   /* line 64, style.scss */
   a {
-    text-shadow: 0 0 1px #eee;
+    /*text-shadow: 0 0 1px #eee;*/
     -webkit-transition: all 0.18s ease-out;
     -moz-transition: all 0.18s ease-out;
     -o-transition: all 0.18s ease-out;
@@ -2501,7 +2501,7 @@ input[type=checkbox] {
   font-family: 'Segoe UI Light', Segoe UI,sans-serif;
   font-size: 1.2em;
   line-height: 1.2em;
-  text-shadow: 0 1px 1px #ddd !important;
+  /*text-shadow: 0 1px 1px #ddd !important;*/
   box-shadow: 2px 0 0 rgba(255, 255, 255, 0.11);
 }
 @media only screen and (max-width: 240px) {

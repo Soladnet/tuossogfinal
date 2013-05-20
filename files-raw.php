@@ -66,11 +66,16 @@ if ($type == 'xml') {
                 header('Content-type: application/json');
                 echo json_encode(array('thumb' => $thumbnail150, "status" => TRUE));
             } else {
-                unlink($newPath);
-                unlink($thumbnail150);
-                unlink($thumbnail50);
-                unlink($thumbnail45);
-                unlink($thumbnail75);
+                if (file_exists($newPath))
+                    unlink($newPath);
+                if (file_exists($thumbnail150))
+                    unlink($thumbnail150);
+                if (file_exists($thumbnail50))
+                    unlink($thumbnail50);
+                if (file_exists($thumbnail45))
+                    unlink($thumbnail45);
+                if (file_exists($thumbnail75))
+                    unlink($thumbnail75);
                 displayError(404, "The request cannot be fulfilled due to bad syntax");
             }
         } else {

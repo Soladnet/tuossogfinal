@@ -1,9 +1,14 @@
+
 <link rel="shortcut icon" href="favicon.ico">
 
 <script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
 <link rel="stylesheet" media="screen" href="css/style.css">
 <link rel="stylesheet" href="css/hint.min.css">
 <script type="text/javascript" src="scripts/modernizr.custom.77319.js"></script>
+<meta name="description" content="Start or join existing communities/interests on Gossout and start sharing pictures and videos. People use Gossout search, Discover and connect with communities">
+<meta name="keywords" content="Community,Communities,Interest,Interests,Friend,Friends,Connect,Search,Discover,Discoveries,Gossout,Gossout.com,Zuma Communication Nigeria Limited,Soladnet Software,Soladoye Ola Abdulrasheed, Muhammad Kori,Ali Sani Mohammad,Lagos,Nigeria,Nigerian,Africa,Surulere,Pictures,Picture,Video,Videos,Blog,Blogs">
+<meta name="author" content="Soladnet Sofwares, Zuma Communication Nigeria Limited">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" > 
 <script>
     $(function() {
@@ -19,7 +24,8 @@
             },
             data: {
                 uid: readCookie("user_auth")
-            }
+            },
+            timeout: 1000 * 60 * 10
         });
         if (Modernizr.inlinesvg) {
             $('#logo').html('<img src="images/gossout-logo-text-svg.svg" alt="Gossout" />');

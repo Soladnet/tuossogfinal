@@ -16,13 +16,17 @@ if (isset($_COOKIE['user_auth'])) {
 }
 ?>
 <!doctype html>
-<html>
+<html lang="en">
     <head>
+        <title>Welcome to Gossout</title>
+        <meta name="description" content="Start or join existing communities/interests on Gossout and start sharing pictures and videos. People use Gossout search, Discover and connect with communities">
+        <meta name="keywords" content="Community,Communities,Interest,Interests,Friend,Friends,Connect,Search,Discover,Discoveries,Gossout,Gossout.com,Zuma Communication Nigeria Limited,Soladnet Software,Soladoye Ola Abdulrasheed, Muhammad Kori,Ali Sani Mohammad,Lagos,Nigeria,Nigerian,Africa,Surulere,Pictures,Picture,Video,Videos,Blog,Blogs">
+        <meta name="author" content="Soladnet Sofwares, Zuma Communication Nigeria Limited">
+        <meta charset="UTF-8">
         <script src="scripts/jquery-1.9.1.min.js"></script>
         <link rel="shortcut icon" href="favicon.ico">
         <link rel="stylesheet" media="screen" href="css/style.css">
         <link rel=" stylesheet" type="text/css" href="css/joyride-2.0.3.css">
-        <script src="scripts/jquery.min.js"></script>
         <script type="text/javascript" src="scripts/modernizr.custom.77319.js"></script>
         <script src="scripts/jquery.joyride-2.0.3.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" > 
@@ -33,6 +37,7 @@ if (isset($_COOKIE['user_auth'])) {
                 } else {
                     $('#logo').html('<a href="index"><img src="images/gossout-logo-text-and-image-svg.png" alt="Gossout" /></a>');
                 }
+                $("#searchField").focus();
             });
         </script>
         <script>
@@ -85,7 +90,7 @@ if (isset($_COOKIE['user_auth'])) {
             }
 
             if (getCookie('index_user_status') === null) {
-                setCookie('index_user_status', 'new_user');
+                setCookie('index_user_status', 'new_user', 2592000);
                 $(window).load(function() {
                     $('#joyRideTipContent').joyride({
                         autoStart: true
@@ -100,9 +105,10 @@ if (isset($_COOKIE['user_auth'])) {
     <body>
         <div class="index-page-wrapper">	
             <div class="index-nav">
-                <span class="index-login" id="name-login-cont"><?php echo isset($user) ? "Welcome <a href='home'>" . $user->getFullname() . "</a> [ <a href='login_exec'>Logout</a> ]" :
-        'Already have an account? <a href="login">Login Here</a> | <a href="signup-personal">Sign up</a>'
-?> | <a href onclick='javascript:callTour();
+                <span class="index-login" id="name-login-cont"><?php
+                    echo isset($user) ? "Welcome <a href='home'>" . $user->getFullname() . "</a> [ <a href='login_exec'>Logout</a> ]" :
+                            'Already have an account? <a href="login">Login Here</a> | <a href="signup-personal">Sign up</a>'
+                    ?> | <a href onclick='javascript:callTour();
                 return false;'>Get hint</a></span>
                 <div class="clear"></div>
             </div>
@@ -166,11 +172,11 @@ if (isset($_COOKIE['user_auth'])) {
 
                     <li data-text="Next" data-id="name-login-cont">
                         <h2>Welcome!</h2>
-                        <p>Welcome to Gossout! You can login or signup as a new user here. Click <strong>Next</strong> to continue or <strong>X</strong> to close this tour and have fun!</p>
+                        <p>Welcome to Gossout! You can login or signup as a new user here. Click <strong>Next</strong> to continue or <strong>X</strong> to close this hint and have fun!</p>
                     </li>
                     <li data-button="Next" data-options="tipLocation:bottom;tipAnimation:fade" data-id="searchField">
                         <h2>Search!</h2>
-                        <p>Gossout allows you to search people, posts, and communities!.</p>
+                        <p>Gossout allows you to search people, posts, and communities!</p>
                     </li>
                     <li data-button="Next" data-options="tipLocation:right" data-id="search-field-submit">
                         <h2>Submit</h2>
@@ -179,7 +185,7 @@ if (isset($_COOKIE['user_auth'])) {
 
                     <li data-button="Next" data-id="index-three-icon" data-options="tipLocation:left"> 
                         <h2>Gossout!</h2>
-                        <p>Gossout goes beyond meeting people: start your own community!, join other communities, share and discover more than ever!</p>
+                        <p>Gossout goes beyond meeting people: start your own community! Join other communities! Share and discover more than ever!</p>
                     </li>
                     <li data-id="footer-links" data-options="tipLocation:top">
                         <h2>Terms &amp; Privacy</h2>

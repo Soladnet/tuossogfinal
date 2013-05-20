@@ -37,20 +37,29 @@ class SortMultiArray {
      * fetch the sorted array
      * @return Array - multi-dimensional array sorted
      */
+
     /**
      * fetch the sorted array
      * @param int start
      * @param int limit
      * @return Array - multi-dimensional array sorted
      */
-    function GetSortedArray($start, $limit) {
+    function GetSortedArray($lastupdate = FALSE) {
         $arr = array();
         for ($i = 0; $i < count($this->ResultArray); $i++) {
-            if ($i >= $start) {
-                $arr[] = $this->ResultArray[$i];
-                if ($i == $limit) {
-                    break;
+            if ($lastupdate) {
+                $val = $this->ResultArray[$i];
+                if ($val['type'] == "frq" || $val['type'] == "TW") {
+                    echo json_encode(array("val" => $val['time'], "lastupdate" => $lastupdate));
+                    exit;
+//                    if ($lastupdate <= $val['time']) {
+//                        $arr[] = $val;
+//                    }
+                } else {
+                    $arr[] = $this->ResultArray[$i];
                 }
+            } else {
+                $arr[] = $this->ResultArray[$i];
             }
         }
         return $arr;

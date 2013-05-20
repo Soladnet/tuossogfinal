@@ -1,5 +1,6 @@
 <?php
-session_start();
+if (session_id() == "")
+    session_start();
 $ip = $_SERVER['REMOTE_ADDR'];
 $json = @file_get_contents('http://smart-ip.net/geoip-json/' . $ip);
 $ipData = json_decode($json, true);
@@ -9,18 +10,22 @@ if ($ipData['timezone']) {
 }
 ?>
 <!doctype html>
-<html>
+<html lang="en">
     <head>
         <?php
         include_once './webbase.php';
         ?>
         <title>Gossout - Login</title>
+        <meta name="description" content="Start or join existing communities/interests on Gossout and start sharing pictures and videos. People use Gossout search, Discover and connect with communities">
+        <meta name="keywords" content="Community,Communities,Interest,Interests,Friend,Friends,Connect,Search,Discover,Discoveries,Gossout,Gossout.com,Zuma Communication Nigeria Limited,Soladnet Software,Soladoye Ola Abdulrasheed, Muhammad Kori,Ali Sani Mohammad,Lagos,Nigeria,Nigerian,Africa,Surulere,Pictures,Picture,Video,Videos,Blog,Blogs">
+        <meta name="author" content="Soladnet Sofwares, Zuma Communication Nigeria Limited">
+        <meta charset="UTF-8">
         <link rel="shortcut icon" href="favicon.ico">
         <link rel="stylesheet" media="screen" href="css/style.css">
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" > 
         <script src="scripts/jquery-1.9.1.min.js"></script>
         <?php
-        if (isset($_SESSION['login_error']) && isset($_GET['login_error'])) {
+        if (isset($_SESSION['login_error'])) {
             ?>
             <link rel="stylesheet" href="css/bigbox.css">
             <script type="text/javascript" src="scripts/humane.min.js"></script>

@@ -1,29 +1,33 @@
-<?php
-session_start();
-?>
 <!doctype html>
-<html>
+<html lang="en">
     <head>
         <?php
         include_once './webbase.php';
         ?>
         <title>Gossout - Signup 1/3</title>
+        <meta name="description" content="Start or join existing communities/interests on Gossout and start sharing pictures and videos. People use Gossout search, Discover and connect with communities">
+        <meta name="keywords" content="Community,Communities,Interest,Interests,Friend,Friends,Connect,Search,Discover,Discoveries,Gossout,Gossout.com,Zuma Communication Nigeria Limited,Soladnet Software,Soladoye Ola Abdulrasheed, Muhammad Kori,Ali Sani Mohammad,Lagos,Nigeria,Nigerian,Africa,Surulere,Pictures,Picture,Video,Videos,Blog,Blogs">
+        <meta name="author" content="Soladnet Sofwares, Zuma Communication Nigeria Limited">
+        <meta charset="UTF-8">
         <link rel="shortcut icon" href="favicon.ico">
         <link rel="stylesheet" media="screen" href="css/style.css">
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" > 
+        <script src="scripts/jquery-1.9.1.min.js"></script>
         <?php
-        if (isset($_SESSION['signup_perosnal_error']) && isset($_GET['signup_error'])) {
+        if (isset($_SESSION['signup_perosnal_error'])) {
             ?>
-            <link rel="stylesheet" href="css/jackedup.css">
+            <link rel="stylesheet" href="css/bigbox.css">
             <script type="text/javascript" src="scripts/humane.min.js"></script>
             <script>
                 $(document).ready(function() {
-                    humane.log("<?php echo $_SESSION['signup_perosnal_error']['message']; ?>", {timeout: 10000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                    var msg = "<?php echo $_SESSION['signup_perosnal_error']['message']; ?>";
+                    humane.log(msg, {timeout: 10000, clickToClose: true, addnCls: 'humane-bigbox-error'});
                 });
             </script>
             <?php
         }
         ?>
+        <script type="text/javascript" src="scripts/modernizr.custom.77319.js"></script>
         <script>
             $(document).ready(function() {
                 if (Modernizr.inlinesvg) {
@@ -41,9 +45,7 @@ session_start();
                 <div class="clear"></div>
             </div>
             <div class="index-banner">
-                <div class="index-logo">
-                    <img src="images/gossout-logo-text-and-image-svg.svg" alt="logo" >
-                </div>
+                <div class="logo" id="logo"><img alt=""></div>
             </div>
             <div class="index-intro">
 
@@ -96,7 +98,7 @@ session_start();
                                         <option <?php echo isset($_SESSION['signup_perosnal_error']['data']['dob_month']) ? $_SESSION['signup_perosnal_error']['data']['dob_month'] == "11" ? "selected" : ""  : "" ?> value="11">November</option>
                                         <option <?php echo isset($_SESSION['signup_perosnal_error']['data']['dob_month']) ? $_SESSION['signup_perosnal_error']['data']['dob_month'] == "12" ? "selected" : ""  : "" ?> value="12">December</option>
                                     </select>
-                                    <input type="number" min="1" max="31" name="dob_day" size="2" required placeholder="DD" value="<?php echo isset($_SESSION['signup_perosnal_error']['data']['dob_day']) ? $_SESSION['signup_perosnal_error']['data']['dob_day'] : "" ?>"/>
+                                    <input type="number"  name="dob_day" min="1" max="31" size="2" required placeholder="DD" value="<?php echo isset($_SESSION['signup_perosnal_error']['data']['dob_day']) ? $_SESSION['signup_perosnal_error']['data']['dob_day'] : "" ?>"/>
                                     <input type="number" max="<?php echo date("Y") - 13 ?>" min="1960" size="4" name="dob_yr" required placeholder="YYYY" value="<?php echo isset($_SESSION['signup_perosnal_error']['data']['dob_yr']) ? $_SESSION['signup_perosnal_error']['data']['dob_yr'] : "" ?>"/>
                                 </li>
                             </ul>

@@ -56,9 +56,9 @@ class Community {
             $encrypt = new Encryption();
             if ($max) {
                 if ($comname) {
-                    $sql = "SELECT id,creator_id,unique_name,`name`,`pix`,thumbnail100,thumbnail150,thumbnail150,`type`,description FROM community WHERE unique_name='$comname'";
+                    $sql = "SELECT id,creator_id,unique_name,`name`,`pix`,thumbnail100,thumbnail150,thumbnail150,`type`,description,verified FROM community WHERE unique_name='$comname'";
                 } else {
-                    $sql = "SELECT cs.`community_id` as id,c.creator_id,c.unique_name,c.`name`,c.`pix`,c.thumbnail100,c.thumbnail150,c.thumbnail150,c.`type`,c.description FROM community_subscribers as cs JOIN community as c ON cs.community_id=c.id  WHERE cs.`user`=$this->uid AND cs.leave_status=0 order by c.name asc LIMIT $start,$limit";
+                    $sql = "SELECT cs.`community_id` as id,c.creator_id,c.unique_name,c.`name`,c.`pix`,c.thumbnail100,c.thumbnail150,c.thumbnail150,c.`type`,c.description,c.verified FROM community_subscribers as cs JOIN community as c ON cs.community_id=c.id  WHERE cs.`user`=$this->uid AND cs.leave_status=0 order by c.name asc LIMIT $start,$limit";
                 }
             } else {
                 if ($comname) {
@@ -335,7 +335,7 @@ class Community {
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "SELECT id,unique_name,`name`,category,`type`,description,pix FROM community WHERE `type`='Public'";
+            $sql = "SELECT id,unique_name,`name`,category,`type`,description,pix,verified FROM community WHERE `type`='Public'";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     $comInfo = new Community();
@@ -596,7 +596,7 @@ class Community {
             throw new Exception("Connection to server failed!");
         } else {
             $encrypt = new Encryption();
-            $sql = "SELECT id,unique_name,`name`,`type`,description,thumbnail150 FROM community WHERE `name` LIKE '%$term%' AND `type`='Public' LIMIT $this->start,$this->limit";
+            $sql = "SELECT id,unique_name,`name`,`type`,description,thumbnail150,verified FROM community WHERE (`name` LIKE '%$term%' OR unique_name LIKE '%$term%' OR description LIKE '%$term%') AND `type`='Public' LIMIT $this->start,$this->limit";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {

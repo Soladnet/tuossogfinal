@@ -1,5 +1,4 @@
 <?php
-session_start();
 if (isset($_COOKIE['user_auth'])) {
     include_once './encryptionClass.php';
     include_once './GossoutUser.php';
@@ -21,14 +20,19 @@ if (isset($_COOKIE['user_auth'])) {
 }
 ?>
 <!doctype html>
-<html>
+<html lang="en">
     <head>
         <?php
         include_once './webbase.php';
         ?>
         <title>Gossout - Agreement</title>
+        <meta name="description" content="Start or join existing communities/interests on Gossout and start sharing pictures and videos. People use Gossout search, Discover and connect with communities">
+        <meta name="keywords" content="Community,Communities,Interest,Interests,Friend,Friends,Connect,Search,Discover,Discoveries,Gossout,Gossout.com,Zuma Communication Nigeria Limited,Soladnet Software,Soladoye Ola Abdulrasheed, Muhammad Kori,Ali Sani Mohammad,Lagos,Nigeria,Nigerian,Africa,Surulere,Pictures,Picture,Video,Videos,Blog,Blogs">
+        <meta name="author" content="Soladnet Sofwares, Zuma Communication Nigeria Limited">
+        <meta charset="UTF-8">
         <link rel="shortcut icon" href="favicon.ico">
         <link rel="stylesheet" media="screen" href="css/style.css">
+        <script src="scripts/jquery-1.9.1.min.js" type="text/javascript"></script>
         <script type="text/javascript" src="scripts/modernizr.custom.77319.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" > 
         <script>
@@ -37,9 +41,9 @@ if (isset($_COOKIE['user_auth'])) {
                     showOption(this);
                 });
                 if (Modernizr.inlinesvg) {
-                    $('#logo').html('<img src="images/gossout-logo-text-svg.svg" alt="Gossout" />');
+                    $('#logo').html('<a href="index"><img src="images/gossout-logo-text-and-image-svg.svg" alt="Gossout" /></a>');
                 } else {
-                    $('#logo').html('<img src="images/gossout-logo-text-svg.png" alt="Gossout" />');
+                    $('#logo').html('<a href="index"><img src="images/gossout-logo-text-and-image-svg.png" alt="Gossout" /></a>');
                 }
             });
         </script>
@@ -65,9 +69,9 @@ if (isset($_COOKIE['user_auth'])) {
                         <hr>
                         <ul>
                             <li>
-                                <p class="info">
+                                <p class="success">
                                     By clicking <strong>Finish</strong>, you agree to our 
-                                    <a href="">Terms of Service!</a>
+                                    <a href="tos">Terms of Service!</a>
                                 </p>
                                 <p class="info">
                                     We use <a href="http://en.wikipedia.org/wiki/HTTP_cookie">cookies</a>  to ensure that we give 

@@ -58,11 +58,13 @@ class Login {
                     $arrFetch['user'] = $row['id'];
                     $encrypt = new Encryption();
                     if ($this->rem) {
-                        $expire = time() + 60 * 60 * 24 * 30 * 3;
+                        $expire = time() + 60 * 60 * 24 * 30 * 1;
                         setcookie("user_auth", $encrypt->safe_b64encode($row['id']), $expire);
+                        setcookie("ro", $encrypt->safe_b64encode($encrypt->encode(md5(sha1($encrypt->safe_b64encode($row['id']))))), $expire);
                         setcookie("tz", $encrypt->safe_b64encode($this->timezone), $expire);
                     } else {
                         setcookie("user_auth", $encrypt->safe_b64encode($row['id']), 0);
+                        setcookie("ro", $encrypt->safe_b64encode($encrypt->encode(md5(sha1($encrypt->safe_b64encode($row['id']))))), 0);
                         setcookie("tz", $encrypt->safe_b64encode($this->timezone), 0);
                     }
                     $user = new GossoutUser($row['id']);
@@ -148,6 +150,32 @@ class Login {
         session_write_close();
 //        }
         header("Location:login");
+        exit;
+    }
+
+    public function confirmCookies() {
+        $encrypt = new Encryption();
+        $user_auth_id = $encrypt->safe_b64decode($_COOKIE['user_auth']);
+        $ro = $_COOKIE['ro'];
+        $val = $encrypt->safe_b64encode($encrypt->encode(md5(sha1($encrypt->safe_b64encode($user_auth_id)))));
+        if ($ro != $val) {
+            $this->logout();
+        } else {
+            if (!isset($_SESSION['auth'])) {
+                $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+                if ($mysql->connect_errno > 0) {
+                    throw new Exception("Connection to server failed!");
+                } else {
+                    $str = "SELECT l.id, p.email, l.activated,p.dateJoined,  p.firstname, p.lastname, p.gender, p.dob,p.relationship_status,p.phone,p.url,p.bio,p.favquote,p.location,p.likes,p.dislikes,p.works FROM user_login_details AS l JOIN user_personal_info AS p ON p.id = l.id WHERE l.id=$user_auth_id";
+                    if ($result = $mysql->query($str)) {
+                        if ($result->num_rows > 0 && $result->num_rows == 1) {
+                            $row = $result->fetch_assoc();
+                            $_SESSION['auth'] = $row;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public function toSentenceCase($str) {

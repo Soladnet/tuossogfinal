@@ -65,8 +65,8 @@ function manageError(jqXHR, textStatus, errorThrown) {
     } else if (textStatus === "parsererror") {
         msg = "Opps! something critical just happened...Our team will fix this soon ";
     } /*else if (jqXHR.readyState === 0) {
-        msg = "No internet connection.";
-    }*/
+     msg = "No internet connection.";
+     }*/
     if (msg !== "")
         humane.log(msg, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
     option = {
@@ -85,9 +85,9 @@ function loadPostResult(response, statusText, target) {
             htmlstr += '<div class="index-search-result"><h3>' +
                     '<a><img class="post-profile-pic" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail45) + '">' + response.firstname.concat(' ', response.lastname) + '</a>' +
                     '<div class="float-right">' +
-                    '<span class="post-time"><span class="icon-16-comment"></span>' + response.numComnt + '</span> ' +
 //                    '<span class="post-time"><span class="icon-16-share"></span>24</span>' +
                     '<span class="post-time"><span class="icon-16-clock"></span><span class="timeago" title="' + response.time + '">' + response.time + '</span></span>' +
+                    '&nbsp;<span class="post-time"><span class="icon-16-comment"></span>' + response.numComnt + '</span> ' +
                     '</div>' +
                     '<div class="clear"></div><hr></h3><p class="post-content">' + (response.post.length > 200 ? nl2br(linkify(response.post.substring(0, 200))) + '<span style="display:none" id="continuereading-' + response.id + '">' + nl2br(linkify(response.post.substring(200))) + '</span> <a id="continue-' + response.id + '">continue reading...</a>' : nl2br(linkify(response.post))) + '</p>';
             if (response.post_photo) {

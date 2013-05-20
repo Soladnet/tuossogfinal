@@ -148,6 +148,8 @@ if (isset($_POST['param'])) {
                 if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
                     $limit = $_POST['limit'];
                 }
+                $msg->setStart($start);
+                $msg->setLimit($limit);
                 if (isset($_POST['status'])) {
                     $status = $_POST['status'] == "" ? "" : "AND status='" . clean($_POST['status']) . "'";
                 }
@@ -158,18 +160,19 @@ if (isset($_POST['param'])) {
                     }
                 }
                 $print_status = trim(clean($_POST['cw'])) == "" ? TRUE : FALSE;
-                $user_msg = trim(clean($_POST['cw'])) == "" ? $msg->getMessages($start, $limit, $status) : $msg->getConversation($msg->getScreenName(), trim(clean($_POST['cw'])));
-                setcookie("m_t", encodeText($user_msg['m_t']));
+                $user_msg = trim(clean($_POST['cw'])) == "" ? $msg->getMessages($status) : $msg->getConversation($msg->getScreenName(), trim(clean($_POST['cw'])));
+
+                isset($user_msg['m_t']) ? setcookie("m_t", encodeText($user_msg['m_t'])) : "";
                 if ($user_msg['status']) {
                     include_once("./sortArray_$.php");
                     if ($print_status) {
                         $SMA = new SortMultiArray($user_msg['message'], "time", 1);
-                        $SortedArray = $SMA->GetSortedArray($start, $limit);
+                        $SortedArray = $SMA->GetSortedArray();
                         echo json_encode($SortedArray);
                     } else {
                         if (isset($user_msg['message']['conversation'])) {
                             $SMA = new SortMultiArray($user_msg['message']['conversation'], "time", 1);
-                            $user_msg['message']['conversation'] = $SMA->GetSortedArray($start, $limit);
+                            $user_msg['message']['conversation'] = $SMA->GetSortedArray();
                         }
                         echo json_encode($user_msg['message']);
                     }
@@ -204,12 +207,23 @@ if (isset($_POST['param'])) {
                 if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
                     $limit = $_POST['limit'];
                 }
-                $user_bag = $bag->getGossbag(TRUE);
+                $bag->setStart($start);
+                $bag->setLimit($limit);
+                $user_bag = $bag->getGossbag($_POST['update'], TRUE);
                 if ($user_bag['status']) {
                     include_once("./sortArray_$.php");
                     $SMA = new SortMultiArray($user_bag['bag'], "time", 1);
-                    $SortedArray = $SMA->GetSortedArray($start, $limit);
-                    echo json_encode($SortedArray);
+                    if (isset($_POST['min'])) {
+                        $val = $bag->getLastUpdate();
+                        $SortedArray = $SMA->GetSortedArray($val['status'] ? $val['time'] : FALSE);
+                    } else {
+                        $SortedArray = $SMA->GetSortedArray();
+                    }
+                    if (count($SortedArray) > 0) {
+                        echo json_encode($SortedArray);
+                    } else {
+                        displayError(404, "Not Found");
+                    }
                 } else {
                     displayError(404, "Not Found");
                 }
@@ -241,11 +255,13 @@ if (isset($_POST['param'])) {
                 if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
                     $limit = $_POST['limit'];
                 }
+                $timeline->setStart($start);
+                $timeline->setLimit($limit);
                 $user_timeline = $timeline->getTimeline();
                 if ($user_timeline['status']) {
                     include_once("./sortArray_$.php");
                     $SMA = new SortMultiArray($user_timeline['timeline'], "time", 1);
-                    $SortedArray = $SMA->GetSortedArray($start, $limit);
+                    $SortedArray = $SMA->GetSortedArray();
                     echo json_encode($SortedArray);
                 } else {
                     displayError(404, "Not Found");
@@ -573,6 +589,14 @@ if (isset($_POST['param'])) {
                 include_once './Post.php';
                 $post = new Post();
                 $post->setCommunity(clean($_POST['cid']));
+                if (isset($_POST['start'])) {
+                    if (is_numeric($_POST['start']))
+                        $post->setStart($_POST['start']);
+                }
+                if (isset($_POST['limit'])) {
+                    if (is_numeric($_POST['limit']))
+                        $post->setLimit($_POST['limit']);
+                }
                 if (isset($_COOKIE['tz'])) {
                     $tz = decodeText($_COOKIE['tz']);
                 } else if (isset($_SESSION['auth']['tz'])) {
@@ -1196,9 +1220,12 @@ if (isset($_POST['param'])) {
 
                             if ($status['status']) {
                                 if ($status['com_pix']['pix'] != "images/no-pic.png") {
-                                    unlink($status['com_pix']['pix']);
-                                    unlink($status['com_pix']['thumbnail100']);
-                                    unlink($status['com_pix']['thumbnail150']);
+                                    if (file_exists($status['com_pix']['pix']))
+                                        unlink($status['com_pix']['pix']);
+                                    if (file_exists($status['com_pix']['thumbnail100']))
+                                        unlink($status['com_pix']['thumbnail100']);
+                                    if (file_exists($status['com_pix']['thumbnail150']))
+                                        unlink($status['com_pix']['thumbnail150']);
                                 }
                                 echo json_encode(array("status" => TRUE, "message" => "Community image was changed successfully", "thumb" => $thumbnail150));
                             } else {
@@ -1250,6 +1277,9 @@ function displayError($code, $meesage) {
     $response_arr = array();
     $response_arr['error']['code'] = $code;
     $response_arr['error']['message'] = $meesage;
+    if ($meesage == "The request cannot be fulfilled due to bad syntax") {
+        @mail("soladnet@gmail.com", "bad syntax from user", json_encode($_POST));
+    }
     echo json_encode($response_arr);
 }
 

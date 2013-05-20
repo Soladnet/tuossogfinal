@@ -17,7 +17,7 @@ if (isset($_COOKIE['user_auth'])) {
 }
 ?>
 <!doctype html>
-<html>
+<html lang="en">
     <head>
         <?php
         include_once './webbase.php';
@@ -32,8 +32,6 @@ if (isset($_COOKIE['user_auth'])) {
         <link rel="stylesheet" href="css/jackedup.css" />
         <link rel="stylesheet" href="css/chosen.css" />
         <link rel=" stylesheet" type="text/css" href="css/joyride-2.0.3.css">
-<!--        <script src="scripts/jquery.min.js"></script>-->
-        <script type="text/javascript" src="scripts/modernizr.custom.77319.js"></script>
         <script src="scripts/jquery.joyride-2.0.3.js"></script>
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
         <script src="scripts/test_helpers.js" type="text/javascript"></script>
@@ -99,7 +97,7 @@ if (isset($_COOKIE['user_auth'])) {
                                     htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
                                             '<img src="' + responseText.photo + '">' +
                                             '</div><p><a>You</a> posted to <a href="' + community[hiddenCom[i]].unique_name + '">' + community[hiddenCom[i]].name + '</a></p>' +
-                                            '<p class="timeline-time timeago" title="' + responseText.time + '">' + responseText.time + '</p>';
+                                            '<p class="timeline-time timeago" title="' + responseText.time + '">' + responseText.time + '</p><p>' + nl2br(linkify(post)) + '</p>';
                                     if (responseText.post_photo) {
                                         htmlstr += '<p class="timeline-photo-upload">';
                                         $.each(responseText.post_photo, function(k, photo) {
@@ -107,8 +105,7 @@ if (isset($_COOKIE['user_auth'])) {
                                         });
                                         htmlstr += '</p><div class="clear"></div>';
                                     }
-                                    htmlstr += '<p>' + nl2br(post) + '</p>' +
-                                            '<!--<p class="post-meta"><span id="post-new-comment-show-' + id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' +
+                                    htmlstr += '<!--<p class="post-meta"><span id="post-new-comment-show-' + id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' +
                                             '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share(20)</a></span></p>--><div class="clear"></div></div>';
                                 });
                                 $(".timeline-container").prepend(htmlstr);
@@ -130,6 +127,11 @@ if (isset($_COOKIE['user_auth'])) {
                         uid: readCookie("user_auth")
                     }
                 });
+                if (Modernizr.inlinesvg) {
+                    $('#logo').html('<a href="index"><img src="images/gossout-logo-text-svg.png" alt="Gossout" /></a>');
+                } else {
+                    $('#logo').html('<a href="index"><img src="images/gossout-logo-text-svg.png" alt="Gossout" /></a>');
+                }
             });</script>
 
         <script>
@@ -174,7 +176,7 @@ if (isset($_COOKIE['user_auth'])) {
             }
 
             if (getCookie('home_user_status') === null) {
-                setCookie('home_user_status', 'new_user');
+                setCookie('home_user_status', 'new_user',2592000);
                 $(window).load(function() {
                     $('#joyRideTipContent').joyride({
                         autoStart: true
@@ -198,23 +200,6 @@ if (isset($_COOKIE['user_auth'])) {
 
             <div class="content">
                 <div class="posts">
-                    <!--                    <h1>Timeline Feed</h1>
-                                        <hr>-->
-                    <!--                    <div class="timeline-filter">
-                                            <ul>
-                                                <li><span class="icon-16-list"></span></li>
-                                                <li class="active"><a href="">All</a></li>
-                                                <li><a href="">Posts</a></li>
-                                                <li><a href="">Activities</a></li>
-                                            </ul>
-                                        </div>
-                                        <div class="clear"></div>
-                                        <hr>-->
-                    <!--                    <div class="success">
-                                            <p><span class="icon-16-asterisk"></span>While you were away, <a href="notifications">700 of your friends</a> 
-                                                posted new stuffs in  <a href="sample-community.php">Sample Community Name</a>
-                                            </p>
-                                        </div>-->
                     <?php
                     include("post-box.php");
                     include("timeline.php");
@@ -235,10 +220,10 @@ if (isset($_COOKIE['user_auth'])) {
 
         <div>
             <ol id="joyRideTipContent">
-<!--                <li data-text="Next" data-id="communities" data-options="tipLocation:bottom;tipAnimation:fade">
+                <li data-text="Next" data-id="communities" data-options="tipLocation:bottom;tipAnimation:fade">
                     <h2>Communities!</h2>
-                    <p>Do more on communities, create, view and edit your communities.</p>
-                </li>-->
+                    <p>Do more on communities: create, join, view and manage.</p>
+                </li>
                 <li data-button="Next" data-options="tipLocation:bottom;tipAnimation:fade" data-id="gossbag-text">
                     <h2>Gossbag!</h2>
                     <p>Your Gossbag contains notifications on post, comments, and communities that may interest you.</p>

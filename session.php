@@ -1,30 +1,31 @@
 <?php
 session_start();
+//echo "2013-05-17 21:03:36">"2013-05-17 22:03:05";
 //session_destroy();
-print_r($_SESSION);
-echo "<br/>" . $_SERVER['REMOTE_ADDR'];
-echo "<br/>";
-include_once './Config.php';
-$mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
-if ($mysql->connect_errno > 0) {
-    throw new Exception("Connection to server failed!");
-} else {
-    $sql = "SELECT NOW() as time";
-    if ($result = $mysql->query($sql)) {
-        $row = $result->fetch_assoc();
-        echo $row['time'] . " - ";
-    }
-}
-echo "<br/>";
-//$var = GeoLocation("41.71.149.159", "34e6d3f396a1be972da92c290cf54b28e9076c11e1772cbf9d58d0764539b5c6");
-//echo $var;
-//
-//function GeoLocation($ip, $api) {
-//    $params = @file_get_contents("http://api.ipinfodb.com/v3/ip-city/?key=" . $api . "&ip=" . $ip . "&format=json");
-//    return $params;
+//print_r($_SESSION);
+//echo "<br/>" . $_SERVER['REMOTE_ADDR'];
+//echo "<br/>";
+//include_once './Config.php';
+//$mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+//if ($mysql->connect_errno > 0) {
+//    throw new Exception("Connection to server failed!");
+//} else {
+//    $sql = "SELECT NOW() as time";
+//    if ($result = $mysql->query($sql)) {
+//        $row = $result->fetch_assoc();
+//        echo $row['time'] . " - ";
+//    }
 //}
-
-echo "<br/>";
+//echo "<br/>";
+////$var = GeoLocation("41.71.149.159", "34e6d3f396a1be972da92c290cf54b28e9076c11e1772cbf9d58d0764539b5c6");
+////echo $var;
+////
+////function GeoLocation($ip, $api) {
+////    $params = @file_get_contents("http://api.ipinfodb.com/v3/ip-city/?key=" . $api . "&ip=" . $ip . "&format=json");
+////    return $params;
+////}
+//
+//echo "<br/>";
 
 //$ip = "41.71.149.159"; //$_SERVER['REMOTE_ADDR']; // means we got user's IP address 
 //$json = @file_get_contents('http://smart-ip.net/geoip-json/' . $ip); // this one service we gonna use to obtain timezone by IP
@@ -35,15 +36,15 @@ echo "<br/>";
 //    echo convert_time_zone($row['time'], $ipData['timezone']);
 //} else {
 //    date_default_timezone_set("Africa/Lagos");
-    echo convert_time_zone($row['time'], 'Africa/Lagos');
+//    echo convert_time_zone($row['time'], 'Africa/Lagos');
 //}
 
-function convert_time_zone($timeFromDatabase_time, $tz) {
-    $date = new DateTime($timeFromDatabase_time, new DateTimeZone(date_default_timezone_get()));
-    $date->setTimezone(new DateTimeZone($tz));
-    return $date->format('Y-m-d H:i:s');
-    // or return $userTime; // if you want to return a DateTime object.
-}
+//function convert_time_zone($timeFromDatabase_time, $tz) {
+//    $date = new DateTime($timeFromDatabase_time, new DateTimeZone(date_default_timezone_get()));
+//    $date->setTimezone(new DateTimeZone($tz));
+//    return $date->format('Y-m-d H:i:s');
+//    // or return $userTime; // if you want to return a DateTime object.
+//}
 
 //$email = "soladnnet@gmail.com";
 //$usernameTemp = explode('@', $email);
@@ -63,9 +64,9 @@ function convert_time_zone($timeFromDatabase_time, $tz) {
 //$user = new GossoutUser(0);
 //echo $user->encodeText("1");
 //echo '<<==<br/>';
-//include './encryptionClass.php';
-//$encrypt = new Encryption();
-//echo ($encrypt->safe_b64decode("NDE"));
+include './encryptionClass.php';
+$encrypt = new Encryption();
+echo ($encrypt->safe_b64decode("QWZyaWNhL0xhZ29z"));
 //$str = "_-thissdfkj";
 //print_r(preg_match("/[^A-Za-z0-9_-]/", $str));
 //function prepareUsername($email) {

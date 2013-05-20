@@ -26,7 +26,7 @@
         </span>
         <script>
             $(document).ready(function() {
-                sendData("loadCommunityMembers", {target: "#commember-aside", comname: '<?php echo $_GET['param'] ?>'});
+                sendData("loadCommunityMembers", {target: "#commember-aside",loadImage: true, comname: '<?php echo $_GET['param'] ?>'});
             });
         </script>
         <p class="community-listing">

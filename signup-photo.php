@@ -1,5 +1,4 @@
 <?php
-session_start();
 include_once './Config.php';
 
 if (isset($_POST['email']) && isset($_POST['password']) && isset($_POST['cpassword'])) {
@@ -131,19 +130,25 @@ function clean($value) {
 }
 ?>
 <!doctype html>
-<html>
+<html lang="en">
     <head>
         <?php
         include_once './webbase.php';
         ?>
         <title>Gossout - Signup 3/3</title>
+        <meta name="description" content="Start or join existing communities/interests on Gossout and start sharing pictures and videos. People use Gossout search, Discover and connect with communities">
+        <meta name="keywords" content="Community,Communities,Interest,Interests,Friend,Friends,Connect,Search,Discover,Discoveries,Gossout,Gossout.com,Zuma Communication Nigeria Limited,Soladnet Software,Soladoye Ola Abdulrasheed, Muhammad Kori,Ali Sani Mohammad,Lagos,Nigeria,Nigerian,Africa,Surulere,Pictures,Picture,Video,Videos,Blog,Blogs">
+        <meta name="author" content="Soladnet Sofwares, Zuma Communication Nigeria Limited">
+        <meta charset="UTF-8">
         <link rel="shortcut icon" href="favicon.ico">
         <link rel="stylesheet" media="screen" href="css/style.css">
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" > 
         <link rel="stylesheet" href="css/validationEngine.jquery.css" type="text/css"/>
         <script src="scripts/jquery-1.9.1.min.js" type="text/javascript"></script>
+        <script type="text/javascript" src="scripts/modernizr.custom.77319.js"></script>
         <script src="scripts/languages/jquery.validationEngine-en.js" type="text/javascript"></script>
         <script src="scripts/jquery.validationEngine.js" type="text/javascript"></script>
+        <script src="scripts/jquery.form.js"></script>
         <script>
             $(document).ready(function() {
                 if (Modernizr.inlinesvg) {
@@ -151,75 +156,6 @@ function clean($value) {
                 } else {
                     $('#logo').html('<a href="index"><img src="images/gossout-logo-text-and-image-svg.png" alt="Gossout" /></a>');
                 }
-            });
-        </script>
-        <style>
-            .progress { position:relative; width:400px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
-            .bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
-            .percent { position:absolute; display:inline-block; top:3px; left:48%; }
-        </style>
-    </head>
-    <body>
-        <div class="index-page-wrapper">	
-            <div class="index-nav">
-                <span class="index-login"><?php echo "Welcome " . $userReg->getFullname() ?></span>
-                <div class="clear"></div>
-            </div>
-            <div class="index-banner">
-                <div class="logo" id="logo"><img alt=""></div>
-            </div>
-            <div class="index-intro">	
-                <div class="index-intro-2">
-                    <div class="registration">
-                        <div class="index-intro-1">
-                            <h1>
-                                Ahaa... That's it! 
-                            </h1>
-                        </div>	
-                        <progress max="100" value="85" >3 of 3 Completed</progress>
-                        <hr>
-                        <form id="uploadForm" method="POST" action="files-raw.php" enctype="multipart/form-data">
-                            <ul>
-                                <li>
-                                    <label>Select an image: </label>
-                                    <div class="profile-pic">
-                                        <img src="<?php
-                                        $pix = $userReg->getPix();
-                                        echo isset($pix['thumbnail150']) ? $pix['thumbnail150'] : "images/no-pic.png"
-                                        ?>" id="target">
-                                    </div>
-                                    <hr>
-                                    <input type="file" id="fileInput" name="myfile" class="input-fields validate[required]" style="position: absolute;left: -9999px;"/>
-                                    <div id="fileChookseBtn" class="button"><span class="icon-16-camera"></span> Click to choose image</div>
-                                    <p>Maximum file size of 5MB<br/>Image type of .jpg, .jpeg, .gif, and .png</p>
-                                    <input type="submit" class="button" value="Upload photo">
-                                    <hr>
-                                    <div class="progress">
-                                        <div class="bar"></div >
-                                        <div class="percent">0%</div >
-                                    </div>
-                                    <div id="status"></div>
-                                </li>
-                            </ul>
-                            <br>
-                        </form>
-                        <div class="button"><a href="signup-agreement">Skip</a></div>
-                        <div class="button"><a href="signup-agreement">Next!</a></div>
-                        <div class="clear"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="index-shadow-bottom"></div>
-            <div class="index-content-wrapper">
-                <?php
-                include("footer.php");
-                ?>
-            </div>
-
-        </div>
-        <script src="scripts/jquery.form.js"></script>
-        <script>
-            (function() {
                 var bar = $('.bar');
                 var percent = $('.percent');
                 var status = $('#status');
@@ -258,7 +194,73 @@ function clean($value) {
                     }
                 });
 
-            })();
+            });
         </script>
+        <style>
+            .progress { position:relative; width:400px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
+            .bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
+            .percent { position:absolute; display:inline-block; top:3px; left:48%; }
+        </style>
+    </head>
+    <body>
+        <div class="index-page-wrapper">	
+            <div class="index-nav">
+                <span class="index-login"><?php echo "Welcome " . $userReg->getFullname() ?></span>
+                <div class="clear"></div>
+            </div>
+            <div class="index-banner">
+                <div class="logo" id="logo"><img alt=""></div>
+            </div>
+            <div class="index-intro">	
+                <div class="index-intro-2">
+                    <div class="registration">
+                        <div class="index-intro-1">
+                            <h1>
+                                Ahaa... That's it! 
+                            </h1>
+                        </div>	
+                        <progress max="100" value="85" >3 of 3 Completed</progress>
+                        <hr>
+                        <form id="uploadForm" method="POST" action="files-raw.php" enctype="multipart/form-data">
+                            <ul>
+                                <li><center>
+                                    <label>Select an image: </label>
+                                    <div class="profile-pic">
+                                        <img src="<?php
+                                        $pix = $userReg->getPix();
+                                        echo isset($pix['thumbnail150']) ? $pix['thumbnail150'] : "images/no-pic.png"
+                                        ?>" id="target">
+                                    </div>
+                                    <hr>
+                                    <input type="file" id="fileInput" name="myfile" class="input-fields validate[required]" style="position: absolute;left: -9999px;"/>
+                                    <div id="fileChookseBtn" class="button"><span class="icon-16-camera"></span> Click to choose image</div>
+                                    <p>Maximum file size of 5MB<br/>Image type of .jpg, .jpeg, .gif, and .png</p>
+                                    <input type="submit" class="button" value="Upload photo">
+                                </center>
+                                <hr>
+                                <div class="progress" style="display: none">
+                                    <div class="bar"></div >
+                                    <div class="percent">0%</div >
+                                </div>
+                                <div id="status"></div>
+                                </li>
+                            </ul>
+                            <br>
+                        </form>
+                        <center><div class="button"><a href="signup-agreement">Skip</a></div>
+                            <div class="button"><a href="signup-agreement">Next!</a></div>
+                        </center>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="index-shadow-bottom"></div>
+            <div class="index-content-wrapper">
+                <?php
+                include("footer.php");
+                ?>
+            </div>
+
+        </div>
     </body>
 </html>

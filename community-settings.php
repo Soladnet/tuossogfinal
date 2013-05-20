@@ -22,7 +22,7 @@ if (isset($_COOKIE['user_auth'])) {
 }
 ?>
 <!doctype html>
-<html>
+<html lang="en">
     <head>
         <?php
         include_once './webbase.php';

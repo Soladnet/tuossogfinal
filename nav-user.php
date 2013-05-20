@@ -38,13 +38,26 @@
                 <span class="notification-number" id="msg-number">&nbsp;</span>
             </li>
             <?php
-            if ($_GET['page'] == "home") {
+            if (isset($_GET['page'])) {
+                if ($_GET['page'] == "home") {
+                    ?>
+                    <li>
+                        <a id="messages-text" >
+
+                            <span><a href onclick='javascript:callTour();
+                                                return false;'>Get hint</a></span>
+                        </a>
+
+                    </li>
+                    <?php
+                }
+            } else {
                 ?>
                 <li>
                     <a id="messages-text" >
 
                         <span><a href onclick='javascript:callTour();
-                                    return false;'>Get hint</a></span>
+                                            return false;'>Get hint</a></span>
                     </a>
 
                 </li>

@@ -22,7 +22,7 @@ if (isset($_COOKIE['user_auth'])) {
 }
 ?>
 <!doctype html>
-<html>
+<html lang="en">
     <head>
         <?php
         include_once './webbase.php';
@@ -65,7 +65,12 @@ if (isset($_COOKIE['user_auth'])) {
                         bar.width(percentVal)
                         percent.html(percentVal);
                     }, uploadProgress: function(event, position, total, percentComplete) {
-                        var percentVal = percentComplete + '%';
+                        var percentVal = "";
+                        if (percentComplete > 99) {
+                            percentVal = "Finalizing...";
+                        } else {
+                            percentVal = percentComplete + '%';
+                        }
                         bar.width(percentVal)
                         percent.html(percentVal);
                     },
@@ -96,7 +101,12 @@ if (isset($_COOKIE['user_auth'])) {
                         bar.width(percentVal)
                         percent.html(percentVal);
                     }, uploadProgress: function(event, position, total, percentComplete) {
-                        var percentVal = percentComplete + '%';
+                        var percentVal = "";
+                        if (percentComplete == 100) {
+                            percentVal = "Finalizing...";
+                        } else {
+                            percentVal = percentComplete + '%';
+                        }
                         bar.width(percentVal)
                         percent.html(percentVal);
                     },
@@ -158,11 +168,13 @@ if (isset($_COOKIE['user_auth'])) {
                         <hr>
                         <form id="imageUploadForm" method="Post" action="files-raw.php">
                             <p></p>
-                            <center><input type="file" name="myfile" class="input-fields validate[required]" id="uploadField" style="position: absolute;left: -9999px;"><div class="button" id="clickToFileUpload"><span class="icon-16-camera"></span> Click to choose image</div><input type="submit" class="button" value="Upload photo"></center>
-                            <div class="progress" id="photoProgress" style="display: none">
-                                <div class="bar"></div >
-                                <div class="percent">0%</div >
-                            </div>
+                            <center>
+                                <input type="file" name="myfile" class="input-fields validate[required]" id="uploadField" style="position: absolute;left: -9999px;"><div class="button" id="clickToFileUpload"><span class="icon-16-camera"></span> Click to choose image</div><input type="submit" class="button" value="Upload photo">
+                                <div class="progress" id="photoProgress" style="display: none">
+                                    <div class="bar"></div >
+                                    <div class="percent">0%</div >
+                                </div>
+                            </center>
                         </form>
                         <hr>
                     </div>

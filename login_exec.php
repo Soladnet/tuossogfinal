@@ -16,7 +16,7 @@ if (isset($_POST['email']) && isset($_POST['password']) && isset($_POST['tz'])) 
         header("Location:home");
     } else {
         $_SESSION['login_error']['data'] = $_POST;
-        header("Location:index.php?page=login&login_error=");
+        header("Location:login?login_error=");
     }
 } else {
     $login->logout();
