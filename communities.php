@@ -157,7 +157,7 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
 
                         <div class="community-search-box">
                             <form action="tuossog-api-json.php" method="POST" id="searchForm">
-                                <input name="a" class="community-search-field validate[required]" id="searchTerm" placeholder="Search Communities" type="text" value="" >
+                                <input name="a" class="community-search-field validate[required]" id="searchTerm" placeholder="Search your communities" type="text" value="" >
                                 <input type="submit" class="button" value="Search">
                             </form>
                         </div>

@@ -49,7 +49,7 @@
         seconds: "few seconds",
         minute: "about a minute",
         minutes: "%d minutes",
-        hour: "about 1hr",
+        hour: "about an hour",
         hours: "about %d hrs",
         day: "a day",
         days: "%d days",

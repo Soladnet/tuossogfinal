@@ -200,7 +200,7 @@ if (isset($_POST['param'])) {
                 }
                 $bag->setTimezone($tz);
                 $start = 0;
-                $limit = 3;
+                $limit = 4;
                 if (isset($_POST['start']) && is_numeric($_POST['start'])) {
                     $start = $_POST['start'];
                 }
@@ -209,7 +209,7 @@ if (isset($_POST['param'])) {
                 }
                 $bag->setStart($start);
                 $bag->setLimit($limit);
-                $user_bag = $bag->getGossbag($_POST['update'], TRUE);
+                $user_bag = $bag->getGossbag();
                 if ($user_bag['status']) {
                     include_once("./sortArray_$.php");
                     $SMA = new SortMultiArray($user_bag['bag'], "time", 1);
@@ -218,6 +218,10 @@ if (isset($_POST['param'])) {
                         $SortedArray = $SMA->GetSortedArray($val['status'] ? $val['time'] : FALSE);
                     } else {
                         $SortedArray = $SMA->GetSortedArray();
+                        $SortedArray = array_slice($SortedArray, $start,$limit);
+                    }
+                    if ($_POST['update'] == "false" ? FALSE : TRUE) {
+                        $bag->updateTime();
                     }
                     if (count($SortedArray) > 0) {
                         echo json_encode($SortedArray);
@@ -248,7 +252,7 @@ if (isset($_POST['param'])) {
                 }
                 $timeline->setTimezone($tz);
                 $start = 0;
-                $limit = 10;
+                $limit = 15;
                 if (isset($_POST['start']) && is_numeric($_POST['start'])) {
                     $start = $_POST['start'];
                 }
@@ -262,7 +266,7 @@ if (isset($_POST['param'])) {
                     include_once("./sortArray_$.php");
                     $SMA = new SortMultiArray($user_timeline['timeline'], "time", 1);
                     $SortedArray = $SMA->GetSortedArray();
-                    echo json_encode($SortedArray);
+                    echo json_encode(array_slice($SortedArray, $start, $limit));
                 } else {
                     displayError(404, "Not Found");
                 }
@@ -1008,13 +1012,18 @@ if (isset($_POST['param'])) {
                     $login->setPassword($_POST['pass']);
                     $isValidUser = $login->isValidCredential();
                     if ($isValidUser['status']) {
-                        $x = $user->updateFirstname(clean($_POST['fname']));
-                        $y = $user->updateLastname(clean($_POST['lname']));
-                        if ($x['status'] || $y['status']) {
-                            $status['status'] = TRUE;
+                        if (trim($_POST['fname']) != "" && trim($_POST['lname']) != "") {
+                            $x = $user->updateFirstname(clean($_POST['fname']));
+                            $y = $user->updateLastname(clean($_POST['lname']));
+                            if ($x['status'] || $y['status']) {
+                                $status['status'] = TRUE;
+                            } else {
+                                $status['status'] = FALSE;
+                                $status['message'] = "No changes was made";
+                            }
                         } else {
-                            $status['status'] = FALSE;
-                            $status['message'] = "No changes was made";
+                            displayError(400, "Firstname or Lastname cannot be left empty");
+                            exit;
                         }
                     } else {
                         $status['status'] = FALSE;

@@ -158,22 +158,26 @@ function clean($value) {
                 }
                 var bar = $('.bar');
                 var percent = $('.percent');
-                var status = $('#status');
                 $("#uploadForm").validationEngine();
                 $("#fileChookseBtn").click(function() {
                     $("#fileInput").focus().trigger('click');
                 });
                 $('#uploadForm').ajaxForm({
                     beforeSend: function() {
-                        status.empty();
+                        $(".progress").show();
                         var percentVal = '0%';
                         bar.width(percentVal)
                         percent.html(percentVal);
                     },
                     uploadProgress: function(event, position, total, percentComplete) {
                         var percentVal = percentComplete + '%';
-                        bar.width(percentVal)
-                        percent.html(percentVal);
+                        bar.width(percentVal);
+                        var value = percentVal;
+                        if (percentComplete > 99) {
+                            percent.html("Finalizing...");
+                        }else{
+                            percent.html(percentVal);
+                        }
                     },
                     success: function(responseText, statusText, xhr, $form) {
                         var percentVal = '100%';
@@ -191,6 +195,7 @@ function clean($value) {
                         } else {
                             status.html("Upload Failed. " + response.error.message);
                         }
+                        $(".progress").hide();
                     }
                 });
 
@@ -232,8 +237,9 @@ function clean($value) {
                                         ?>" id="target">
                                     </div>
                                     <hr>
-                                    <input type="file" id="fileInput" name="myfile" class="input-fields validate[required]" style="position: absolute;left: -9999px;"/>
+                                    <input type="file" onchange="$('#selectedFile').html('<br/>File Name: ' + this.value)" id="fileInput" name="myfile" class="input-fields validate[required]" style="position: absolute;left: -9999px;"/>
                                     <div id="fileChookseBtn" class="button"><span class="icon-16-camera"></span> Click to choose image</div>
+                                    <span id="selectedFile"></span>
                                     <p>Maximum file size of 5MB<br/>Image type of .jpg, .jpeg, .gif, and .png</p>
                                     <input type="submit" class="button" value="Upload photo">
                                 </center>
@@ -247,8 +253,8 @@ function clean($value) {
                             </ul>
                             <br>
                         </form>
-                        <center><div class="button"><a href="signup-agreement">Skip</a></div>
-                            <div class="button"><a href="signup-agreement">Next!</a></div>
+                        <center><div class="button"><a href="validate-email">Skip</a></div>
+                            <div class="button"><a href="validate-email">Next!</a></div>
                         </center>
                         <div class="clear"></div>
                     </div>

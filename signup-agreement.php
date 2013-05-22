@@ -13,11 +13,7 @@ if (isset($_COOKIE['user_auth'])) {
         $login = new Login();
         $login->logout();
     }
-} else {
-    include_once './LoginClass.php';
-    $login = new Login();
-    $login->logout();
-}
+} 
 ?>
 <!doctype html>
 <html lang="en">
@@ -51,7 +47,10 @@ if (isset($_COOKIE['user_auth'])) {
     <body>
         <div class="index-page-wrapper">	
             <div class="index-nav">
-                <span class="index-login"><?php echo "Welcome " . $user->getFullname() ?></span>
+                <span class="index-login"><?php
+                    echo isset($user) ? "Welcome <a href='home'>" . $user->getFullname() . "</a> [ <a href='login_exec'>Logout</a> ]" :
+                            'Already have an account? <a href="login">Login Here</a> | <a href="signup-personal">Sign up</a>'
+                    ?></span>
                 <div class="clear"></div>
             </div>
             <div class="index-banner">

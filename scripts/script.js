@@ -82,9 +82,9 @@ function sendData(callback, target) {
             },
             data: {
                 param: "gossbag",
-                start: target.start ? target.start : 0,
-                limit: target.limit ? target.limit : 3,
-                update: false
+                start: target.start,
+                limit: target.limit,
+                update: true
             }
         };
     } else if (callback === "loadTimeline") {
@@ -150,7 +150,7 @@ function sendData(callback, target) {
             data: {
                 param: "gossbag",
                 min: true,
-                update: false
+                update: true
             }
         };
     } else if (callback === "loadFriends") {
@@ -380,20 +380,20 @@ function loadGossbag(response, statusText, target) {
                             '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
                             '<h3>' + response.firstname.concat(' ', response.lastname) + ' </h3>' +
                             '<div class="all-notifications-message">Winked you</div></div><hr><p>' +
-                            '<a class="all-notifications-actions" id="winkIgnore-text-n-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
-                            '<a class="all-notifications-actions" id="wink-text-n-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a>' +
+                            '<a class="all-notifications-actions" id="winkIgnore-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
+                            '<a class="all-notifications-actions" id="wink-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a>' +
                             '</p></div>';
-                    accept_frq_text += accept_frq_text === "" ? "#winkIgnore-text-n-" + response.sender_id + ",#wink-text-n-" + response.sender_id : ",#winkIgnore-text-n-" + response.sender_id + ",#wink-text-n-" + response.sender_id;
+                    accept_frq_text += accept_frq_text === "" ? "#winkIgnore-text-n-" + response.id + '-' + response.sender_id + ",#wink-text-n-" + response.id + '-' + response.sender_id : ",#winkIgnore-text-n-" + response.id + '-' + response.sender_id + ",#wink-text-n-" + response.id + '-' + response.sender_id;
                 } else {
                     htmlstr += '<div class="individual-notification"><p><span class="icon-16-eye"></span>' +
                             '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
                             '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + '</p>' +
                             '<p>winked you</p></div><div class="clear"></div><hr>' +
-                            '<span id="winkOption-' + response.id + '"><a class="notification-actions" id="winkIgnore-text-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
-                            '<a class="notification-actions" id="wink-text-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a></span>' +
+                            '<span id="winkOption-' + response.id + '"><a class="notification-actions" id="winkIgnore-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
+                            '<a class="notification-actions" id="wink-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a></span>' +
                             '<div class="clear"></div></div>';
-                    accept_frq_text += accept_frq_text === "" ? "#winkIgnore-text-" + response.sender_id + ",#wink-text-" + response.sender_id : ",#winkIgnore-text-" + response.sender_id + ",#wink-text-" + response.sender_id;
+                    accept_frq_text += accept_frq_text === "" ? "#winkIgnore-text-" + response.id + '-' + response.sender_id + ",#wink-text-" + response.id + '-' + response.sender_id : ",#winkIgnore-text-" + response.id + '-' + response.sender_id + ",#wink-text-" + response.id + '-' + response.sender_id;
                 }
             } else if (response.type === "comment") {
                 if (target.target === "#individual-notification-box") {
@@ -454,7 +454,7 @@ function loadGossbag(response, statusText, target) {
         $(".timeago").timeago();
     } else {
         if (response.error.code === 404 || response.error.code === 400) {
-            $(target.target).html('<div class="individual-notification"><div class="notification-text"><p class="name">Gossbag empty</p>');
+            $(target.target).html('<div class="individual-notification"><div class="notification-text"><p>Gossbag Empty</p></div><div class="clear"></div><hr><div class="clear"></div></div>');
         }
     }
 }
@@ -463,8 +463,70 @@ function loadNewMessage(response, statusText, target) {
 }
 function loadNewGossbag(response, statusText, target) {
     if (!response.error) {
-//        var url = document.URL.sp;
+        var url = document.URL.split("/"), accept_frq_text = "", toggleId = "";
+        var isHome = $.inArray("home", url);
+//        alert(url);
+        response.reverse();
+        $.each(response, function(i, response) {
+            if (response.type === "TW") {
+                var html = '<div class="individual-notification"><p><span class="icon-16-eye"></span>' +
+                        '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
+                        '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
+                        '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + '</p>' +
+                        '<p>winked you</p></div><div class="clear"></div><hr>' +
+                        '<span id="winkOption-' + response.id + '"><a class="notification-actions" id="winkIgnore-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
+                        '<a class="notification-actions" id="wink-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a></span>' +
+                        '<div class="clear"></div></div>';
+                if (target.status === "prepend") {
+                    $(target.target).prepend(html).fadeIn("slow");
+                } else {
+                    $(target.target).html(html).fadeIn("slow");;
+                }
 
+                accept_frq_text += accept_frq_text === "" ? "#winkIgnore-text-" + response.id + '-' + response.sender_id + ",#wink-text-" + response.id + '-' + response.sender_id : ",#winkIgnore-text-" + response.id + '-' + response.sender_id + ",#wink-text-" + response.id + '-' + response.sender_id;
+            } else if (response.type === "post") {
+                var html = '<div class="individual-notification viewed-notification"><p><span class="icon-16-pencil"></span>' +
+                        '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
+                        '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + ' </p>' +
+                        '<p>posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '"</p><p>in <a href="communities/' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><!--<a class="notification-actions">View</a>-->' +
+                        '<div class="clear"></div></div>';
+                if (target.status === "prepend") {
+                    $(target.target).prepend(html).fadeIn("slow");
+                } else {
+                    $(target.target).html(html).fadeIn("slow");
+                }
+                if (isHome > 0) {
+                    var htmlstr = '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
+                            '<img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail45) + '">' +
+                            '</div><p><a>' + response.firstname.concat(' ', response.lastname) + '</a> posted to <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
+                            '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p>';
+                    if (response.post_photo) {
+                        htmlstr += '<p class="timeline-photo-upload">';
+                        $.each(response.post_photo, function(k, photo) {
+                            htmlstr += '<a class="fancybox" rel="gallery' + response.id + '"  href="' + photo.original + '" rel="group"><img src="' + photo.thumbnail + '"></a>';
+                        });
+                        htmlstr += '</p><div class="clear"></div>';
+                    }
+                    htmlstr += '<p>' + (response.post.length > 200 ? response.post.substring(0, 200) + '<span style="display:none" id="continuereading-' + response.id + '">' + response.post.substring(200) + '</span> <a id="continue-' + response.id + '">continue reading...</a>' : response.post) + '</p>' +
+                            '<!--<p class="post-meta"><span id="post-new-comment-show-' + response.id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' +
+                            '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share(20)</a></span></p>--><div class="clear"></div></div>';
+                    if (response.post.length > 200) {
+                        if (toggleId !== "") {
+                            toggleId += ",";
+                        }
+                        toggleId += "#continue-" + response.id;
+                    }
+                    $(".timeline-container").prepend(htmlstr).fadeIn("slow");
+                }
+            }
+        });
+        if (accept_frq_text !== "") {
+            $(accept_frq_text).click(function() {
+                showOption(this);
+            });
+        }
+        prepareDynamicDates();
+        $(".timeago").timeago();
     }
 }
 function inviteFriends(response, statusText, target) {
@@ -603,7 +665,7 @@ function loadNotificationCount(response, statusText, target) {
     if (response.gb > 0) {
         var content = $("#gossbag-individual-notification").html();
         if (content !== "") {
-            if (content === '<div class="individual-notification"><div class="notification-text"><p class="name">Gossbag empty</p>') {
+            if (content === '<div class="individual-notification"><div class="notification-text"><p>Gossbag Empty</p></div><div class="clear"></div><hr><div class="clear"></div></div>') {
                 sendData("loadNewGossbag", {target: "#gossbag-individual-notification", status: "replace"});
             } else if (content !== "<center><img src='images/loading.gif' style='border:none' /></center>") {
                 sendData("loadNewGossbag", {target: "#gossbag-individual-notification", status: "prepend"});
@@ -627,7 +689,7 @@ function loadNotificationCount(response, statusText, target) {
         $("#msg-number").html("&nbsp;");
     }
     if ((response.gb + response.msg) > 0) {
-        document.title = target.title + " (" + (response.gb + response.msg) + ")";
+        document.title = "(" + (response.gb + response.msg) + ") " + target.title;
     } else {
         document.title = target.title;
     }
@@ -1598,6 +1660,8 @@ function showOption(obj) {
         } else {
             sendData("acceptDeclineComInvitation", {target: "#invitationtarget", loadImage: true, comId: comid, response: true});
         }
+    } else {
+        alert("Not implemented");
     }
 }
 

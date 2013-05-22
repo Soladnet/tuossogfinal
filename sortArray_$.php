@@ -50,11 +50,11 @@ class SortMultiArray {
             if ($lastupdate) {
                 $val = $this->ResultArray[$i];
                 if ($val['type'] == "frq" || $val['type'] == "TW") {
-                    echo json_encode(array("val" => $val['time'], "lastupdate" => $lastupdate));
-                    exit;
-//                    if ($lastupdate <= $val['time']) {
-//                        $arr[] = $val;
-//                    }
+//                    echo json_encode(array("val" => $val['time'], "lastupdate" => $lastupdate));
+//                    exit;
+                    if ($lastupdate <= $val['time']) {
+                        $arr[] = $val;
+                    }
                 } else {
                     $arr[] = $this->ResultArray[$i];
                 }
