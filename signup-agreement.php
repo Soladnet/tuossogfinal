@@ -1,4 +1,20 @@
 <?php
+
+//if (session_id=="")
+//    session_start();
+
+function clean($value) {
+    // If magic quotes not turned on add slashes.
+    if (!get_magic_quotes_gpc()) {
+        // Adds the slashes.
+        $value = addslashes($value);
+    }
+    // Strip any tags from the value.
+    $value = strip_tags($value);
+    // Return the value out of the function.
+    return $value;
+}
+
 if (isset($_COOKIE['user_auth'])) {
     include_once './encryptionClass.php';
     include_once './GossoutUser.php';
@@ -9,11 +25,79 @@ if (isset($_COOKIE['user_auth'])) {
         $user->setUserId($id);
         $user->getProfile();
     } else {
-        include_once './LoginClass.php';
-        $login = new Login();
-        $login->logout();
+//        include_once './LoginClass.php';
+//        $login = new Login();
+//        $login->logout();
     }
-} 
+} else {
+//    include_once './LoginClass.php';
+//    $login = new Login();
+//    $login->logout();
+}
+if (isset($_GET['param'])) {
+    $token = trim(clean($_GET['param']));
+    if ($token == "") {
+        $_SESSION['verified'] = 'Skipped';
+       
+   }
+    if (!$_SESSION['verified']) {
+        include_once './Config.php';
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $str = "Update user_login_details SET activated = 'Y' WHERE token = '$token' AND activated = 'N'";
+            $str2 = "SELECT id from user_login_details WHERE token = '$token' AND activated = 'N'";
+            $str1 = "SELECT id from user_login_details WHERE token = '$token'";
+            if ($run1 = $mysql->query($str1)) {
+                if ($run1->num_rows == 1) {
+//                    $_SESSION['token_exist'] = true;
+                    if ($run2 = $mysql->query($str2))
+                        if ($run2->num_rows == 0)
+                            $_SESSION['verified'] = 'Already verified';
+                        else {
+                            if ($run = $mysql->query($str)) {
+                                if ($mysql->affected_rows == 1) {
+                                    $_SESSION['verified'] = 'Verified';
+//                        echo 'Verified';
+                                } else {
+                                    $_SESSION['verified'] = 'Already verified';
+                                }
+                            } else {
+//                    echo $mysql->error;
+                            }
+                        }
+                } else {
+                    $_SESSION['verified'] = 'Token not valid';
+                }
+            } else {
+//            echo $mysql->error; 
+            }
+        }
+    } else {
+             if (isset($_COOKIE['user_auth'])) {
+            include_once './encryptionClass.php';
+            $enc = new Encryption();
+            $id = $enc->safe_b64decode($_COOKIE['user_auth']);
+            $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+            if ($mysql->connect_errno > 0) {
+                throw new Exception("Connection to server failed!");
+            } else {
+                $str = "SELECT activated From user_login_details WHERE id ='$id'";
+                if ($run = $mysql->query($str)) {
+                    if ($run->num_rows == 1) {
+                        $r = $run->fetch_array();
+                        if($r[0]=='N')
+                            $_SESSION['verified'] = 'Skipped';
+                        else
+                            $_SESSION['verified'] = 'Already verified';
+                        
+                    }
+                }
+            }
+        }
+    }
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -91,6 +175,7 @@ if (isset($_COOKIE['user_auth'])) {
             <div class="index-content-wrapper">
                 <?php
                 include("footer.php");
+                unset($_SESSION['verified']);
                 ?>
             </div>
 
