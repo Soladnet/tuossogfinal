@@ -66,7 +66,7 @@ session_start();
 //echo '<<==<br/>';
 include './encryptionClass.php';
 $encrypt = new Encryption();
-echo ($encrypt->safe_b64decode("QWZyaWNhL0xhZ29z"));
+echo ($encrypt->safe_b64decode("MTQ1NA"));
 //$str = "_-thissdfkj";
 //print_r(preg_match("/[^A-Za-z0-9_-]/", $str));
 //function prepareUsername($email) {

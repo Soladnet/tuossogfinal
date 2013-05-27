@@ -140,6 +140,7 @@ function sendData(callback, target) {
             }
         };
     } else if (callback === "loadNewGossbag") {
+        return;
         option = {
             beforeSend: function() {
                 showuidfeedback(target);
@@ -467,59 +468,59 @@ function loadNewGossbag(response, statusText, target) {
         var isHome = $.inArray("home", url);
 //        alert(url);
         response.reverse();
-        $.each(response, function(i, response) {
-            if (response.type === "TW") {
-                var html = '<div class="individual-notification"><p><span class="icon-16-eye"></span>' +
-                        '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-                        '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                        '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + '</p>' +
-                        '<p>winked you</p></div><div class="clear"></div><hr>' +
-                        '<span id="winkOption-' + response.id + '"><a class="notification-actions" id="winkIgnore-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
-                        '<a class="notification-actions" id="wink-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a></span>' +
-                        '<div class="clear"></div></div>';
-                if (target.status === "prepend") {
-                    $(target.target).prepend(html).fadeIn("slow");
-                } else {
-                    $(target.target).html(html).fadeIn("slow");;
-                }
-
-                accept_frq_text += accept_frq_text === "" ? "#winkIgnore-text-" + response.id + '-' + response.sender_id + ",#wink-text-" + response.id + '-' + response.sender_id : ",#winkIgnore-text-" + response.id + '-' + response.sender_id + ",#wink-text-" + response.id + '-' + response.sender_id;
-            } else if (response.type === "post") {
-                var html = '<div class="individual-notification viewed-notification"><p><span class="icon-16-pencil"></span>' +
-                        '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                        '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + ' </p>' +
-                        '<p>posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '"</p><p>in <a href="communities/' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><!--<a class="notification-actions">View</a>-->' +
-                        '<div class="clear"></div></div>';
-                if (target.status === "prepend") {
-                    $(target.target).prepend(html).fadeIn("slow");
-                } else {
-                    $(target.target).html(html).fadeIn("slow");
-                }
-                if (isHome > 0) {
-                    var htmlstr = '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
-                            '<img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail45) + '">' +
-                            '</div><p><a>' + response.firstname.concat(' ', response.lastname) + '</a> posted to <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
-                            '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p>';
-                    if (response.post_photo) {
-                        htmlstr += '<p class="timeline-photo-upload">';
-                        $.each(response.post_photo, function(k, photo) {
-                            htmlstr += '<a class="fancybox" rel="gallery' + response.id + '"  href="' + photo.original + '" rel="group"><img src="' + photo.thumbnail + '"></a>';
-                        });
-                        htmlstr += '</p><div class="clear"></div>';
-                    }
-                    htmlstr += '<p>' + (response.post.length > 200 ? response.post.substring(0, 200) + '<span style="display:none" id="continuereading-' + response.id + '">' + response.post.substring(200) + '</span> <a id="continue-' + response.id + '">continue reading...</a>' : response.post) + '</p>' +
-                            '<!--<p class="post-meta"><span id="post-new-comment-show-' + response.id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' +
-                            '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share(20)</a></span></p>--><div class="clear"></div></div>';
-                    if (response.post.length > 200) {
-                        if (toggleId !== "") {
-                            toggleId += ",";
-                        }
-                        toggleId += "#continue-" + response.id;
-                    }
-                    $(".timeline-container").prepend(htmlstr).fadeIn("slow");
-                }
-            }
-        });
+//        $.each(response, function(i, response) {
+//            if (response.type === "TW") {
+//                var html = '<div class="individual-notification"><p><span class="icon-16-eye"></span>' +
+//                        '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
+//                        '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
+//                        '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + '</p>' +
+//                        '<p>winked you</p></div><div class="clear"></div><hr>' +
+//                        '<span id="winkOption-' + response.id + '"><a class="notification-actions" id="winkIgnore-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
+//                        '<a class="notification-actions" id="wink-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a></span>' +
+//                        '<div class="clear"></div></div>';
+//                if (target.status === "prepend") {
+//                    $(target.target).prepend(html).fadeIn("slow");
+//                } else {
+//                    $(target.target).html(html).fadeIn("slow");;
+//                }
+//
+//                accept_frq_text += accept_frq_text === "" ? "#winkIgnore-text-" + response.id + '-' + response.sender_id + ",#wink-text-" + response.id + '-' + response.sender_id : ",#winkIgnore-text-" + response.id + '-' + response.sender_id + ",#wink-text-" + response.id + '-' + response.sender_id;
+//            } else if (response.type === "post") {
+//                var html = '<div class="individual-notification viewed-notification"><p><span class="icon-16-pencil"></span>' +
+//                        '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
+//                        '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + ' </p>' +
+//                        '<p>posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '"</p><p>in <a href="communities/' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><!--<a class="notification-actions'+response.id+'">View</a>-->' +
+//                        '<div class="clear"></div></div>';
+//                if (target.status === "prepend") {
+//                    $(target.target).prepend(html).fadeIn("slow");
+//                } else {
+//                    $(target.target).html(html).fadeIn("slow");
+//                }
+//                if (isHome > 0) {
+//                    var htmlstr = '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
+//                            '<img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail45) + '">' +
+//                            '</div><p><a>' + response.firstname.concat(' ', response.lastname) + '</a> posted to <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
+//                            '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p>';
+//                    if (response.post_photo) {
+//                        htmlstr += '<p class="timeline-photo-upload">';
+//                        $.each(response.post_photo, function(k, photo) {
+//                            htmlstr += '<a class="fancybox" rel="gallery' + response.id + '"  href="' + photo.original + '" rel="group"><img src="' + photo.thumbnail + '"></a>';
+//                        });
+//                        htmlstr += '</p><div class="clear"></div>';
+//                    }
+//                    htmlstr += '<p>' + (response.post.length > 200 ? response.post.substring(0, 200) + '<span style="display:none" id="continuereading-' + response.id + '">' + response.post.substring(200) + '</span> <a id="continue-' + response.id + '">continue reading...</a>' : response.post) + '</p>' +
+//                            '<!--<p class="post-meta"><span id="post-new-comment-show-' + response.id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' +
+//                            '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share(20)</a></span></p>--><div class="clear"></div></div>';
+//                    if (response.post.length > 200) {
+//                        if (toggleId !== "") {
+//                            toggleId += ",";
+//                        }
+//                        toggleId += "#continue-" + response.id;
+//                    }
+//                    $(".timeline-container").prepend(htmlstr).fadeIn("slow");
+//                }
+//            }
+//        });
         if (accept_frq_text !== "") {
             $(accept_frq_text).click(function() {
                 showOption(this);

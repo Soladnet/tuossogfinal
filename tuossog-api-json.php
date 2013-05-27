@@ -1287,7 +1287,7 @@ function displayError($code, $meesage) {
     $response_arr['error']['code'] = $code;
     $response_arr['error']['message'] = $meesage;
     if ($meesage == "The request cannot be fulfilled due to bad syntax") {
-        @mail("soladnet@gmail.com", "bad syntax from user", json_encode($_POST));
+        @mail("soladnet@gmail.com", "bad syntax from user ".$_SERVER['HTTP_REFERER'], json_encode($_POST));
     }
     echo json_encode($response_arr);
 }
