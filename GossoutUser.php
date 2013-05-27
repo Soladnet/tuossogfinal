@@ -1186,6 +1186,7 @@ class GossoutUser {
                         $this->setUserId($newUid);
                         $user = $this->getProfile();
                         $_SESSION['auth'] = $user['user'];
+                        $_SESSION['auth']['token'] = $token;
                         $arrFetch['status'] = TRUE;
                         $arrFetch['id'] = $newUid;
                     } else {

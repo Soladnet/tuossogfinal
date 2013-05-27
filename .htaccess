@@ -1,6 +1,6 @@
 Options +FollowSymLinks
 RewriteEngine On
-RewriteBase /gossoutfinal/
+RewriteBase /tuossogfinal/
 Options -Multiviews
 
 #RewriteRule ^login$ login.php [L]
