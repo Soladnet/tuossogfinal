@@ -37,6 +37,47 @@ if (isset($_COOKIE['user_auth'])) {
 
                 });
                 sendData("loadNotificationCount", {title: document.title});
+                
+                $('.gossbag-separation-icons').click(function(){
+                    $('.gossbag-separation-icons.active').removeClass('active');
+                        $(this).addClass('active');
+                        
+                        doSeparatGoss($(this).attr('id'));
+                });
+                
+                $('.loadMoreGossContent').click(function(){
+                    alert($(this).attr('hold'));
+//                    start = $(this).attr('rel');
+//                    if($(this).attr('id')==='loadMoreWink'){
+//                        sendData("loadWink", {target: "#individual-notification-box", loadImage: true, start: start, limit: 8});
+//                    
+//                }
+                    return false;
+                });
+                
+                function doSeparatGoss(pointer){
+                    hold = $('#current-notification');
+                    if(pointer==='wink-notification-icon'){
+                         hold.text('Wink');
+                        sendData("loadWink", {target: "#individual-notification-box", loadImage: true, start: 0, limit: 5});
+                        $('.loadMoreGossContent').attr('hold','Wink');
+                    }
+                    if(pointer==='comment-notification-icon'){
+                         hold.text('Comment');
+                        sendData("loadGossComment", {target: "#individual-notification-box", loadImage: true, start: 0, limit: 5});
+                     $('.loadMoreGossContent').attr('hold','Comment');
+                 }
+                    if(pointer==='frq-notification-icon'){
+                         hold.text('Friend request');
+                        sendData("loadGossFrq", {target: "#individual-notification-box", loadImage: true, start: 0, limit: 5});
+                     $('.loadMoreGossContent').attr('hold','Frq');
+                 }
+                    if(pointer==='post-notification-icon'){
+                         hold.text('Post');
+                        sendData("loadGossPost", {target: "#individual-notification-box", loadImage: true, start: 0, limit: 5});
+                     $('.loadMoreGossContent').attr('hold','Post');
+                 }
+                }
             });
         </script>
     </head>
@@ -51,19 +92,30 @@ if (isset($_COOKIE['user_auth'])) {
             <div class="content">
                 <div class="all-notifications-list">
                     <h1>Notifications</h1>
+                    <span style="float:left;" class="all-notifications-message" id="current-notification">All Notifications
+                    
+                    </span>
+                    
                     <div class="timeline-filter">
+                        
                         <ul>
-                            <li><span class="icon-16-list"></span></li>
-                            <li class="active"><a href="notifications">All</a></li>
-<!--                            <li><a href=""><p>Requests</p> </a></li>
-                            <li><a href=""><p>Interactions</p></a></li>-->
+                            
+                             <li class="gossbag-separation-li gossbag-separation-icons" id="wink-notification-icon" rel="wink-notification-icon"><span class="icon-16-eye"></span></li>
+                              <li class="gossbag-separation-li gossbag-separation-icons" id="frq-notification-icon" rel="frq-notification-icon"><span class="icon-16-user-add"></span></li>
+                               <li class="gossbag-separation-li gossbag-separation-icons" id="post-notification-icon" rel="post-notification-icon"><span class="icon-16-pencil"></span></li>
+                                <li class="gossbag-separation-li gossbag-separation-icons" id="comment-notification-icon" rel="comment-notification-icon"><span class="icon-16-comment"></span></li>
+                                <li class="active gossbag-separation-li gossbag-separation-icons" id="all-notification-icon" rel="all-notification-icon"><span class=""><a href="notifications">All</a></span></li>
+                                
                         </ul>
                     </div>
                     <div class="clear"></div>
                     <span id="individual-notification-box"></span>
+                    
+                   
+                    <div class="button" style="float:left;"><a href="" rel="5" hold="1" class="loadMoreGossContent" id="loadMoreWink">Load more > ></a></div>  
                     <script>
                         $(document).ready(function() {
-                            sendData("loadGossbag", {target: "#individual-notification-box", loadImage: true, start: 0, limit: 20});
+                            sendData("loadGossbag", {target: "#individual-notification-box", loadImage: true, start: 0, limit: 50});
                         });
                     </script>
                 </div>

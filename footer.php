@@ -11,5 +11,5 @@
     <div class="clear"></div>
 </div>
 <?php
-include_once './googleanalytics.html';
+//include_once './googleanalytics.html';
 ?>

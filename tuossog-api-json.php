@@ -237,7 +237,160 @@ if (isset($_POST['param'])) {
         } else {
             displayError(400, "The request cannot be fulfilled due to bad syntax");
         }
-    } else if ($_POST['param'] == "timeline") {
+    } 
+    else if ($_POST['param'] == "loadWink") {
+        include_once './GossoutUser.php';
+        if (isset($_POST['uid'])) {
+            $id = decodeText($_POST['uid']);
+            if (is_numeric($id)) {
+                $wink = new GossoutUser($id);
+                if (isset($_COOKIE['tz'])) {
+                    $tz = decodeText($_COOKIE['tz']);
+                } else if (isset($_SESSION['auth']['tz'])) {
+                    $tz = decodeText($_SESSION['auth']['tz']);
+                } else {
+                    $tz = "Africa/Lagos";
+                }
+                $wink->setTimezone($tz);
+                
+                if (isset($_POST['start']) && is_numeric($_POST['start'])) {
+                    $start = $_POST['start'];
+                }
+                if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
+                    $limit = $_POST['limit'];
+                }
+                $wink->setStart($start);
+                $wink->setLimit($limit);
+                $user_bag = $wink->loaWink();
+                if ($user_bag['status']) {
+                    echo json_encode($user_bag);
+//                 
+                }
+                else {
+                    displayError(404, "Not Found--");
+                }
+            } else {
+                displayError(400, "The request cannot be fulfilled due to bad syntax");
+            }
+        } else {
+            displayError(400, "The request cannot be fulfilled due to bad syntax");
+        }
+    } 
+    else if ($_POST['param'] == "loadGossComment") {
+        include_once './GossoutUser.php';
+        if (isset($_POST['uid'])) {
+            $id = decodeText($_POST['uid']);
+            if (is_numeric($id)) {
+                $user= new GossoutUser($id);
+                if (isset($_COOKIE['tz'])) {
+                    $tz = decodeText($_COOKIE['tz']);
+                } else if (isset($_SESSION['auth']['tz'])) {
+                    $tz = decodeText($_SESSION['auth']['tz']);
+                } else {
+                    $tz = "Africa/Lagos";
+                }
+                $user->setTimezone($tz);
+                
+                if (isset($_POST['start']) && is_numeric($_POST['start'])) {
+                    $start = $_POST['start'];
+                }
+                if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
+                    $limit = $_POST['limit'];
+                }
+                $user->setStart($start);
+                $user->setLimit($limit);
+                $user_comments = $user->loadGossComment();
+                if ($user_comments['status']) {
+                    echo json_encode($user_comments);
+//                 
+                }
+                else {
+                    displayError(404, "Not Found--");
+                }
+            } else {
+                displayError(400, "The request cannot be fulfilled due to bad syntax");
+            }
+        } else {
+            displayError(400, "The request cannot be fulfilled due to bad syntax");
+        }
+    }
+    else if ($_POST['param'] == "loadGossFrq") {
+        include_once './GossoutUser.php';
+        if (isset($_POST['uid'])) {
+            $id = decodeText($_POST['uid']);
+            if (is_numeric($id)) {
+                $user= new GossoutUser($id);
+                if (isset($_COOKIE['tz'])) {
+                    $tz = decodeText($_COOKIE['tz']);
+                } else if (isset($_SESSION['auth']['tz'])) {
+                    $tz = decodeText($_SESSION['auth']['tz']);
+                } else {
+                    $tz = "Africa/Lagos";
+                }
+                $user->setTimezone($tz);
+                
+                if (isset($_POST['start']) && is_numeric($_POST['start'])) {
+                    $start = $_POST['start'];
+                }
+                if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
+                    $limit = $_POST['limit'];
+                }
+                $user->setStart($start);
+                $user->setLimit($limit);
+                $user_frq = $user->loadGossFrq();
+                if ($user_frq['status']) {
+                    echo json_encode($user_frq);
+//                 
+                }
+                else {
+                    displayError(404, "Not Found--");
+                }
+            } else {
+                displayError(400, "The request cannot be fulfilled due to bad syntax");
+            }
+        } else {
+            displayError(400, "The request cannot be fulfilled due to bad syntax");
+        }
+    }
+    else if ($_POST['param'] == "loadGossPost") {
+        include_once './GossoutUser.php';
+        if (isset($_POST['uid'])) {
+            $id = decodeText($_POST['uid']);
+            if (is_numeric($id)) {
+                $user= new GossoutUser($id);
+                if (isset($_COOKIE['tz'])) {
+                    $tz = decodeText($_COOKIE['tz']);
+                } else if (isset($_SESSION['auth']['tz'])) {
+                    $tz = decodeText($_SESSION['auth']['tz']);
+                } else {
+                    $tz = "Africa/Lagos";
+                }
+                $user->setTimezone($tz);
+                
+                if (isset($_POST['start']) && is_numeric($_POST['start'])) {
+                    $start = $_POST['start'];
+                }
+                if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
+                    $limit = $_POST['limit'];
+                }
+                $user->setStart($start);
+                $user->setLimit($limit);
+                $user_post = $user->loadGossPost();
+                if ($user_post['status']) {
+                    echo json_encode($user_post);
+//                 
+                }
+                else {
+                    displayError(404, "Not Found--");
+                }
+            } else {
+                displayError(400, "The request cannot be fulfilled due to bad syntax");
+            }
+        } else {
+            displayError(400, "The request cannot be fulfilled due to bad syntax");
+        }
+    }
+    else if ($_POST['param'] == "timeline") {
         include_once './GossoutUser.php';
         if (isset($_POST['uid'])) {
             $id = decodeText($_POST['uid']);
@@ -796,7 +949,7 @@ if (isset($_POST['param'])) {
                                         }
                                     }
                                     $load['post']['name'] = $_SESSION['auth']['firstname'] . " " . $_SESSION['auth']['lastname'];
-                                    $load['post']['photo'] = $_SESSION['auth']['photo']['thumbnail45'] ? $_SESSION['auth']['photo']['thumbnail45'] : "images/no-pic.png";
+                                    $load['post']['photo'] = isset($_SESSION['auth']['photo']['thumbnail45']) ? $_SESSION['auth']['photo']['thumbnail45'] : "images/no-pic.png";
                                 }
                             } else {
                                 $load['status'] = FALSE;
