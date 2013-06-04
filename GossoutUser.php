@@ -1227,13 +1227,18 @@ class GossoutUser {
         }
     }
 
-    public function unfriend($userid) {
+    public function unfriend($userid, $opt = "UNFRIEND") {
         $arr = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $sql = "UPDATE usercontacts SET status='R' WHERE ((username1='$this->id' AND username2='$userid') OR (username1='$userid' AND username2='$this->id')) AND status='Y' OR status ='N'";
+            if ($opt == "UNFRIEND") {
+                $sql = "UPDATE usercontacts SET status='R' WHERE ((username1='$this->id' AND username2='$userid') OR (username1='$userid' AND username2='$this->id')) AND (status='Y' OR status ='N')";
+            } else if ($opt == "Cancel Request" || $opt == "Ignore") {
+                $sql = "UPDATE usercontacts SET status='R' WHERE ((username1='$userid' AND username2='$this->id')) AND (status='Y' OR status ='N')";
+            }
+            $arr['sql'] = $sql;
             if ($mysql->query($sql)) {
                 if ($mysql->affected_rows > 0) {
                     $arr['status'] = TRUE;
@@ -1510,21 +1515,15 @@ class GossoutUser {
         } else {
             $encrypt = new Encryption();
             $user = new GossoutUser(0);
-            //post notiif
-//            if ($checkTime) {//get posts for this user from the last updated time
-//                $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') AND p.time>=(SELECT `lastupdate` FROM user_time_update WHERE `user_id`=$this->id) AND p.`deleteStatus`=0 order by p.id desc";
-//            } else {//get posts irrespective of time!
-                $sql = "SELECT t.`id`, t.`sender_id`,u.firstname,u.lastname, t.`type`, t.`time`, t.`status` FROM `tweakwink` as t JOIN user_personal_info as u ON t.sender_id=u.id  WHERE t.`receiver_id` =$this->id AND status='N' order by t.id desc Limit $this->start, $this->limit";
-//            }
-//            $arrFetch['sql'] = $sql;
+            $sql = "SELECT t.`id`, t.`sender_id`,u.firstname,u.lastname, t.`type`, t.`time`, t.`status` FROM `tweakwink` as t JOIN user_personal_info as u ON t.sender_id=u.id  WHERE t.`receiver_id` =$this->id AND status='N' order by t.id desc Limit $this->start, $this->limit";
+
             if ($result = $mysql->query($sql)) {
                 $arrFetch['status'] = FALSE;
-//                $_SESSION['status_string'] = 'Bad!!! -1';
-               if ($result->num_rows > 0) {
-                   $_SESSION['status_string'] = $result->num_rows;
+
+                if ($result->num_rows > 0) {
+                    $_SESSION['status_string'] = $result->num_rows;
                     $user = new GossoutUser(0);
                     while ($row = $result->fetch_assoc()) {
-//                         $_SESSION['status_string']++;
                         $row['firstname'] = $this->toSentenceCase($row['firstname']);
                         $row['lastname'] = $this->toSentenceCase($row['lastname']);
                         $row['type'] = "TW";
@@ -1545,21 +1544,14 @@ class GossoutUser {
                 } else {
                     if (isset($arrFetch['status']) && !$arrFetch['status'])
                         $arrFetch['status'] = FALSE;
-//                        $arrFetch['wink_status'] = 'empty';
-//                    $arrFetch['bag']['content'] = 'Empty';
-//                    $_SESSION['status_string'] = 'Bad!!! -3';
-                        
                 }
                 $result->free();
             } else {
-                if (!$arrFetch['status'])
-                    $arrFetch['status'] = FALSE;
-//                $_SESSION['status_string'] = 'Bad!!-4';
+                $arrFetch['status'] = FALSE;
             }
-//                $result->free();
-           
         }
     }
+
     public function loadGossComment() {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
@@ -1568,9 +1560,9 @@ class GossoutUser {
         } else {
             $encrypt = new Encryption();
             $user = new GossoutUser(0);
-                $sql2 = "Select c.id,c.comment, c.post_id,c.sender_id,com.name,u.firstname,u.lastname,p.sender_id as post_sender_id, c.time From comments as c JOIN user_personal_info as u ON c.sender_id=u.id JOIN post as p ON c.post_id=p.id JOIN community as com ON p.community_id=com.id Where
+            $sql2 = "Select c.id,c.comment, c.post_id,c.sender_id,com.name,u.firstname,u.lastname,p.sender_id as post_sender_id, c.time From comments as c JOIN user_personal_info as u ON c.sender_id=u.id JOIN post as p ON c.post_id=p.id JOIN community as com ON p.community_id=com.id Where
  c.sender_id IN(select DISTINCT user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id)) AND p.sender_id = $this->id AND c.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') UNION SELECT c.id,c.comment, c.post_id,c.sender_id,com.name,u.firstname,u.lastname,p.sender_id as post_sender_id,c.time FROM comments as c JOIN post as p ON c.post_id=p.id JOIN user_personal_info as u ON c.sender_id=u.id JOIN community as com ON p.community_id=com.id WHERE p.sender_id=$this->id order by time desc Limit $this->start, $this->limit";
-            
+
 //            $arrFetch['sql2'] = $sql2;
             if ($result = $mysql->query($sql2)) {
                 if ($result->num_rows > 0) {
@@ -1592,18 +1584,15 @@ class GossoutUser {
                     $arrFetch['status'] = TRUE;
                     return $arrFetch;
                 } else {
-                    if (!$arrFetch['status'])
-                        $arrFetch['status'] = FALSE;
+                    $arrFetch['status'] = FALSE;
                 }
                 $result->free();
             } else {
-                if (!$arrFetch['status'])
-                    $arrFetch['status'] = FALSE;
+                $arrFetch['status'] = FALSE;
             }
-//                $result->free();
-        }   
-        
+        }
     }
+
     public function loadGossFrq() {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
@@ -1612,42 +1601,38 @@ class GossoutUser {
         } else {
             $encrypt = new Encryption();
             $user = new GossoutUser(0);
-                $sql3 = "SELECT t.`id`, t.`sender_id`,u.firstname,u.lastname, t.`type`, t.`time`, t.`status` FROM `tweakwink` as t JOIN user_personal_info as u ON t.sender_id=u.id  WHERE t.`receiver_id` =$this->id AND status='N' order by t.id desc";
-            $arrFetch['sql3'] = $sql3;
+            $sql3 = "SELECT uc.username1,uc.`time`,u.firstname,u.lastname FROM usercontacts as uc JOIN user_personal_info as u ON uc.username1=u.id WHERE username2=$this->id AND status='N' order by uc.id desc LIMIT $this->start,$this->limit";
             if ($result = $mysql->query($sql3)) {
                 if ($result->num_rows > 0) {
                     $user = new GossoutUser(0);
                     while ($row = $result->fetch_assoc()) {
                         $row['firstname'] = $this->toSentenceCase($row['firstname']);
                         $row['lastname'] = $this->toSentenceCase($row['lastname']);
-                        $row['type'] = "TW";
-                        $user->setUserId($row['sender_id']);
+                        $row['type'] = "frq";
+                        $user->setUserId($row['username1']);
                         $pix = $user->getProfilePix();
                         if ($pix['status']) {
                             $row['photo'] = $pix['pix'];
                         } else {
                             $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
                         }
-                        $row['id'] = $encrypt->safe_b64encode($row['id']);
-                        $row['sender_id'] = $encrypt->safe_b64encode($row['sender_id']);
+                        $row['username1'] = $encrypt->safe_b64encode($row['username1']);
                         $row['time'] = $this->convert_time_zone($row['time'], $this->tz);
                         $arrFetch['bag'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;
                     return $arrFetch;
                 } else {
-                    if (!$arrFetch['status'])
-                        $arrFetch['status'] = FALSE;
+                    $arrFetch['status'] = FALSE;
                 }
                 $result->free();
             } else {
-                if (!$arrFetch['status'])
-                    $arrFetch['status'] = FALSE;
+                $arrFetch['status'] = FALSE;
             }
-//                $result->free();
-        }   
-        
+        }
+        return $arrFetch;
     }
+
     public function loadGossPost() {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
@@ -1656,8 +1641,8 @@ class GossoutUser {
         } else {
             $encrypt = new Encryption();
             $user = new GossoutUser(0);
-             $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') AND p.`deleteStatus`=0 order by p.id desc Limit $this->start, $this->limit";
-        
+            $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') AND p.`deleteStatus`=0 order by p.id desc Limit $this->start, $this->limit";
+
             $arrFetch['sql1'] = $sql1;
             if ($result = $mysql->query($sql1)) {
                 if ($result->num_rows > 0) {
@@ -1686,8 +1671,7 @@ class GossoutUser {
                 $arrFetch['status'] = FALSE;
             }
 //                $result->free();
-        }   
-        
+        }
     }
 
 }

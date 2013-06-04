@@ -30,6 +30,62 @@ if (isset($_COOKIE['user_auth'])) {
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
         <script src="scripts/test_helpers.js" type="text/javascript"></script>
         <script type="text/javascript">
+            var limit = 10;
+            function doSeparatGoss(pointer) {
+                var hold = $('#current-notification');
+                if (pointer === 'wink-notification-icon') {
+                    if ($("#" + pointer).hasClass("clicked")) {
+                        $("#individual-notification-box-w").show();
+                    } else {
+                        $("#" + pointer).addClass("clicked");
+                        sendData("loadWink", {target: "#individual-notification-box-w", loadImage: true, start: 0, limit: 10});
+                        $('.loadMoreGossContent').attr('hold', 'Wink');
+                        $("#individual-notification-box-w").show();
+                    }
+                    hold.text('Wink');
+                } else if (pointer === 'comment-notification-icon') {
+                    hold.text('Comment');
+                    if ($("#" + pointer).hasClass("clicked")) {
+                        $("#individual-notification-box-c").show();
+                    } else {
+                        $("#" + pointer).addClass("clicked");
+                        sendData("loadGossComment", {target: "#individual-notification-box-c", loadImage: true, start: 0, limit: 10});
+                        $('.loadMoreGossContent').attr('hold', 'Comment');
+                        $("#individual-notification-box-c").show();
+                    }
+
+                } else if (pointer === 'frq-notification-icon') {
+                    hold.text('Friend Request');
+                    if ($("#" + pointer).hasClass("clicked")) {
+                        $("#individual-notification-box-f").show();
+                    } else {
+                        $("#" + pointer).addClass("clicked");
+                        sendData("loadGossFrq", {target: "#individual-notification-box-f", loadImage: true, start: 0, limit: 10});
+                        $('.loadMoreGossContent').attr('hold', 'Frq');
+                        $("#individual-notification-box-f").show();
+                    }
+                } else if (pointer === 'post-notification-icon') {
+                    hold.text('Post');
+                    if ($("#" + pointer).hasClass("clicked")) {
+                        $("#individual-notification-box-p").show();
+                    } else {
+                        $("#" + pointer).addClass("clicked");
+                        sendData("loadGossPost", {target: "#individual-notification-box-p", loadImage: true, start: 0, limit: 10});
+                        $('.loadMoreGossContent').attr('hold', 'Post');
+                        $("#individual-notification-box-p").show();
+                    }
+                } else if (pointer === 'all-notification-icon') {
+                    hold.text('All Notifications');
+                    if ($("#" + pointer).hasClass("clicked")) {
+                        $("#individual-notification-box-a").show();
+                    } else {
+                        $("#" + pointer).addClass("clicked");
+//                            sendData("loadGossPost", {target: "#individual-notification-box-a", loadImage: true, start: 0, limit: 3});
+                        $('.loadMoreGossContent').attr('hold', 'all');
+                        $("#individual-notification-box-a").show();
+                    }
+                }
+            }
             $(document).ready(function() {
                 $(".fancybox").fancybox({
                     openEffect: 'none',
@@ -37,47 +93,40 @@ if (isset($_COOKIE['user_auth'])) {
 
                 });
                 sendData("loadNotificationCount", {title: document.title});
-                
-                $('.gossbag-separation-icons').click(function(){
+
+                $('.gossbag-separation-icons').click(function() {
                     $('.gossbag-separation-icons.active').removeClass('active');
-                        $(this).addClass('active');
-                        
-                        doSeparatGoss($(this).attr('id'));
+                    $(this).addClass('active');
+                    $(".box").hide();
+                    doSeparatGoss($(this).attr('id'));
                 });
-                
-                $('.loadMoreGossContent').click(function(){
-                    alert($(this).attr('hold'));
-//                    start = $(this).attr('rel');
-//                    if($(this).attr('id')==='loadMoreWink'){
-//                        sendData("loadWink", {target: "#individual-notification-box", loadImage: true, start: start, limit: 8});
-//                    
-//                }
+
+                $('.loadMoreGossContent').click(function() {
+                    var hold = $(this).attr('hold');
+                    var winkStart = $(this).attr('wink');
+                    var commentStart = $(this).attr('comment');
+                    var postStart = $(this).attr('posts');
+                    var frqStart = $(this).attr('frq');
+                    var allStart = $(this).attr('all');
+
+                    if (hold === 'Wink') {
+                        $("#loadMoreImg").show();
+                        sendData("loadWink", {target: "#individual-notification-box-w", start: winkStart, limit: limit, status: "append"});
+                    } else if (hold === 'Comment') {
+                        $("#loadMoreImg").show();
+                        sendData("loadGossComment", {target: "#individual-notification-box-c", start: commentStart, limit: limit, status: "append"});
+                    } else if (hold === 'Post') {
+                        $("#loadMoreImg").show();
+                        sendData("loadGossPost", {target: "#individual-notification-box-p", start: postStart, limit: limit, status: "append"});
+                    } else if (hold === 'Frq') {
+                        $("#loadMoreImg").show();
+                        sendData("loadGossFrq", {target: "#individual-notification-box-f", start: frqStart, limit: limit, status: "append"});
+                    } else if (hold === 'all') {
+                        $("#loadMoreImg").show();
+                        sendData("loadGossbag", {target: "#individual-notification-box-a", start: allStart, limit: limit, status: "append"});
+                    }
                     return false;
                 });
-                
-                function doSeparatGoss(pointer){
-                    hold = $('#current-notification');
-                    if(pointer==='wink-notification-icon'){
-                         hold.text('Wink');
-                        sendData("loadWink", {target: "#individual-notification-box", loadImage: true, start: 0, limit: 5});
-                        $('.loadMoreGossContent').attr('hold','Wink');
-                    }
-                    if(pointer==='comment-notification-icon'){
-                         hold.text('Comment');
-                        sendData("loadGossComment", {target: "#individual-notification-box", loadImage: true, start: 0, limit: 5});
-                     $('.loadMoreGossContent').attr('hold','Comment');
-                 }
-                    if(pointer==='frq-notification-icon'){
-                         hold.text('Friend request');
-                        sendData("loadGossFrq", {target: "#individual-notification-box", loadImage: true, start: 0, limit: 5});
-                     $('.loadMoreGossContent').attr('hold','Frq');
-                 }
-                    if(pointer==='post-notification-icon'){
-                         hold.text('Post');
-                        sendData("loadGossPost", {target: "#individual-notification-box", loadImage: true, start: 0, limit: 5});
-                     $('.loadMoreGossContent').attr('hold','Post');
-                 }
-                }
             });
         </script>
     </head>
@@ -93,29 +142,30 @@ if (isset($_COOKIE['user_auth'])) {
                 <div class="all-notifications-list">
                     <h1>Notifications</h1>
                     <span style="float:left;" class="all-notifications-message" id="current-notification">All Notifications
-                    
+
                     </span>
-                    
+
                     <div class="timeline-filter">
-                        
+
                         <ul>
-                            
-                             <li class="gossbag-separation-li gossbag-separation-icons" id="wink-notification-icon" rel="wink-notification-icon"><span class="icon-16-eye"></span></li>
-                              <li class="gossbag-separation-li gossbag-separation-icons" id="frq-notification-icon" rel="frq-notification-icon"><span class="icon-16-user-add"></span></li>
-                               <li class="gossbag-separation-li gossbag-separation-icons" id="post-notification-icon" rel="post-notification-icon"><span class="icon-16-pencil"></span></li>
-                                <li class="gossbag-separation-li gossbag-separation-icons" id="comment-notification-icon" rel="comment-notification-icon"><span class="icon-16-comment"></span></li>
-                                <li class="active gossbag-separation-li gossbag-separation-icons" id="all-notification-icon" rel="all-notification-icon"><span class=""><a href="notifications">All</a></span></li>
-                                
+                            <li class="gossbag-separation-li gossbag-separation-icons" id="wink-notification-icon" rel="wink-notification-icon" title="Wink"><span class="icon-16-eye"></span></li>
+                            <li class="gossbag-separation-li gossbag-separation-icons" id="frq-notification-icon" rel="frq-notification-icon" title="Friend Request"><span class="icon-16-user-add"></span></li>
+                            <li class="gossbag-separation-li gossbag-separation-icons" id="comment-notification-icon" rel="comment-notification-icon" title="Comments"><span class="icon-16-comment"></span></li>
+                            <li class="gossbag-separation-li gossbag-separation-icons" id="post-notification-icon" rel="post-notification-icon" title="Posts"><span class="icon-16-pencil"></span></li>
+                            <li class="active gossbag-separation-li gossbag-separation-icons" id="all-notification-icon" rel="all-notification-icon" title="All"><span class="">All</span></li>
+
                         </ul>
                     </div>
                     <div class="clear"></div>
-                    <span id="individual-notification-box"></span>
-                    
-                   
-                    <div class="button" style="float:left;"><a href="" rel="5" hold="1" class="loadMoreGossContent" id="loadMoreWink">Load more > ></a></div>  
+                    <span class="box" id="individual-notification-box-a"></span>
+                    <span class="box" id="individual-notification-box-w"></span>
+                    <span class="box" id="individual-notification-box-c"></span>
+                    <span class="box" id="individual-notification-box-f"></span>
+                    <span class="box" id="individual-notification-box-p"></span>
+                    <div class="button" style="float:left;"><a href="" wink="10" comment="10" frq="10" posts="3" all="10" hold="all" class="loadMoreGossContent" id="loadMoreWink">Load more > ></a></div><div id="loadMoreImg" style="display: none"><img src="images/loading.gif"/> </div> 
                     <script>
                         $(document).ready(function() {
-                            sendData("loadGossbag", {target: "#individual-notification-box", loadImage: true, start: 0, limit: 50});
+                            sendData("loadGossbag", {target: "#individual-notification-box-a", loadImage: true, start: 0, limit: 10});
                         });
                     </script>
                 </div>

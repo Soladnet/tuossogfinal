@@ -45,7 +45,7 @@
                         <a id="messages-text" >
 
                             <span><a href onclick='javascript:callTour();
-                                                return false;'>Get hint</a></span>
+                                                return false;'>Take a Tour</a></span>
                         </a>
 
                     </li>
@@ -57,7 +57,7 @@
                     <a id="messages-text" >
 
                         <span><a href onclick='javascript:callTour();
-                                            return false;'>Get hint</a></span>
+                                            return false;'>Take a Tour</a></span>
                     </a>
 
                 </li>

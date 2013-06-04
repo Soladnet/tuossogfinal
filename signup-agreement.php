@@ -142,48 +142,16 @@ if (isset($_GET['param'])) {
             </div>
             <div class="index-intro">		
                 <div class="index-intro-2">
-                    <div class="registration" style='max-width: 600px !important;'>
+                    <div class="registration">
                         <div class="index-intro-1">
-
                             <h1>
-                                <?php
-                                if (isset($_SESSION['verified']))
-                                    if ($_SESSION['verified'] == 'Verified')
-                                        echo "<span style='color:green;'>Verification Successful!</span>";
-                                    elseif ($_SESSION['verified'] == 'Already verified')
-                                        echo "<span style=''>Already Verified</span>";
-                                    elseif ($_SESSION['verified'] == 'Token not valid')
-                                        echo "<span>Invalid Link</span>";
-                                    elseif ($_SESSION['verified'] == 'Skipped')
-                                        echo "<span>Verification Skipped</span>";
-                                ?>
-
-
+                                Please read carefully! 
                             </h1>
-                            <?php
-                            if (isset($_SESSION['verified']))
-                                if ($_SESSION['verified'] == 'Verified')
-                                    echo "<span style='color:green'>Your email has been successfully verified. You now have full
-                                       access to your account. Click 'Finish' to start meeting people of common interest!</span>";
-                                elseif ($_SESSION['verified'] == 'Already verified')
-                                    echo "<span style='color:#264409'>Your account has already been verified earlier. Please 
-                                               click 'Login' to login to your account!</span>";
-
-                                elseif ($_SESSION['verified'] == 'Token not valid')
-                                    echo "<span style='color:#264409'>Your account could not be verified as a resut of incomplete verification
-                                               link. Please try clicking the verification link from you email again, or copy and paste the link unto you browser's 
-                                               address bar.</span>";
-                                elseif ($_SESSION['verified'] == 'Skipped')
-                                    echo "<span style='color:#264409'>You have choosen to skip the verification step. Please note that you need to verify you email to have unlimited access to your account.</span>";
-                            ?>
-
                         </div>
-                        <?php if($_SESSION['verified'] == 'Verified'){?>
-                        <progress max="100" value="95" style='margin-top: 5px;'>95% done!</progress>
-                        <?php } ?>
+                        <progress max="100" value="95" >95% done!</progress>
                         <hr>
                         <ul>
-                            <li><?php if($_SESSION['verified'] == 'Verified'){ ?>
+                            <li>
                                 <p class="success">
                                     By clicking <strong>Finish</strong>, you agree to our 
                                     <a href="tos">Terms of Service!</a>
@@ -196,15 +164,8 @@ if (isset($_GET['param'])) {
                                     are happy to receive all <a href="http://en.wikipedia.org/wiki/HTTP_cookie">cookies</a> on this website. 
 
                                 </p>
-                            <?php }?>
                             </li>
-                            <?php
-                            if (!isset($_COOKIE['user_auth']))
-                                echo '<div class="button"><a href="login">Login here!</a></div>';
-                            else
-                                echo '<div class="button"><a href="home">Finish!</a></div>';
-                            ?>
-
+                            <div class="button"><a href="home">Finish!</a></div>
                             </form>
                             <div class="clear"></div>
                     </div>

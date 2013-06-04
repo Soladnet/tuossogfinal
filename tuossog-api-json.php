@@ -267,7 +267,7 @@ if (isset($_POST['param'])) {
 //                 
                 }
                 else {
-                    displayError(404, "Not Found--");
+                    displayError(404, "Not Found");
                 }
             } else {
                 displayError(400, "The request cannot be fulfilled due to bad syntax");
@@ -305,7 +305,7 @@ if (isset($_POST['param'])) {
 //                 
                 }
                 else {
-                    displayError(404, "Not Found--");
+                    displayError(404, "Not Found");
                 }
             } else {
                 displayError(400, "The request cannot be fulfilled due to bad syntax");
@@ -340,10 +340,8 @@ if (isset($_POST['param'])) {
                 $user_frq = $user->loadGossFrq();
                 if ($user_frq['status']) {
                     echo json_encode($user_frq);
-//                 
-                }
-                else {
-                    displayError(404, "Not Found--");
+                }else {
+                    displayError(404, "Not Found");
                 }
             } else {
                 displayError(400, "The request cannot be fulfilled due to bad syntax");
@@ -381,7 +379,7 @@ if (isset($_POST['param'])) {
 //                 
                 }
                 else {
-                    displayError(404, "Not Found--");
+                    displayError(404, "Not Found");
                 }
             } else {
                 displayError(400, "The request cannot be fulfilled due to bad syntax");

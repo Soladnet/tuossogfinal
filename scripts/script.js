@@ -91,7 +91,6 @@ function sendData(callback, target) {
         option = {
             beforeSend: function() {
                 showuidfeedback(target);
-//                alert('loadWink');
             },
             success: function(response, statusText, xhr) {
                 loadWink(response, statusText, target);
@@ -100,10 +99,9 @@ function sendData(callback, target) {
                 param: "loadWink",
                 start: target.start,
                 limit: target.limit,
-//                update: true
             }
         };
-    }else if (callback === "loadGossComment") {
+    } else if (callback === "loadGossComment") {
         option = {
             beforeSend: function() {
                 showuidfeedback(target);
@@ -136,7 +134,7 @@ function sendData(callback, target) {
 //                update: true
             }
         };
-    }else if (callback === "loadGossFrq") {
+    } else if (callback === "loadGossFrq") {
         option = {
             beforeSend: function() {
                 showuidfeedback(target);
@@ -152,7 +150,7 @@ function sendData(callback, target) {
 //                update: true
             }
         };
-    }else if (callback === "loadGossPost") {
+    } else if (callback === "loadGossPost") {
         option = {
             beforeSend: function() {
                 showuidfeedback(target);
@@ -385,13 +383,13 @@ function loadTimeline(response, statusText, target) {
                         '<img src="' + response.thumbnail100 + '">' +
                         '<h3><a href="' + response.unique_name + '">' + response.name + '</a></h3>' +
                         '<p>' + response.description + '</p>' +
-                        (response.isAmember ? "" : '<p><a id="joinCom-' + response.id + '">Join</a></p>') +
+                        (response.isAmember ? "" : '<p><a class="joinCom" id="joinCom-' + response.id + '">Join</a></p>') +
                         '</div><div class="clear"></div></div>';
                 if (!response.isAmember) {
                     if (toggleId !== "") {
                         toggleId += ",";
                     }
-                    toggleId += "#joinCom-" + response.id;
+                    toggleId += ".joinCom";
                 }
             } /*else if (response.type === "comcrea") {
              htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
@@ -418,92 +416,144 @@ function loadTimeline(response, statusText, target) {
 }
 
 function loadWink(response, statusText, target) {
-//     $.each(response.bag, function(i, response){alert(response.firstname)});
-     var htmlstr = "", htmlFirst ="", accept_frq_text="";
-//      alert('htmlstr');
-    if(!response.error){
+    var htmlstr = "", htmlFirst = "", accept_frq_text = "";
+    if (!response.error) {
         $.each(response.bag, function(i, response) {
-                        htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-eye"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-                                '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
-                                '<h3>' + response.firstname.concat(' ', response.lastname) + ' </h3>' +
-                                '<div class="all-notifications-message">Winked you</div></div><hr><p>' +
-                                '<a class="all-notifications-actions" id="winkIgnore-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
-                                '<a class="all-notifications-actions" id="wink-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a>' +
-                                '</p></div>';
-                        accept_frq_text += accept_frq_text === "" ? "#winkIgnore-text-n-" + response.id + '-' + response.sender_id + ",#wink-text-n-" + response.id + '-' + response.sender_id : ",#winkIgnore-text-n-" + response.id + '-' + response.sender_id + ",#wink-text-n-" + response.id + '-' + response.sender_id;
-         });
-//   htmlFirst = $(target.target).html();
-  $(target.target).html(htmlstr);
-   }else{
-       htmlstr ="Hoops! You have more unviewed winks."
-      $(target.target).html(htmlstr); 
-   }
+            htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-eye"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
+                    '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
+                    '<h3>' + response.firstname.concat(' ', response.lastname) + ' </h3>' +
+                    '<div class="all-notifications-message">Winked you</div></div><hr><p>' +
+                    '<a class="all-notifications-actions winkIgnore" id="winkIgnore-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
+                    '<a class="all-notifications-actions wink-text" id="wink-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a>' +
+                    '</p></div>';
+            accept_frq_text += accept_frq_text === "" ? ".winkIgnore,.wink-text" : ",.winkIgnore,.wink-text";
+        });
+        if (target.status === "append") {
+            $(target.target).append(htmlstr);
+            $("#loadMoreImg").hide();
+            $('.loadMoreGossContent').attr("wink", parseInt($('.loadMoreGossContent').attr("wink")) + limit);
+        } else {
+            $(target.target).html(htmlstr);
+        }
+        $(accept_frq_text).click(function() {
+            showOption(this);
+        });
+        prepareDynamicDates();
+        $(".timeago").timeago();
+    } else {
+        if (target.status === "append") {
+            humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            $("#loadMoreImg").hide();
+        } else {
+            htmlstr = "Hoops! You have no more unviewed winks."
+            $(target.target).html(htmlstr);
+        }
+    }
 }
 function loadGossPost(response, statusText, target) {
 //     $.each(response.bag, function(i, response){alert(response.firstname)});
-     var htmlstr = "", htmlFirst ="", accept_frq_text="";
+    var htmlstr = "", htmlFirst = "", accept_frq_text = "";
 //      alert('htmlstr');
-    if(!response.error){
+    if (!response.error) {
         $.each(response.bag, function(i, response) {
-           htmlstr += '<div class="individual-notification-box">' +
-                            '<p><span class="icon-16-pencil"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-                            '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="all-notification-text"><h3>' + response.firstname.concat(' ', response.lastname) + '</h3>' +
-                            '<div class="all-notifications-comment">posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '" in <a href="communities/' + response.unique_name + '">' + response.name + '</a></div></div><hr><p>' +
-                            '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
-                });
-//   htmlFirst = $(target.target).html();
-  $(target.target).html(htmlstr);
-   }else{
-       htmlstr =" Hoops! You have no more post to view.";
-      $(target.target).html(htmlstr); 
-   }
+            htmlstr += '<div class="individual-notification-box">' +
+                    '<p><span class="icon-16-pencil"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
+                    '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
+                    '<div class="all-notification-text"><h3>' + response.firstname.concat(' ', response.lastname) + '</h3>' +
+                    '<div class="all-notifications-comment">posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '" in <a href="communities/' + response.unique_name + '">' + response.name + '</a></div></div><hr><p>' +
+                    '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
+        });
+        if (target.status === "append") {
+            $(target.target).append(htmlstr);
+            $("#loadMoreImg").hide();
+            $('.loadMoreGossContent').attr("posts", parseInt($('.loadMoreGossContent').attr("posts")) + limit);
+        } else {
+            $(target.target).html(htmlstr);
+        }
+        prepareDynamicDates();
+        $(".timeago").timeago();
+    } else {
+        if (target.status === "append") {
+            humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            $("#loadMoreImg").hide();
+        } else {
+            htmlstr = "Hoops! You have no more unviewed winks."
+            $(target.target).html(htmlstr);
+        }
+    }
 }
 
 function loadGossComment(response, statusText, target) {
 //     $.each(response.bag, function(i, response){alert(response.firstname)});
-     var htmlstr = "", htmlFirst ="", accept_frq_text="";
+    var htmlstr = "", htmlFirst = "", accept_frq_text = "";
 //      alert('htmlstr');
-    if(!response.error){
+    if (!response.error) {
         $.each(response.bag, function(i, response) {
-                 htmlstr += '<div class="individual-notification-box">' +
-                            '<p><span class="icon-16-comment"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-                            '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="all-notification-text"><h3>' + response.firstname.concat(' ', response.lastname) + '</h3>' +
-                            '<div class="all-notifications-message">Commented on ' + (response.isMyPost ? "on your post" : "a post") + ' in ' + response.name + '</div>' +
-                            '<div class="all-notifications-comment">"' + (response.comment.length > 50 ? response.comment.substring(0, 50) + "..." : response.comment) + '"</div></div><hr><p>' +
-                            '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
-                });
-//   htmlFirst = $(target.target).html();
-  $(target.target).html(htmlstr);
-   }else{
-       htmlstr ="Hoops! You have no more comments.";
-      $(target.target).html(htmlstr); 
-   }
+            htmlstr += '<div class="individual-notification-box">' +
+                    '<p><span class="icon-16-comment"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
+                    '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
+                    '<div class="all-notification-text"><h3>' + response.firstname.concat(' ', response.lastname) + '</h3>' +
+                    '<div class="all-notifications-message">Commented on ' + (response.isMyPost ? "on your post" : "a post") + ' in ' + response.name + '</div>' +
+                    '<div class="all-notifications-comment">"' + (response.comment.length > 50 ? response.comment.substring(0, 50) + "..." : response.comment) + '"</div></div><hr><p>' +
+                    '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
+        });
+        if (target.status === "append") {
+            $(target.target).append(htmlstr);
+            $("#loadMoreImg").hide();
+            $('.loadMoreGossContent').attr("comment", parseInt($('.loadMoreGossContent').attr("comment")) + limit);
+        } else {
+            $(target.target).html(htmlstr);
+        }
+        prepareDynamicDates();
+        $(".timeago").timeago();
+    } else {
+        if (target.status === "append") {
+            humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            $("#loadMoreImg").hide();
+        } else {
+            htmlstr = "Hoops! You have no more unviewed winks."
+            $(target.target).html(htmlstr);
+        }
+    }
 }
 
 function loadGossFrq(response, statusText, target) {
 //     $.each(response.bag, function(i, response){alert(response.firstname)});
-     var htmlstr = "", htmlFirst ="", accept_frq_text="";
+    var htmlstr = "", htmlFirst = "", accept_frq_text = "";
 //      alert('htmlstr');
-    if(!response.error){
+    if (!response.error) {
         $.each(response.bag, function(i, response) {
-                  htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-user-add"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-                            '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
-                            '<a href=""><h3>' + response.firstname.concat(' ', response.lastname) + ' </h3></a>' +
-                            '<div class="all-notifications-message">Wants To Add You</div></div><hr><p>' +
-                            '<a class="all-notifications-actions" id="frqIgnore-text-n-' + response.username1 + '"><span class="icon-16-cross"></span>Ignore</a>' +
-                            '<a class="all-notifications-actions" id="accept-frq-text-n-' + response.username1 + '"><span class="icon-16-checkmark"></span>Accept</a>' +
-                            '</p></div>';
-                    accept_frq_text += "#accept-frq-text-n-" + response.username1;
-                    accept_frq_text += ",#frqIgnore-text-n-" + response.username1;
-                });
-//   htmlFirst = $(target.target).html();
-  $(target.target).html(htmlstr);
-   }else{
-       htmlstr ="Hoops! You have no more friend requests.";
-      $(target.target).html(htmlstr); 
-   }
+            htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-user-add"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
+                    '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
+                    '<a href=""><h3>' + response.firstname.concat(' ', response.lastname) + ' </h3></a>' +
+                    '<div class="all-notifications-message">Wants To Add You</div></div><hr><p>' +
+                    '<a class="all-notifications-actions frqIgnore" id="frqIgnore-text-n-' + response.username1 + '"><span class="icon-16-cross"></span>Ignore</a>' +
+                    '<a class="all-notifications-actions accept-frq" id="accept-frq-text-n-' + response.username1 + '"><span class="icon-16-checkmark"></span>Accept</a>' +
+                    '</p></div>';
+            accept_frq_text += ".accept-frq";
+            accept_frq_text += ",.frqIgnore";
+        });
+        if (target.status === "append") {
+            $(target.target).append(htmlstr);
+            $("#loadMoreImg").hide();
+            $('.loadMoreGossContent').attr("frq", parseInt($('.loadMoreGossContent').attr("frq")) + limit);
+        } else {
+            $(target.target).html(htmlstr);
+        }
+        $(accept_frq_text).click(function() {
+            showOption(this);
+        });
+        prepareDynamicDates();
+        $(".timeago").timeago();
+    } else {
+        if (target.status === "append") {
+            humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            $("#loadMoreImg").hide();
+        } else {
+            htmlstr = "Hoops! You have no more unviewed winks."
+            $(target.target).html(htmlstr);
+        }
+    }
 }
 
 function loadGossbag(response, statusText, target) {
@@ -511,52 +561,52 @@ function loadGossbag(response, statusText, target) {
         var htmlstr = "", accept_frq_text = "", winkback = "", ignorewink = "";
         $.each(response, function(i, response) {
             if (response.type === "frq") {
-                if (target.target === "#individual-notification-box") {
+                if (target.target === "#individual-notification-box-a") {
                     htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-user-add"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
                             '<a href=""><h3>' + response.firstname.concat(' ', response.lastname) + ' </h3></a>' +
                             '<div class="all-notifications-message">Wants To Add You</div></div><hr><p>' +
-                            '<a class="all-notifications-actions" id="frqIgnore-text-n-' + response.username1 + '"><span class="icon-16-cross"></span>Ignore</a>' +
-                            '<a class="all-notifications-actions" id="accept-frq-text-n-' + response.username1 + '"><span class="icon-16-checkmark"></span>Accept</a>' +
+                            '<a class="all-notifications-actions frqIgnore" id="frqIgnore-text-n-' + response.username1 + '"><span class="icon-16-cross"></span>Ignore</a>' +
+                            '<a class="all-notifications-actions accept-frq" id="accept-frq-text-n-' + response.username1 + '"><span class="icon-16-checkmark"></span>Accept</a>' +
                             '</p></div>';
-                    accept_frq_text += "#accept-frq-text-n-" + response.username1;
-                    accept_frq_text += ",#frqIgnore-text-n-" + response.username1;
+                    accept_frq_text += ".accept-frq";
+                    accept_frq_text += ",.frqIgnore";
                 } else {
                     htmlstr += '<div class="individual-notification"><p><span class="icon-16-user-add"></span>' +
                             '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
                             '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + '</p>' +
                             '<p>wants to add you as friend</p></div><div class="clear"></div><hr>' +
-                            '<span id="frqOption-' + response.id + '"><a class="notification-actions" id="frqIgnore-text-' + response.username1 + '">Ignore</a>' +
-                            '<a class="notification-actions" id="accept-frq-text-' + response.username1 + '">Accept</a></span>' +
+                            '<span id="frqOption-' + response.id + '"><a class="notification-actions frqIgnore" id="frqIgnore-text-' + response.username1 + '">Ignore</a>' +
+                            '<a class="notification-actions accept-frq" id="accept-frq-text-' + response.username1 + '">Accept</a></span>' +
                             '<div class="clear"></div></div>';
-                    accept_frq_text += "#accept-frq-text-" + response.username1;
-                    accept_frq_text += ",#frqIgnore-text-" + response.username1;
+                    accept_frq_text += ".accept-frq";
+                    accept_frq_text += ",.frqIgnore";
                 }
 
             } else if (response.type === "TW") {
-                if (target.target === "#individual-notification-box") {
+                if (target.target === "#individual-notification-box-a") {
                     htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-eye"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
                             '<h3>' + response.firstname.concat(' ', response.lastname) + ' </h3>' +
                             '<div class="all-notifications-message">Winked you</div></div><hr><p>' +
-                            '<a class="all-notifications-actions" id="winkIgnore-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
-                            '<a class="all-notifications-actions" id="wink-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a>' +
+                            '<a class="all-notifications-actions winkIgnore" id="winkIgnore-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
+                            '<a class="all-notifications-actions wink-text" id="wink-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a>' +
                             '</p></div>';
-                    accept_frq_text += accept_frq_text === "" ? "#winkIgnore-text-n-" + response.id + '-' + response.sender_id + ",#wink-text-n-" + response.id + '-' + response.sender_id : ",#winkIgnore-text-n-" + response.id + '-' + response.sender_id + ",#wink-text-n-" + response.id + '-' + response.sender_id;
+                    accept_frq_text += accept_frq_text === "" ? ".winkIgnore,.wink-text" : ",.winkIgnore,.wink-text";
                 } else {
                     htmlstr += '<div class="individual-notification"><p><span class="icon-16-eye"></span>' +
                             '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
                             '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + '</p>' +
                             '<p>winked you</p></div><div class="clear"></div><hr>' +
-                            '<span id="winkOption-' + response.id + '"><a class="notification-actions" id="winkIgnore-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
-                            '<a class="notification-actions" id="wink-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a></span>' +
+                            '<span id="winkOption-' + response.id + '"><a class="notification-actions winkIgnore" id="winkIgnore-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
+                            '<a class="notification-actions wink-text" id="wink-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a></span>' +
                             '<div class="clear"></div></div>';
-                    accept_frq_text += accept_frq_text === "" ? "#winkIgnore-text-" + response.id + '-' + response.sender_id + ",#wink-text-" + response.id + '-' + response.sender_id : ",#winkIgnore-text-" + response.id + '-' + response.sender_id + ",#wink-text-" + response.id + '-' + response.sender_id;
+                    accept_frq_text += accept_frq_text === "" ? ".winkIgnore,.wink-text" : ",.winkIgnore,.wink-text";
                 }
             } else if (response.type === "comment") {
-                if (target.target === "#individual-notification-box") {
+                if (target.target === "#individual-notification-box-a") {
                     htmlstr += '<div class="individual-notification-box">' +
                             '<p><span class="icon-16-comment"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
@@ -572,7 +622,7 @@ function loadGossbag(response, statusText, target) {
                             '<!--<a class="notification-actions" title="' + response.name + '">View</a>--><div class="clear"></div></div>';
                 }
             } else if (response.type === "post") {
-                if (target.target === "#individual-notification-box") {
+                if (target.target === "#individual-notification-box-a") {
                     htmlstr += '<div class="individual-notification-box">' +
                             '<p><span class="icon-16-pencil"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
@@ -587,37 +637,46 @@ function loadGossbag(response, statusText, target) {
                             '<div class="clear"></div></div>';
                 }
             } else if (response.type === "IV") {
-                if (target.target === "#individual-notification-box") {
+                if (target.target === "#individual-notification-box-a") {
                     htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-earth"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
                             '<h3>' + response.firstname.concat(' ', response.lastname) + ' </h3>' +
                             '<div class="all-notifications-message">invites you to join <a href="communities/' + response.unique_name + '">' + response.name + '</a></div></div><hr><p id="invitationtarget">' +
-                            '<a class="all-notifications-actions" id="invitationIgnore-text-' + response.comid + '"><span class="icon-16-cross"></span>Ignore</a>' +
-                            '<a class="all-notifications-actions" id="invitation-text-' + response.comid + '"><span class="icon-16-earth"></span>Join</a>' +
+                            '<a class="all-notifications-actions invitationIgnore" id="invitationIgnore-text-' + response.comid + '"><span class="icon-16-cross"></span>Ignore</a>' +
+                            '<a class="all-notifications-actions invitation-text" id="invitation-text-' + response.comid + '"><span class="icon-16-earth"></span>Join</a>' +
                             '</p></div>';
-                    accept_frq_text += accept_frq_text === "" ? "#invitationIgnore-text-" + response.comid + ",#invitation-text-" + response.comid : ",#invitationIgnore-text-" + response.comid + ",#invitation-text-" + response.comid;
+                    accept_frq_text += accept_frq_text === "" ? ".invitationIgnore,.invitation-text" : ",.invitationIgnore,.invitation-text";
                 } else {
                     htmlstr += '<div class="individual-notification viewed-notification"><p><span class="icon-16-earth"></span>' +
                             '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
                             '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + '</p><p>invites you to join</p>' +
-                            '<p><a href="communities/' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><span id="invitationtarget"><a class="notification-actions" id="invitationIgnore-text-n-' + response.comid + '">Ignore</a>' +
-                            '<a class="notification-actions" id="invitation-text-n-' + response.comid + '">Join</a></span><div class="clear"></div></div>';
-                    accept_frq_text += accept_frq_text === "" ? "#invitationIgnore-text-n-" + response.comid + ",#invitation-text-n-" + response.comid : ",#invitationIgnore-text-n-" + response.comid + ",#invitation-text-n-" + response.comid;
+                            '<p><a href="communities/' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><span id="invitationtarget"><a class="notification-actions invitationIgnore" id="invitationIgnore-text-n-' + response.comid + '">Ignore</a>' +
+                            '<a class="notification-actions invitation-text" id="invitation-text-n-' + response.comid + '">Join</a></span><div class="clear"></div></div>';
+                    accept_frq_text += accept_frq_text === "" ? ".invitationIgnore,.invitation-text" : ",.invitationIgnore,.invitation-text";
                 }
             }
         });
-        $(target.target).html(htmlstr);
+        if (target.status === "append") {
+            $(target.target).append(htmlstr);
+            $("#loadMoreImg").hide();
+            $('.loadMoreGossContent').attr("all", parseInt($('.loadMoreGossContent').attr("all")) + limit);
+        } else {
+            $(target.target).html(htmlstr);
+        }
         $(accept_frq_text).click(function() {
-            
             showOption(this);
-            
         });
 //        alert(accept_frq_text);
         prepareDynamicDates();
         $(".timeago").timeago();
     } else {
-        if (response.error.code === 404 || response.error.code === 400) {
-            $(target.target).html('<div class="individual-notification"><div class="notification-text"><p>Gossbag Empty</p></div><div class="clear"></div><hr><div class="clear"></div></div>');
+        if (response.error) {
+            if (target.status === "append") {
+                humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                $("#loadMoreImg").hide();
+            } else {
+                $(target.target).html('<div class="individual-notification"><div class="notification-text"><p>Gossbag Empty</p></div><div class="clear"></div><hr><div class="clear"></div></div>');
+            }
         }
     }
 }
@@ -858,7 +917,7 @@ function loadNotificationCount(response, statusText, target) {
     }
     setTimeout(function() {
         sendData("loadNotificationCount", target);
-    }, 10000);
+    }, 30000);
 }
 function loadCommunityMembers(response, statusText, target) {
     var htmlstr = "", wink = "";

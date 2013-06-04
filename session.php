@@ -2,8 +2,7 @@
 session_start();
 //echo "2013-05-17 21:03:36">"2013-05-17 22:03:05";
 //session_destroy();
-print_r($_SESSION);
-unset($_SESSION['status_string']);
+//print_r($_SESSION);
 //echo "<br/>" . $_SERVER['REMOTE_ADDR'];
 //echo "<br/>";
 //include_once './Config.php';

@@ -109,7 +109,7 @@ if (isset($_COOKIE['user_auth'])) {
                     echo isset($user) ? "Welcome <a href='home'>" . $user->getFullname() . "</a> [ <a href='login_exec'>Logout</a> ]" :
                             'Already have an account? <a href="login">Login Here</a> | <a href="signup-personal">Sign up</a>'
                     ?> | <a href onclick='javascript:callTour();
-                return false;'>Get hint</a></span>
+                return false;'>Take a Tour</a></span>
                 <div class="clear"></div>
             </div>
             <div class="index-banner">
