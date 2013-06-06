@@ -126,9 +126,10 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                         $('#my-communities').addClass('active');
                     });
                         var start = 0,limit=10;
-                       
+                       $('#loader1').hide();
                      $('#loadMoreComm').click(function(){
-                         start = parseInt($(this).attr('comm'));                         
+                         start = parseInt($(this).attr('comm')); 
+                          $('#loader1').show();
                          sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true, start:start,limit:limit,more:true});
 //                         alert('clicked');
                          return false;
@@ -182,7 +183,7 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                          </div><p>
                         <div class="button" style="float:left;" id="loadMoreComm" comm="10">
                         <a href="" class="loadMoreFrnd" id="loadMoreFrnd">Load more > ></a>
-                    </div>
+                    </div><img src='images/loading.gif' style='border:none' id="loader1"/>
                     </div>
                      
                 </span>

@@ -1253,6 +1253,7 @@ function loadCommunity(response, statusText, target) {
                      if(htmlstr!=="")
                 $('.community-box').append(htmlstr);
                 $('#loadMoreComm').attr('comm', parseInt($('#loadMoreComm').attr('comm')) + 10);
+                $('#loader1').hide();
             }
             else
                 if(htmlstr!=="")
