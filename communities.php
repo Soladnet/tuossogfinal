@@ -65,7 +65,7 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
     <?php
 } else {
     ?>
-                    sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true, start:0,limit:1});
+                    sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true, start:0,limit:10});
                     $("#searchForm").validationEngine();
                     $("#searchForm").ajaxForm({
                         beforeSend: function() {
