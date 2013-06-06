@@ -1,21 +1,38 @@
 function sendData(callback, target) {
     var option;
     if (callback === "loadCommunity") {
-        option = {
-            beforeSend: function() {
-                showuidfeedback(target);
-            },
-            success: function(response, statusText, xhr) {
-                loadCommunity(response, statusText, target);
-            },
-            data: {
-                param: "community",
-                max: target.max,
-                comname: target.comname,
-                start: target.start,
-                limit: target.limit
-            }
-        };
+        if (target.more)
+            option = {
+                beforeSend: function() {
+//                showuidfeedback(target);
+                },
+                success: function(response, statusText, xhr) {
+                    loadCommunity(response, statusText, target);
+                },
+                data: {
+                    param: "community",
+                    max: target.max,
+                    comname: target.comname,
+                    start: target.start,
+                    limit: target.limit
+                }
+            };
+        else
+            option = {
+                beforeSend: function() {
+                    showuidfeedback(target);
+                },
+                success: function(response, statusText, xhr) {
+                    loadCommunity(response, statusText, target);
+                },
+                data: {
+                    param: "community",
+                    max: target.max,
+                    comname: target.comname,
+                    start: target.start,
+                    limit: target.limit
+                }
+            };
     } else if (callback === "loadSuggestCommunity") {
         option = {
             beforeSend: function() {
@@ -222,7 +239,7 @@ function sendData(callback, target) {
             }
         };
     } else if (callback === "loadFriends") {
-        if(target.individualFriend){
+        if (target.individualFriend) {
             option = {
                 beforeSend: function() {
                     showuidfeedback(target.targetLoader);
@@ -232,12 +249,12 @@ function sendData(callback, target) {
                 },
                 data: {
                     param: "friends",
-                    start:  (target.start) ? target.start: 0,
-                    limit:  (target.limit) ? target.limit: 10
-                    }
+                    start: (target.start) ? target.start : 0,
+                    limit: (target.limit) ? target.limit : 10
+                }
             };
-        }else{
-           option = {
+        } else {
+            option = {
                 beforeSend: function() {
                     showuidfeedback(target);
                 },
@@ -246,12 +263,12 @@ function sendData(callback, target) {
                 },
                 data: {
                     param: "friends",
-                    start:  (target.start) ? target.start : 0,
-                    limit:  (target.limit) ? target.limit : 10
-                    }
+                    start: (target.start) ? target.start : 0,
+                    limit: (target.limit) ? target.limit : 10
+                }
             };
         }
-        
+
     } else if (callback === "inviteFriends") {
         option = {
             beforeSend: function() {
@@ -470,7 +487,7 @@ function loadWink(response, statusText, target) {
             $(target.target).html(htmlstr);
             $('#loadMoreNotifDiv').hide();
             $('#wink-notification-icon').addClass('noResult');
-              
+
         }
     }
 }
@@ -583,7 +600,7 @@ function loadGossFrq(response, statusText, target) {
             $('#frq-notification-icon').addClass('noResult');
         } else {
             htmlstr = "Oops! You have no pending friend request.";
-           
+
             $(target.target).html(htmlstr);
             $('#frq-notification-icon').addClass('noResult');
             $('#loadMoreNotifDiv').hide();
@@ -710,7 +727,7 @@ function loadGossbag(response, statusText, target) {
                 humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
                 $("#loadMoreImg").hide();
                 $('#all-notification-icon').addClass('noResult');
-                 $('#loadMoreNotifDiv').hide();
+                $('#loadMoreNotifDiv').hide();
             } else {
                 $(target.target).html('<div class="individual-notification"><div class="notification-text"><p>Gossbag Empty</p></div><div class="clear"></div><hr><div class="clear"></div></div>');
             }
@@ -1216,6 +1233,7 @@ function loadCommunity(response, statusText, target) {
                 $(target.target).html('<div class="posts"></div>');
             }
         } else {
+            var countResponse = response.length;
             $.each(response, function(i, response) {
                 if (target.target === "#aside-community-list") {
                     htmlstr += '<div class="community-listing"><span><a href="' + response.unique_name + '">' + response.name + '</a></span></div><hr>';
@@ -1227,11 +1245,22 @@ function loadCommunity(response, statusText, target) {
                             '</div><div class="members">' + response.type + '</div><div class="members">' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</div><div class="members">' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</div></div><div class="clear"></div></div>';
                 }
             });
-            $(target.target).html(htmlstr);
+//             htmlstr +='<p><a href="" frnd="10" class="loadMoreFrnd" id="loadMoreFrnd">Load more > ></a>';
+            if(countResponse < 10)
+                $('#loadMoreComm').hide();
+                if (target.more) {
+                     if(htmlstr!=="")
+                $('.community-box').append(htmlstr);
+                $('#loadMoreComm').attr('comm', parseInt($('#loadMoreComm').attr('comm')) + 10);
+            }
+            else
+                if(htmlstr!=="")
+                $(target.target).html(htmlstr);
+
         }
 
     } else {
-        if (response.error.code === 404) {
+        if (response.error.code) {
             if (target.target !== "#aside-community-list") {
                 $("#pageTitle").html("Suggested Community");
                 if (target.loadAside) {
@@ -1243,14 +1272,16 @@ function loadCommunity(response, statusText, target) {
                     $(target.target).html('<div class="communities-list"><h1 id="pageTitle">Communities</h1><hr/><div id="creatComDiv"><h3>Would you like to create one? It\'s very easy!<br><div class="button"><a href="create-community">New Community</a></div></h3><div class="community-box"></div></div></div>');
                     sendData("loadSuggestCommunity", {target: ".community-box", uid: target.uid, loadImage: true, max: true});
                 } else {
-                    sendData("loadSuggestCommunity", target);
-                }
+                    if(!target.more)
+                        sendData("loadSuggestCommunity", target);
+                    else{
+                    humane.log("Oops! You've got it all!", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});    
+                     $('#loadMoreComm').hide();
+                    }
+            }
             } else {
                 $(target.target).html("<span id='noCom'>No community found!</span>");
             }
-        } else {
-            $(target.target).html(response.error.message);
-            humane.log(response.error.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
         }
     }
 }
@@ -1290,7 +1321,11 @@ function loadSuggestCommunity(response, statusText, target) {
             if (!target.aside) {
                 $("#pageTitle").html("Suggested Community");
             }
-            $(target.target).html("<p>Opps! We cannot suggest community to you at the moment. <a href='create-community'>Start your own community</a>.</p>");
+            if (!target.more)
+                $(target.target).html("<p>Opps! We cannot suggest community to you at the moment. <a href='create-community'>Start your own community</a>.</p>");
+            else {
+                humane.log("Oops! You've got it all!", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            }
         } else {
             $("#pageTitle").html("Communities");
             humane.log(response.error.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
@@ -1471,7 +1506,7 @@ function loadFriends(response, statusText, target) {
                             '<div class="clear"></div></div></div></div></a></div>';
                     unfriend += "#unfriend-f-" + responseItem.id;
                     unfriend += ",#wink-f-" + responseItem.id;
-                    
+
                 }
 //            if(!target.individualFriend)
                 htmlstr += '<a class= "fancyboxAlert" id="aside-friend-' + responseItem.id + '" href="#' + responseItem.username + '">' +
@@ -1512,7 +1547,7 @@ function loadFriends(response, statusText, target) {
                 $(".chzn-select").chosen({max_selected_options: 1});
             }
         } else {
-            if(!target.individualFriend)
+            if (!target.individualFriend)
                 $(target.target).html(htmlstr);
             $(".fancyboxAlert").fancybox({
                 openEffect: 'none',
@@ -1521,12 +1556,12 @@ function loadFriends(response, statusText, target) {
             });
             if (target.friendPage) {
                 if (friendsPage !== "") {
-                    if(target.individualFriend){
+                    if (target.individualFriend) {
                         $(target.friendPage).append(friendsPage);
-                        $('#loadMoreFrnd').attr('frnd', parseInt($('#loadMoreFrnd').attr('frnd'))+10);
+                        $('#loadMoreFrnd').attr('frnd', parseInt($('#loadMoreFrnd').attr('frnd')) + 10);
                     }
                     else
-                         $(target.friendPage).html(friendsPage);
+                        $(target.friendPage).html(friendsPage);
                 } else {
 
                 }
@@ -1546,20 +1581,21 @@ function loadFriends(response, statusText, target) {
                     $(target.target).html("<p>Opps! We cannot suggest friends to you at the moment. <a href='communities'>Join a community</a> to increase your chances.</p>");
                 }
             } else {
-                if(!target.individualFriend){
+                if (!target.individualFriend) {
                     $(target.target).html("No Friends found!");
-            }else{
-                humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
-                $('#loadMoreFrndDiv').hide();
+                } else {
+                    humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                    $('#loadMoreFrndDiv').hide();
                 }
             }
         } else {
             $("#pageTitle").html("Communities");
             humane.log(response.error.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
-            
+
         }
     }
-    if(responseCount < 10) $('#loadMoreFrndDiv').hide();
+    if (responseCount < 10)
+        $('#loadMoreFrndDiv').hide();
 }
 function loadSuggestFriends(response, statusText, target) {
     var unfriend = "";

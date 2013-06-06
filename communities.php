@@ -65,7 +65,7 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
     <?php
 } else {
     ?>
-                    sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true});
+                    sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true, start:0,limit:10});
                     $("#searchForm").validationEngine();
                     $("#searchForm").ajaxForm({
                         beforeSend: function() {
@@ -87,7 +87,7 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                                                 '</div><div class="members">' + response.type + '</div><div class="members">' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</div><div class="members">' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</div></div><div class="clear"></div></div>';
                                     });
                                     $(".community-box").html(htmlstr);
-                                } else {
+                                       } else {
                                 }
                             } else {
                                 if (responseText.status) {
@@ -125,8 +125,13 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                         $('#suggestions').removeClass('active');
                         $('#my-communities').addClass('active');
                     });
-
-
+                        var start = 0,limit=10;
+                     $('#loadMoreComm').click(function(){
+                         start = parseInt($(this).attr('comm'));                         
+                         sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true, start:start,limit:limit,more:true});
+//                         alert('clicked');
+                         return false;
+                     });
     <?php
 }
 ?>
@@ -153,7 +158,7 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
             <div class="content">
                 <span id="rightcolumn">
                     <div class="communities-list">
-                        <h1 id="pageTitle">Communities</h1>
+                        <h1 id="pageTitle">My Communities</h1>
 
                         <div class="community-search-box">
                             <form action="tuossog-api-json.php" method="POST" id="searchForm">
@@ -165,27 +170,20 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                         <hr/>
                         <div id="creatComDiv">
                             <h3>Would you like to create one? It's very easy and free! 
-                                <br>
+                               
                                 <div class="button"><a href="create-community">Start a Community</a></div>
                             </h3>
+                             <!--fgsgh,vmcpeirvohh-->
                         </div>
+                      
                         <div class="community-box">
-                            <!--                        <div class="notice">
-                                                        You do not currently belong to any Community.
-                                                        Here are some suggestions we think you might like!
-                            
-                                                    </div>
-                                                    <div class="timeline-filter">
-                                                        <ul>
-                                                            <li><span class="icon-16-earth"></span></li>
-                                                            <li class="active"><a href=""><p>Suggestions</p> </a></li>
-                                                            <li><a href=""><p>My Communities</p></a></li>
-                                                        </ul>
-                                                    </div>
-                                                    <div class="clear"></div>-->
-                        </div>
-
+                          
+                         </div><p>
+                        <div class="button" style="float:left;" id="loadMoreComm" comm="10">
+                        <a href="" class="loadMoreFrnd" id="loadMoreFrnd">Load more > ></a>
                     </div>
+                    </div>
+                     
                 </span>
 
                 <?php
