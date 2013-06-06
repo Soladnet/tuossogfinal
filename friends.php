@@ -54,7 +54,7 @@ if (isset($_COOKIE['user_auth'])) {
                 var start, limit;
                 $('#loadMoreFrnd').click(function(){
                     start = parseInt($(this).attr('frnd'));
-                    limit = parseInt($(this).attr('frnd')) + 10;
+                    limit = 10;
 //                    limit = 1;
                 sendData("loadFriends", {target: "#aside-friends-list", loadImage: true,friendPage:'#individual-friend-box',individualFriend:true,start:start,limit:limit,targetLoader:'#individual-friend-box'});
                 return false;

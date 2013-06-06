@@ -125,9 +125,7 @@ if (isset($_COOKIE['user_auth'])) {
                         sendData("loadGossPost", {target: "#individual-notification-box-p", start: postStart, limit: limit, status: "append"});
                     } else if (hold === 'Frq') {
                         $("#loadMoreImg").show();
-                       
                         sendData("loadGossFrq", {target: "#individual-notification-box-f", start: frqStart, limit: limit, status: "append"});
-                        
                     } else if (hold === 'all') {
                         $("#loadMoreImg").show();
                         sendData("loadGossbag", {target: "#individual-notification-box-a", start: allStart, limit: limit, status: "append"});
