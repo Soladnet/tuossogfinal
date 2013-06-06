@@ -45,7 +45,7 @@ if (isset($_POST['param'])) {
                 }
                 $user->setTimezone($tz);
                 $start = 0;
-                $limit = 10;
+                $limit = 2;
                 $status = "Y";
                 if (isset($_POST['start']) && is_numeric($_POST['start'])) {
                     $start = $_POST['start'];
@@ -69,7 +69,48 @@ if (isset($_POST['param'])) {
         } else {
             displayError(400, "The request cannot be fulfilled due to bad syntax");
         }
-    } else if ($_POST['param'] == "community") {
+    } 
+//     else if ($_POST['param'] == "allFriends") {
+//        include_once './GossoutUser.php';
+//        if (isset($_POST['uid'])) {
+//            $id = decodeText($_POST['uid']);
+//            if (is_numeric($id)) {
+//                $user = new GossoutUser($id);
+//                if (isset($_COOKIE['tz'])) {
+//                    $tz = decodeText($_COOKIE['tz']);
+//                } else if (isset($_SESSION['auth']['tz'])) {
+//                    $tz = decodeText($_SESSION['auth']['tz']);
+//                } else {
+//                    $tz = "Africa/Lagos";
+//                }
+//                $user->setTimezone($tz);
+//                $start = 2;
+//                $limit = 2;
+//                $status = "Y";
+//                if (isset($_POST['start']) && is_numeric($_POST['start'])) {
+//                    $start = $_POST['start'];
+//                }
+//                if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
+//                    $limit = $_POST['limit'];
+//                }
+//                if (isset($_POST['status'])) {
+//                    $status = $_POST['status'] == "N" ? "N" : "Y";
+//                }
+//
+//                $friends = $user->getFriends($start, $limit, $status);
+//                if ($friends['status']) {
+//                    echo json_encode($friends['friends']);
+//                } else {
+//                    displayError(404, "Not Found");
+//                }
+//            } else {
+//                displayError(400, "The request cannot be fulfilled due to bad syntax");
+//            }
+//        } else {
+//            displayError(400, "The request cannot be fulfilled due to bad syntax");
+//        }
+//    } 
+    else if ($_POST['param'] == "community") {
         include_once './Community.php';
         if (isset($_POST['uid'])) {
             $id = decodeText($_POST['uid']);

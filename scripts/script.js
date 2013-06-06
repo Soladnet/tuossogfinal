@@ -222,17 +222,36 @@ function sendData(callback, target) {
             }
         };
     } else if (callback === "loadFriends") {
-        option = {
-            beforeSend: function() {
-                showuidfeedback(target);
-            },
-            success: function(response, statusText, xhr) {
-                loadFriends(response, statusText, target);
-            },
-            data: {
-                param: "friends",
-            }
-        };
+        if(target.individualFriend){
+            option = {
+                beforeSend: function() {
+                    showuidfeedback(target.targetLoader);
+                },
+                success: function(response, statusText, xhr) {
+                    loadFriends(response, statusText, target);
+                },
+                data: {
+                    param: "friends",
+                    start:  (target.start) ? target.start: 0,
+                    limit:  (target.limit) ? target.limit: 10
+                    }
+            };
+        }else{
+           option = {
+                beforeSend: function() {
+                    showuidfeedback(target);
+                },
+                success: function(response, statusText, xhr) {
+                    loadFriends(response, statusText, target);
+                },
+                data: {
+                    param: "friends",
+                    start:  (target.start) ? target.start : 0,
+                    limit:  (target.limit) ? target.limit : 10
+                    }
+            };
+        }
+        
     } else if (callback === "inviteFriends") {
         option = {
             beforeSend: function() {
@@ -444,9 +463,14 @@ function loadWink(response, statusText, target) {
         if (target.status === "append") {
             humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
             $("#loadMoreImg").hide();
+            $('#loadMoreNotifDiv').hide();
+            $('#wink-notification-icon').addClass('noResult');
         } else {
-            htmlstr = "Hoops! You have no more unviewed winks."
+            htmlstr = "Hoops! You have no unviewed winks.";
             $(target.target).html(htmlstr);
+            $('#loadMoreNotifDiv').hide();
+            $('#wink-notification-icon').addClass('noResult');
+              
         }
     }
 }
@@ -476,9 +500,12 @@ function loadGossPost(response, statusText, target) {
         if (target.status === "append") {
             humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
             $("#loadMoreImg").hide();
+            $('#loadMoreNotifDiv').hide();
+            $('#post-notification-icon').addClass('noResult');
         } else {
-            htmlstr = "Hoops! You have no more unviewed winks."
+            htmlstr = "Hoops! You have no post notification.";
             $(target.target).html(htmlstr);
+            $('#loadMoreNotifDiv').hide();
         }
     }
 }
@@ -510,9 +537,12 @@ function loadGossComment(response, statusText, target) {
         if (target.status === "append") {
             humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
             $("#loadMoreImg").hide();
+            $('#loadMoreNotifDiv').hide();
+            $('#comment-notification-icon').addClass('noResult');
         } else {
-            htmlstr = "Hoops! You have no more unviewed winks."
+            htmlstr = "Hoops! You have no comment notification.";
             $(target.target).html(htmlstr);
+            $('#loadMoreNotifDiv').hide();
         }
     }
 }
@@ -549,9 +579,14 @@ function loadGossFrq(response, statusText, target) {
         if (target.status === "append") {
             humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
             $("#loadMoreImg").hide();
+            $('#loadMoreNotifDiv').hide();
+            $('#frq-notification-icon').addClass('noResult');
         } else {
-            htmlstr = "Hoops! You have no more unviewed winks."
+            htmlstr = "Oops! You have no pending friend request.";
+           
             $(target.target).html(htmlstr);
+            $('#frq-notification-icon').addClass('noResult');
+            $('#loadMoreNotifDiv').hide();
         }
     }
 }
@@ -674,6 +709,8 @@ function loadGossbag(response, statusText, target) {
             if (target.status === "append") {
                 humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
                 $("#loadMoreImg").hide();
+                $('#all-notification-icon').addClass('noResult');
+                 $('#loadMoreNotifDiv').hide();
             } else {
                 $(target.target).html('<div class="individual-notification"><div class="notification-text"><p>Gossbag Empty</p></div><div class="clear"></div><hr><div class="clear"></div></div>');
             }
@@ -1414,7 +1451,8 @@ function loadComment(response, statusText, target) {
 }
 function loadFriends(response, statusText, target) {
     if (!response.error) {
-        var htmlstr = "", unfriend = "", friendsPage = "";
+        var htmlstr = "", unfriend = "", friendsPage = "", responseCount;
+        responseCount = response.length;
         $.each(response, function(i, responseItem) {
             if (target.target === "#aside-friends-list") {
                 if (target.friendPage) {
@@ -1433,7 +1471,9 @@ function loadFriends(response, statusText, target) {
                             '<div class="clear"></div></div></div></div></a></div>';
                     unfriend += "#unfriend-f-" + responseItem.id;
                     unfriend += ",#wink-f-" + responseItem.id;
+                    
                 }
+//            if(!target.individualFriend)
                 htmlstr += '<a class= "fancyboxAlert" id="aside-friend-' + responseItem.id + '" href="#' + responseItem.username + '">' +
                         '<div class= "friends-thumbnails"><img src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail50) + '"></div>' +
                         '<div style="display:none"><div id="' + responseItem.username + '"><div class="aside-wrapper">' +
@@ -1461,6 +1501,8 @@ function loadFriends(response, statusText, target) {
                 }
             }
         });
+//        if(target.friendPage)
+//            alert(target.friendPage);
         if (target.target === "#toUserInput") {
             var str = '<select data-placeholder="enter contact" class="chzn-select" multiple style="width:350px;" name="user[]" id="user_callup"><option value=""></option>' + htmlstr + '</select>';
             $(target.target).html(str);
@@ -1470,7 +1512,8 @@ function loadFriends(response, statusText, target) {
                 $(".chzn-select").chosen({max_selected_options: 1});
             }
         } else {
-            $(target.target).html(htmlstr);
+            if(!target.individualFriend)
+                $(target.target).html(htmlstr);
             $(".fancyboxAlert").fancybox({
                 openEffect: 'none',
                 closeEffect: 'none',
@@ -1478,7 +1521,12 @@ function loadFriends(response, statusText, target) {
             });
             if (target.friendPage) {
                 if (friendsPage !== "") {
-                    $(target.friendPage).html(friendsPage);
+                    if(target.individualFriend){
+                        $(target.friendPage).append(friendsPage);
+                        $('#loadMoreFrnd').attr('frnd', parseInt($('#loadMoreFrnd').attr('frnd'))+10);
+                    }
+                    else
+                         $(target.friendPage).html(friendsPage);
                 } else {
 
                 }
@@ -1498,13 +1546,20 @@ function loadFriends(response, statusText, target) {
                     $(target.target).html("<p>Opps! We cannot suggest friends to you at the moment. <a href='communities'>Join a community</a> to increase your chances.</p>");
                 }
             } else {
-                $(target.target).html("No Friends found!");
+                if(!target.individualFriend){
+                    $(target.target).html("No Friends found!");
+            }else{
+                humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                $('#loadMoreFrndDiv').hide();
+                }
             }
         } else {
             $("#pageTitle").html("Communities");
             humane.log(response.error.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+            
         }
     }
+    if(responseCount < 10) $('#loadMoreFrndDiv').hide();
 }
 function loadSuggestFriends(response, statusText, target) {
     var unfriend = "";

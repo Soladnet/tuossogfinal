@@ -42,6 +42,7 @@ if (isset($_COOKIE['user_auth'])) {
         <script type="text/javascript" src="scripts/languages/jquery.validationEngine-en.js"></script>
         <script type="text/javascript" src="scripts/jquery.validationEngine.js"></script>
         <script type="text/javascript">
+            
             $(document).ready(function() {
                 $(".fancybox").fancybox({
                     openEffect: 'none',
@@ -49,6 +50,15 @@ if (isset($_COOKIE['user_auth'])) {
                     minWidth: 250
 
                 });
+                $('.noResult').hide();
+                var start, limit;
+                $('#loadMoreFrnd').click(function(){
+                    start = parseInt($(this).attr('frnd'));
+                    limit = parseInt($(this).attr('frnd')) + 10;
+//                    limit = 1;
+                sendData("loadFriends", {target: "#aside-friends-list", loadImage: true,friendPage:'#individual-friend-box',individualFriend:true,start:start,limit:limit,targetLoader:'#individual-friend-box'});
+                return false;
+                    });
                 $("#searchForm").validationEngine();
                 $("#searchForm").ajaxForm({
                     beforeSend: function() {
@@ -84,7 +94,7 @@ if (isset($_COOKIE['user_auth'])) {
                             if (responseText.status) {
                                 humane.log("Community was not created", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
                             } else {
-                                $("#individual-friend-box").html("<center>No result found!</center>");
+                                $("#individual-friend-box").html("<center>Oops! Your search critaria produce no result.</center>");
                             }
                         }
                     },
@@ -119,7 +129,11 @@ if (isset($_COOKIE['user_auth'])) {
                     </div>
                     <div class="clear"></div>
                     <span id="individual-friend-box"></span>
-                    <div class="clear"></div>
+                    <!--<div class="clear">&nbsp;</div>-->
+                   
+                     <div class="button" style="float:left;" id="loadMoreFrndDiv">
+                        <a href="" frnd="10" class="loadMoreFrnd" id="loadMoreFrnd">Load more > ></a>
+                    </div>
                 </div>
 
                 <?php
