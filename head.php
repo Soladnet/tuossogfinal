@@ -2,7 +2,7 @@
 <link rel="shortcut icon" href="favicon.ico">
 
 <script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
-<link rel="stylesheet" media="screen" href="css/style.css">
+<link rel="stylesheet" media="screen" href="css/style.css?v=1.1">
 <link rel="stylesheet" href="css/hint.min.css">
 <script type="text/javascript" src="scripts/modernizr.custom.77319.js"></script>
 <meta name="description" content="Start or join existing communities/interests on Gossout and start sharing pictures and videos. People use Gossout search, Discover and connect with communities">
@@ -34,4 +34,4 @@
         }
     });
 </script>
-<script type="text/javascript" src="scripts/script.js?v=1.1"></script>
+<script type="text/javascript" src="scripts/script.js?v=1.2"></script>

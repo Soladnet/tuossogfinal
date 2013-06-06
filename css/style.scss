@@ -98,7 +98,10 @@ h1,h2,h3,h4,h5,h6 {
 	font-weight: 400;
 }
 hr { margin: .3em 0; width: 100%; height: 1px; border-width:0; background-color: #ddd;}
-img { border: none; padding: .2em; max-width: 100%;}
+img { border: none;
+ /*padding: .1em; 
+ max-width: 100%; */
+}
 textarea { resize: none;}
 
 input[type=text],
@@ -117,6 +120,7 @@ select {
 input[type=checkbox]{
 	vertical-align: baseline !important;
 }
+.full-width{width:100% !important}
 .clear { clear: both;}
 .float-left { float: left !important;}
 .float-right { float: right !important;}
@@ -250,6 +254,8 @@ input[type=checkbox]{
 		}
 	}
 	background-color: $nav-gradient-1;	
+	width:100%;
+	z-index: 9999999;
 	ul {
 		max-width: $max-width !important;
 		margin: 0 auto !important;
@@ -277,9 +283,7 @@ input[type=checkbox]{
 				background: rgba(255, 255, 255, 0.9);
 			}
 			input {
-				-webkit-border-radius: 5px;
-				-o-border-radius: 5px;
-				border-radius: 5px;
+				
 				padding: .2em;
 				border: none;
 				font-size: .8em;
@@ -304,6 +308,57 @@ input[type=checkbox]{
 }
 .nav-search-container {
 	border: none !important;
+	.search-container{
+		position:relative;
+		.search-field{
+			position:absolute;
+			right:22px;
+			top:0;
+			height:25px;
+			-webkit-border-radius: 3px 0 0 3px;
+		    		border-radius: 3px 0 0 3px;
+		}
+		.search-button{
+			position:absolute;
+			right:-8px;
+			top:0;
+			width:30px;
+			height:25px;
+			background:#fff;
+			border: 1px solid #fff;
+			color: #777;
+			background-color: #fff;
+			font-size: .8em;
+			display: inline-block;
+			border-left: 1px solid #eee;
+		    -webkit-user-select:none;
+		       -moz-user-select:none;
+		    	-ms-user-select:none;
+		    		user-select:none;    
+			-webkit-border-radius: 0px 3px 3px 0;
+		    		border-radius: 0px 3px 3px 0;
+		    		&:hover{
+						cursor: pointer;
+						color: #333;
+						border: 1px solid #c6c6c6;
+						-moz-box-shadow:    0 1px 1px rgba(0,0,0,.1);
+						-webkit-box-shadow: 0 1px 1px rgba(0,0,0,.1);
+						box-shadow:         0 1px 1px rgba(0,0,0,.1);
+						-webkit-transition-duration: 0.2s;
+					    -moz-transition-duration: 0.2s;
+					    transition-duration: 0.2s;
+					}
+					&:active{
+						color: #999;
+						-webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+					    -moz-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+					    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+						-webkit-transition-duration: 0.2s;
+					    -moz-transition-duration: 0.2s;
+					    transition-duration: 0.2s;
+					}
+		}
+	}
 	&:hover {
 		background-color: transparent !important;
 	}
@@ -315,9 +370,8 @@ input[type=checkbox]{
 	margin: 3px 0;
 	background: #fff;
 	background: rgba(255, 255, 255, 0.9);
-	@media only screen and (max-width: 1024px) {
-		padding: .2em;
-	}
+	width:100%;
+	z-index: 9999999;
 	ul {
 		max-width: $max-width !important;
 		margin: 0 auto !important;
@@ -328,7 +382,8 @@ input[type=checkbox]{
 			font-size: .75em;
 			float: left; 
 			@media only screen and (max-width: 240px) {
-				padding: .3em;
+				padding: .5em .3em;
+				font-size: .7em;
 			}
 			a{
 				color: #969696;
@@ -378,7 +433,7 @@ input[type=checkbox]{
    				right: 0px;
    				width: 25em;
    				min-height: 200px;
-   				top:15px;
+   				top:32px;
    				border: 1px solid #bbb;
    				font-size: .8em !important;
    				text-shadow:none !important;
@@ -390,7 +445,7 @@ input[type=checkbox]{
    				}
 	}
 }
-.notifications-container:before, .search-result-container:before, .more-container:before, .user-actions-container:before{
+.notifications-container:before, .more-container:before, .user-actions-container:before{
 	content: ' ';
 	height: 0;
 	position: absolute;
@@ -399,7 +454,7 @@ input[type=checkbox]{
 	border-bottom-color: #bbb;
 	z-index:10000;
 }
-.notifications-container:after, .search-result-container:after, .more-container:after, .user-actions-container:after{
+.notifications-container:after, .more-container:after, .user-actions-container:after{
 	content: ' ';
 	height: 0;
 	position: absolute;
@@ -443,7 +498,7 @@ input[type=checkbox]{
 		position: absolute;
 		padding: 0 .5em .5em .5em;
 		right:-6px;
-		width: 10em;
+		width: 15em;
 		min-height: 50px;
 		top:15px;
 		border: 1px solid #bbb;
@@ -502,7 +557,15 @@ input[type=checkbox]{
 	   .notification-icon{
 	   		float:left;
 	   		width:50px;
-	   		margin: 0 .2em 0 0;
+	   		height:50px;
+	   		position: relative;
+	   		margin: .2em;
+	   		overflow:hidden;
+            border: 1px solid #ddd;
+
+	   		img{
+	   			position:absolute;
+	   		}
 	   		@media only screen and (max-width: 300px) {
 	   			display:none;
 	   		}
@@ -514,7 +577,9 @@ input[type=checkbox]{
 	   		float:right;
 	   }	
 	   .name{
-	   		color:#99c43d;
+	   		color: #99c43d;
+	   		padding: 0px;
+	   		margin:0px;
 	   }	
 }
 .more-div{
@@ -617,6 +682,7 @@ input[type=checkbox]{
 
 .timeline-filter{
 	float: right;
+	margin:0.1em;
 	.active{
 				background-color: #f8f8f8;	
 				border: 1px solid #eee;	
@@ -625,10 +691,9 @@ input[type=checkbox]{
 			}
 	ul{
 		li{
-			margin: 0.2em 0;
 			cursor: pointer;
 			float: left;
-			padding: .25em .55em;
+			padding: .25em .50em;
 			font-size:.8em;
 			a{
 				color: #969696;
@@ -751,8 +816,14 @@ input[type=checkbox]{
 .post-thumb {
 	float: left;
 	width: 40px !important;
+	height: 40px !important;
 	margin: .2em !important;
-	padding: .15em !important;
+	border:1px solid #ddd;
+	position: relative;
+	overflow: hidden;
+	img{
+		position:absolute;
+	}
 }
 .post-profile-pic{
 	height: 24px !important;
@@ -809,11 +880,16 @@ input[type=checkbox]{
 }
 .friends-thumbnails{
 	border: 1px solid #ddd;
-	max-width: 50px;
-	width: 100%;
-	padding: .2em;
-	margin: .2em auto !important;
+	width: 50px;
+	height:50px;
+	margin: 0 .2em .2em 0;
+	float:left;
+	overflow:hidden;
+	position:relative;
 	overflow: hidden;
+	img{
+		position:absolute;
+	}
 }
 .suggested-friend {	
 	padding: .2em;
@@ -839,16 +915,24 @@ input[type=checkbox]{
 	background: #fcfcfc;
 	margin: 0 0 1em 0;
 	padding: .3em;	
-	
 	.profile-pic {
+		position:relative;
 		width:150px;
 		height:150px;
-		float: left;
-		margin: 0 .2em .2em 0;
+		overflow:hidden;
+		border:1px solid #ddd;
+		float:left;
+		margin:0.2em;
+		img{
+			padding:0 !important;
+			position:absolute;
+		}
+		
 		@media only screen and (max-width: 1024px) {
 			float: none;
 			display: block;
 			margin: .2em auto;
+
 		}
 		@media only screen and (max-width: 720px) {
 			float: left;
@@ -872,7 +956,8 @@ input[type=checkbox]{
 	}
 	.community-listing {
 		font-size: .9em;
-		padding: .5em 0;		
+		padding: .5em 0;	
+		text-transform: capitalize;	
 	}
 	.community-functions-wrapper{
 		float: right;
