@@ -1246,8 +1246,9 @@ function loadCommunity(response, statusText, target) {
                 }
             });
 //             htmlstr +='<p><a href="" frnd="10" class="loadMoreFrnd" id="loadMoreFrnd">Load more > ></a>';
-            if(countResponse < 10)
+            if(countResponse < 10 && target.more)
                 $('#loadMoreComm').hide();
+            
                 if (target.more) {
                      if(htmlstr!=="")
                 $('.community-box').append(htmlstr);
