@@ -65,7 +65,7 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
     <?php
 } else {
     ?>
-                    sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true, start:0,limit:10});
+                    sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true, start:0,limit:1});
                     $("#searchForm").validationEngine();
                     $("#searchForm").ajaxForm({
                         beforeSend: function() {
@@ -126,6 +126,7 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                         $('#my-communities').addClass('active');
                     });
                         var start = 0,limit=10;
+                       
                      $('#loadMoreComm').click(function(){
                          start = parseInt($(this).attr('comm'));                         
                          sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true, start:start,limit:limit,more:true});
