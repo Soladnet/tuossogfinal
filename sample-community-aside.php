@@ -1,6 +1,6 @@
 <div class="aside">
     <div class="aside-wrapper">
-        <div class="profile-pic"><img class="holdam" src="images/no-pic.png" id="commPix"></div>
+        <div class="profile-pic"><img onload="OnImageLoad(event);" class="holdam" src="images/no-pic.png" id="commPix"></div>
         <table>
             <tr><td colspan="2"><h3 id="commTitle">Loading...</h3></td></tr>
             <tr><td id="comType"><span class="icon-16-lock"></span>Loading...</td></tr>
@@ -30,10 +30,12 @@
             });
         </script>
         <p class="community-listing">
+            <div class="clear"></div>
             <span>
                 <span id="showAllCommem"><span class="icon-16-dot"></span><a href="friends">Show all</a></span>
             </span>
         </p>
+        <div class="clear"></div>
     </div>
     <?php
     include("suggested-friends.php");

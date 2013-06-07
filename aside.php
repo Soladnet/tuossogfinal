@@ -3,7 +3,7 @@ $countStat = isset($user) ? $user->getMiniStat() : array("fc" => 0, "cc" => 0, "
 ?>
 <div class="aside">
     <div class="aside-wrapper">
-        <div class="profile-pic"><img class="holdam" id="profile-pic" src="<?php
+        <div class="profile-pic"><img onload="OnImageLoad(event);" class="holdam" id="profile-pic" src="<?php
             $pix = $user->getPix();
             echo isset($pix['thumbnail150']) ? $pix['thumbnail150'] : "images/no-pic.png"
             ?>"></div>
@@ -78,6 +78,7 @@ $countStat = isset($user) ? $user->getMiniStat() : array("fc" => 0, "cc" => 0, "
             </script>
             <span id="aside-friends-list"></span>
             <p class="community-listing">
+                <div class="clear"></div>
                 <span>
                     <?php
                     if ($countStat['fc'] > 6) {
@@ -90,6 +91,7 @@ $countStat = isset($user) ? $user->getMiniStat() : array("fc" => 0, "cc" => 0, "
 
                 </span>
             </p>
+            <div class="clear"></div>
         </div> 
         <?php
     }

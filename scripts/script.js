@@ -45,6 +45,18 @@ function sendData(callback, target) {
                 param: "sugcomm",
             }
         };
+    } else if (callback === "loadTimeline") {
+        option = {
+            beforeSend: function() {
+                showuidfeedback(target);
+            },
+            success: function(response, statusText, xhr) {
+                loadTimeline(response, statusText, target);
+            },
+            data: {
+                param: "timeline"
+            }
+        };
     } else if (callback === "loadCommunityMembers") {
         option = {
             beforeSend: function() {
@@ -392,7 +404,7 @@ function loadTimeline(response, statusText, target) {
         $.each(response, function(i, response) {
             if (response.type === "post") {
                 htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
-                        '<img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail45) + '">' +
+                        '<img onload="OnImageLoad(event);" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
                         '</div><p><a>' + response.firstname.concat(' ', response.lastname) + '</a> posted to <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
                         '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p>';
                 if (response.post_photo) {
@@ -413,7 +425,7 @@ function loadTimeline(response, statusText, target) {
                 }
             } else if (response.type === "comcrea") {
                 htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
-                        '<img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail45) + '"></div>' +
+                        '<img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"></div>' +
                         '<p><a>' + response.firstname.concat(' ', response.lastname) + '</a> created a new <a href="' + response.unique_name + '">Community</a></p>' +
                         '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p><div class="community-meta">' +
                         '<img src="' + response.thumbnail100 + '">' +
@@ -978,7 +990,7 @@ function loadCommunityMembers(response, statusText, target) {
     if (!response.error) {
         $.each(response, function(i, response) {
             htmlstr += '<a class= "fancyboxMem" id="inline" href="#' + response.username + '">' +
-                    '<div class= "friends-thumbnails"><img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"></div>' +
+                    '<div class= "friends-thumbnails"><img onload="OnImageLoad(event);" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail150) + '"></div>' +
                     '<div style="display:none"><div id="' + response.username + '"><div class="aside-wrapper">' +
                     '<div class="profile-pic"><img class="holdam" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail150) + '"></div><table><tr><td></td><td>' +
                     '<h3>' + response.firstname.concat(" ", response.lastname) + '</h3></td></tr><tr><td><span class="icon-16-map"></span></td><td class="profile-meta">' + (response.location === "" ? "Not Set" : response.location) + '</td></tr>' +
@@ -1246,17 +1258,17 @@ function loadCommunity(response, statusText, target) {
                 }
             });
 //             htmlstr +='<p><a href="" frnd="10" class="loadMoreFrnd" id="loadMoreFrnd">Load more > ></a>';
-            if(countResponse < 10 && target.more)
+            if (countResponse < 10 && target.more)
                 $('#loadMoreComm').hide();
-            
-                if (target.more) {
-                     if(htmlstr!=="")
-                $('.community-box').append(htmlstr);
+
+            if (target.more) {
+                if (htmlstr !== "")
+                    $('.community-box').append(htmlstr);
                 $('#loadMoreComm').attr('comm', parseInt($('#loadMoreComm').attr('comm')) + 10);
                 $('#loader1').hide();
             }
             else
-                if(htmlstr!=="")
+            if (htmlstr !== "")
                 $(target.target).html(htmlstr);
 
         }
@@ -1274,13 +1286,13 @@ function loadCommunity(response, statusText, target) {
                     $(target.target).html('<div class="communities-list"><h1 id="pageTitle">Communities</h1><hr/><div id="creatComDiv"><h3>Would you like to create one? It\'s very easy!<br><div class="button"><a href="create-community">New Community</a></div></h3><div class="community-box"></div></div></div>');
                     sendData("loadSuggestCommunity", {target: ".community-box", uid: target.uid, loadImage: true, max: true});
                 } else {
-                    if(!target.more)
+                    if (!target.more)
                         sendData("loadSuggestCommunity", target);
-                    else{
-                    humane.log("Oops! You've got it all!", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});    
-                     $('#loadMoreComm').hide();
+                    else {
+                        humane.log("Oops! You've got it all!", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                        $('#loadMoreComm').hide();
                     }
-            }
+                }
             } else {
                 $(target.target).html("<span id='noCom'>No community found!</span>");
             }
@@ -1462,7 +1474,7 @@ function loadComment(response, statusText, target) {
     if (!response.error) {
         var htmlstr = "", toggleId = "";
         $.each(response, function(i, responseItem) {
-            htmlstr += '<div class="post-comment" id="comment-' + responseItem.id + '"><img class="post-thumb" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail50) + '"><h4 class="name">' + responseItem.firstname.concat(' ', responseItem.lastname) + '</h4><span class="post-time timeago" title="' + responseItem.time + '">' + responseItem.time + '</span><p>' + linkify(responseItem.comment);
+            htmlstr += '<div class="post-comment" id="comment-' + responseItem.id + '"><div class="post-thumb"><img onload="OnImageLoad(event);" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail50) + '"> </div><h4 class="name">' + responseItem.firstname.concat(' ', responseItem.lastname) + '</h4><span class="post-time timeago" title="' + responseItem.time + '">' + responseItem.time + '</span><p>' + linkify(responseItem.comment);
             if (target.uid === responseItem.sender_id) {
                 htmlstr += '<hr><span class="post-meta-delete" id="deleteComment-' + responseItem.id + "_" + target.post_id + '"><span class="icon-16-trash"></span>Delete</span>';
                 if (i > 0 && toggleId !== "") {
@@ -1512,9 +1524,9 @@ function loadFriends(response, statusText, target) {
                 }
 //            if(!target.individualFriend)
                 htmlstr += '<a class= "fancyboxAlert" id="aside-friend-' + responseItem.id + '" href="#' + responseItem.username + '">' +
-                        '<div class= "friends-thumbnails"><img src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail50) + '"></div>' +
+                        '<div class= "friends-thumbnails"><img onload="OnImageLoad(event);" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail150) + '"></div>' +
                         '<div style="display:none"><div id="' + responseItem.username + '"><div class="aside-wrapper">' +
-                        '<div class="profile-pic"><img class="holdam" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail150) + '"></div><table><tr><td></td><td>' +
+                        '<div class="profile-pic"><img  src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail150) + '"></div><table><tr><td></td><td>' +
                         '<h3>' + responseItem.firstname.concat(" ", responseItem.lastname) + '</h3></td></tr><tr><td><span class="icon-16-map"></span></td><td class="profile-meta">' + responseItem.location + '</td></tr>' +
                         '<tr><td><span class="icon-16-' + (responseItem.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta">' + (responseItem.gender === "M" ? "Male" : "Female") + '</td></tr>' +
                         '<tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a href="">See Profile</a> </td></tr></table>' +
@@ -1556,6 +1568,7 @@ function loadFriends(response, statusText, target) {
                 closeEffect: 'none',
                 minWidth: 400
             });
+
             if (target.friendPage) {
                 if (friendsPage !== "") {
                     if (target.individualFriend) {
@@ -1599,6 +1612,7 @@ function loadFriends(response, statusText, target) {
     if (responseCount < 10)
         $('#loadMoreFrndDiv').hide();
 }
+
 function loadSuggestFriends(response, statusText, target) {
     var unfriend = "";
     if (!response.error) {
@@ -1991,6 +2005,63 @@ function readCookie(name) {
             return c.substring(nameEQ.length, c.length);
     }
     return 0;
+}
+function ScaleImage(srcwidth, srcheight, targetwidth, targetheight, fLetterBox) {
+
+    var result = {width: 0, height: 0, fScaleToTargetWidth: true};
+
+    if ((srcwidth <= 0) || (srcheight <= 0) || (targetwidth <= 0) || (targetheight <= 0)) {
+        return result;
+    }
+
+    // scale to the target width
+    var scaleX1 = targetwidth;
+    var scaleY1 = (srcheight * targetwidth) / srcwidth;
+
+    // scale to the target height
+    var scaleX2 = (srcwidth * targetheight) / srcheight;
+    var scaleY2 = targetheight;
+
+    // now figure out which one we should use
+    var fScaleOnWidth = (scaleX2 > targetwidth);
+    if (fScaleOnWidth) {
+        fScaleOnWidth = fLetterBox;
+    }
+    else {
+        fScaleOnWidth = !fLetterBox;
+    }
+
+    if (fScaleOnWidth) {
+        result.width = Math.floor(scaleX1);
+        result.height = Math.floor(scaleY1);
+        result.fScaleToTargetWidth = true;
+    }
+    else {
+        result.width = Math.floor(scaleX2);
+        result.height = Math.floor(scaleY2);
+        result.fScaleToTargetWidth = false;
+    }
+    result.targetleft = Math.floor((targetwidth - result.width) / 2);
+    result.targettop = Math.floor((targetheight - result.height) / 2);
+
+    return result;
+}
+function OnImageLoad(evt) {
+    var img = evt.currentTarget;
+    // what's the size of this image and it's parent
+    var w = $(img).width();
+    var h = $(img).height();
+    var tw = $(img).parent().width();
+    var th = $(img).parent().height();
+
+    // compute the new size and offsets
+    var result = ScaleImage(w, h, tw, th, false);
+
+    // adjust the image coordinates and size
+    img.width = result.width;
+    img.height = result.height;
+    $(img).css("left", result.targetleft);
+    $(img).css("top", result.targettop);
 }
 function br2nl(str) {
     return str.replace(/<br\s\/?>/g, "\r");

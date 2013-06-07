@@ -66,7 +66,7 @@
                     <li>VALUE: <input type="text" name="input" class="input-large"/></li>
                     <li>DECODE VALUE: <input type="checkbox" name="decode" value="TRUE" class="checkbox"/></li>
                     <li>OPTION: <select name="option" id="option"><option value="gUser">Get User Info</option></select></li>
-                    <li><input type="submit" class="btn"/></li>
+                    <li><input type="submit" class="btn" /></li>
                 </ul>
             </form>
             <span id="result"></span>
