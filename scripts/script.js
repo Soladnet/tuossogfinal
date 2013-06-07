@@ -405,7 +405,7 @@ function loadTimeline(response, statusText, target) {
             if (response.type === "post") {
                 htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
                         '<img onload="OnImageLoad(event);" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                        '</div><p><a>' + response.firstname.concat(' ', response.lastname) + '</a> posted to <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
+                        '</div><p><a>' + (response.sender_id === readCookie("user_auth") ? "You" : response.firstname.concat(' ', response.lastname)) + '</a> posted to <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
                         '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p>';
                 if (response.post_photo) {
                     htmlstr += '<p class="timeline-photo-upload">';
@@ -1123,10 +1123,10 @@ function loadCommunity(response, statusText, target) {
                             '<form method="POST" action="tuossog-api-json.php" id="com-' + response.id + '" enctype="multipart/form-data">' +
                             '<textarea required placeholder="Post to ' + response.name + '" name="post" id="post' + response.id + '"></textarea>' +
                             '<input type="submit" class="submit button float-right" value="Post" id="postBtn">' +
-                            '<input type="file" name="photo[]" multiple style="position: absolute;left: -9999px;" id="uploadInput"/>' +
+                            '<input type="file" onchange="$(\'#filesSelected\').html(this.files.length + (this.files.length > 1 ? \' files selected\' : \' file selected\'))" name="photo[]" multiple style="position: absolute;left: -9999px;" id="uploadInput"/>' +
                             '<input type="hidden" name="comid[]" value="' + comid + '"/>' +
                             '<div class="button hint hint--left  float-right" data-hint="Upload image" id="uploadImagePost"><span class="icon-16-camera"></span></div>' +
-                            '<div class="progress" style="display:none"><div class="bar"></div ><div class="percent">0%</div></div><div id="status"></div>' +
+                            '<div class="progress" style="display:none"><div class="bar"></div ><div class="percent">0%</div></div><div id="filesSelected" class="float-right" style="font-size: 12px; color: #99c53d"></div>' +
                             '</form>' +
                             '<div class="clear"></div></div><span id="loadPost"></span></div>';
                 } else {
@@ -1357,7 +1357,7 @@ function loadPost(response, statusText, target) {
                     htmlstr += '<a class="fancybox" rel="gallery' + responseItem.id + '"  href="' + photo.original + '" rel="group"><img src="' + photo.thumbnail + '"></a>';
                 });
             }
-            htmlstr += '<hr><h3 class="name">' + responseItem.firstname.concat(' ', responseItem.lastname) +
+            htmlstr += '<hr><h3 class="name"><img onload="OnImageLoad(event);" class="post-profile-pic" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail45) + '">' + responseItem.firstname.concat(' ', responseItem.lastname) +
                     '<div class="float-right"><span class="post-time"><span class="icon-16-comment"></span><span id="numComnt-' + responseItem.id + '">' + responseItem.numComnt + '</span> </span>' +
 //                    '<span class="post-time"><span class="icon-16-share"></span>24</span>' +
                     '<span class="post-time"><span class="icon-16-clock"></span><span class="timeago" title="' + responseItem.time + '">' + responseItem.time + '</span></span>' +
@@ -1620,9 +1620,9 @@ function loadSuggestFriends(response, statusText, target) {
         $.each(response, function(i, response) {
             htmlstr += '<div class="individual-friend-box" id="aside-sugfriend-' + response.id + '"><a class= "fancyboxAlert" href="#' + response.username + '"><div class="friend-image">';
             if (response.photo.id) {
-                htmlstr += '<img src = "' + (response.photo.thumbnail50 === "" ? response.photo.original : response.photo.thumbnail50) + '" >';
+                htmlstr += '<img onload="OnImageLoad(event);" src = "' + (response.photo.thumbnail50 === "" ? response.photo.original : response.photo.thumbnail50) + '" >';
             } else {
-                htmlstr += '<img src = "' + response.photo.alt + '" >';
+                htmlstr += '<img onload="OnImageLoad(event);" src = "' + response.photo.alt + '" >';
             }
             htmlstr += '</div><div class="friend-text"><div class="friend-name">' + response.firstname.concat(" ", response.lastname) + '</div>' +
                     '<div class="friend-location">' + response.location + '</div></div>';
@@ -2062,6 +2062,12 @@ function OnImageLoad(evt) {
     img.height = result.height;
     $(img).css("left", result.targetleft);
     $(img).css("top", result.targettop);
+}
+function showImageName(name) {
+    var last_backslash = name.lastIndexOf('\\');
+    //var values = name.split('\\');
+    var value = name.substring(last_backslash + 1);
+    return value;
 }
 function br2nl(str) {
     return str.replace(/<br\s\/?>/g, "\r");

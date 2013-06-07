@@ -33,7 +33,7 @@ if (isset($_COOKIE['user_auth'])) {
             var limit = 10;
             function doSeparatGoss(pointer) {
                 var hold = $('#current-notification');
-                $('.noResult').click(function(){
+                $('.noResult').click(function() {
                     $('#loadMoreNotifDiv').hide();
                 });
                 if (pointer === 'wink-notification-icon') {
@@ -103,7 +103,7 @@ if (isset($_COOKIE['user_auth'])) {
                     $(".box").hide();
                     doSeparatGoss($(this).attr('id'));
                 });
-                $('.gossbag-separation-icons').click(function(){
+                $('.gossbag-separation-icons').click(function() {
                     $('#loadMoreNotifDiv').show();
                 });
                 $('.loadMoreGossContent').click(function() {
@@ -162,15 +162,16 @@ if (isset($_COOKIE['user_auth'])) {
                         </ul>
                     </div>
                     <div class="clear"></div>
-                    <span class="box" id="individual-notification-box-a"></span>
-                    <span class="box" id="individual-notification-box-w"></span>
-                    <span class="box" id="individual-notification-box-c"></span>
-                    <span class="box" id="individual-notification-box-f"></span>
-                    <span class="box" id="individual-notification-box-p"></span>
+                    <span class="box" id="individual-notification-box-a" style="display: block"></span>
+                    <span class="box" id="individual-notification-box-w" style="display: block"></span>
+                    <span class="box" id="individual-notification-box-c" style="display: block"></span>
+                    <span class="box" id="individual-notification-box-f" style="display: block"></span>
+                    <span class="box" id="individual-notification-box-p" style="display: block"></span>
+
                     <div class="button" style="float:left;" id="loadMoreNotifDiv">
                         <a href="" wink="10" comment="10" frq="10" posts="10" all="10" hold="all" class="loadMoreGossContent" id="loadMoreNotif">Load more > ></a>
                     </div>
-                    <div id="loadMoreImg" style="display: none"><img src="images/loading.gif"/> </div> 
+                    <div id="loadMoreImg" style="display: none"><img src="images/loading.gif"/></div>
                     <script>
                         $(document).ready(function() {
                             sendData("loadGossbag", {target: "#individual-notification-box-a", loadImage: true, start: 0, limit: 10});

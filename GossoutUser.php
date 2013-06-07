@@ -460,7 +460,7 @@ class GossoutUser {
                     }
                 } else {
                     $response['status'] = FALSE;
-                    $response['alt'] = "images/no-pic.png";
+                    $response['alt'] = "images/user-no-pic.png";
                 }
                 $result->free();
             } else {
@@ -1058,7 +1058,7 @@ class GossoutUser {
             $user = new GossoutUser(0);
             $com = new Community();
             //post notiif
-            $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') AND p.`deleteStatus`=0 order by p.id desc";
+            $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where p.sender_id=$this->id OR p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') AND p.`deleteStatus`=0 order by p.id desc";
             if ($result = $mysql->query($sql1)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
@@ -1084,6 +1084,7 @@ class GossoutUser {
                             $row['post_photo'] = $post_image['photo'];
                         }
                         $row['time'] = $this->convert_time_zone($row['time'], $this->tz);
+                        $row['sender_id'] = $encrypt->safe_b64encode($row['sender_id']);
                         $arrFetch['timeline'][] = $row;
                     }
                     $arrFetch['status'] = TRUE;

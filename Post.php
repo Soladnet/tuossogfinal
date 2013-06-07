@@ -2,7 +2,7 @@
 
 include_once './Config.php';
 include_once './encryptionClass.php';
-
+include_once './GossoutUser.php';
 /**
  * Description of Post
  *
@@ -105,6 +105,13 @@ class Post {
                         } else {
                             $row['numComnt'] = 0;
                         }
+                        $user = new GossoutUser($row['sender_id']);
+                        $pix = $user->getProfilePix();
+                        if ($pix['status']) {
+                            $row['photo'] = $pix['pix'];
+                        } else {
+                            $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
+                        }
                         $post_image = $this->loadPostImage($row['id']);
                         if ($post_image['status']) {
                             $row['post_photo'] = $post_image['photo'];
@@ -190,7 +197,6 @@ class Post {
                         $row['firstname'] = $this->toSentenceCase($row['firstname']);
                         $row['lastname'] = $this->toSentenceCase($row['lastname']);
                         $row['comment'] = nl2br($row['comment']);
-                        include_once './GossoutUser.php';
                         $user = new GossoutUser($row['sender_id']);
                         $pix = $user->getProfilePix();
                         if ($pix['status']) {
@@ -225,7 +231,6 @@ class Post {
             if ($mysql->query($sql)) {
                 if ($mysql->affected_rows > 0) {
                     $arrFetch['comment']['id'] = $mysql->insert_id;
-                    include_once './GossoutUser.php';
                     $user = new GossoutUser($uid);
                     $user->getProfile();
                     $arrFetch['comment']['name'] = $user->getFullname();
@@ -338,7 +343,6 @@ class Post {
                     while ($row = $result->fetch_assoc()) {
                         $row['firstname'] = $this->toSentenceCase($row['firstname']);
                         $row['lastname'] = $this->toSentenceCase($row['lastname']);
-                        include_once './GossoutUser.php';
                         $user = new GossoutUser($row['sender_id']);
                         $pix = $user->getProfilePix();
                         if ($pix['status']) {

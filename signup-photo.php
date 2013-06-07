@@ -233,7 +233,7 @@ function clean($value) {
                                     <div class="profile-pic">
                                         <img src="<?php
                                         $pix = $userReg->getPix();
-                                        echo isset($pix['thumbnail150']) ? $pix['thumbnail150'] : "images/no-pic.png"
+                                        echo isset($pix['thumbnail150']) ? $pix['thumbnail150'] : "images/user-no-pic.png"
                                         ?>" id="target">
                                     </div>
                                     <hr>

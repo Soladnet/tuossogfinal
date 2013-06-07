@@ -2060,9 +2060,11 @@ body {
   display: block;
   border: 1px solid #ddd;
   max-width: 150px;
-  width: 100%;
-  padding: .4em;
+  width: 150px;
+  height: 150px;
+  /*padding: .4em;*/
   margin: 0 auto;
+  overflow: hidden;
 }
 
 /* line 1, _share.scss */

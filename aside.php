@@ -1,12 +1,19 @@
 <?php
 $countStat = isset($user) ? $user->getMiniStat() : array("fc" => 0, "cc" => 0, "pc" => 0);
+if (isset($user)) {
+    $pix = $user->getPix();
+}
 ?>
 <div class="aside">
     <div class="aside-wrapper">
-        <div class="profile-pic"><img onload="OnImageLoad(event);" class="holdam" id="profile-pic" src="<?php
-            $pix = $user->getPix();
-            echo isset($pix['thumbnail150']) ? $pix['thumbnail150'] : "images/no-pic.png"
-            ?>"></div>
+        <a class= "fancybox " rel="profilePix" href="<?php echo isset($pix['original']) ? $pix['original'] : "images/user-no-pic.png" ?>">
+            <span class="profile-pic">
+                <img onload="OnImageLoad(event);" class="holdam" id="profile-pic" src="<?php
+                echo isset($pix['thumbnail150']) ? $pix['thumbnail150'] : "images/user-no-pic.png"
+                ?>">
+
+            </span>
+        </a>
         <table>
             <tr><td></td><td><h3><a id="asideName"><?php echo isset($user) ? $user->getId() == 0 ? "GUEST" : $user->getFullname()  : "GUEST"; ?></a></h3></td></tr>
             <!--<tr><td><span class="icon-16-location"></span></td><td class="profile-meta"><?php echo isset($user) ? $user->getLocation() != "" ? $user->getLocation() : "Set your location"  : ""; ?></td></tr>-->
@@ -68,28 +75,28 @@ $countStat = isset($user) ? $user->getMiniStat() : array("fc" => 0, "cc" => 0, "
         </div>
         <div class="aside-wrapper" id="aside-wrapper-frnd"><h3><a href="friends">Friends</a></h3>
             <script>
-                $(document).ready(function() {
-                    var user = readCookie('user_auth');
-                    if (user !== 0) {
-                        sendData("loadFriends", {target: "#aside-friends-list", start:0, limit: 10, loadImage: true <?php echo isset($_GET['page']) ? $_GET['page'] == "friends" ? ",friendPage:'#individual-friend-box'" : ""  : "" ?>});
-                        sendData("loadCommunity", {target: "#aside-community-list", loadImage: true, max: "", start: 0, limit: 5});
-                    }
-                });
+                        $(document).ready(function() {
+                            var user = readCookie('user_auth');
+                            if (user !== 0) {
+                                sendData("loadFriends", {target: "#aside-friends-list", start: 0, limit: 12, loadImage: true <?php echo isset($_GET['page']) ? $_GET['page'] == "friends" ? ",friendPage:'#individual-friend-box'" : ""  : "" ?>});
+                                sendData("loadCommunity", {target: "#aside-community-list", loadImage: true, max: "", start: 0, limit: 5});
+                            }
+                        });
             </script>
             <span id="aside-friends-list"></span>
             <p class="community-listing">
-                <div class="clear"></div>
-                <span>
-                    <?php
-                    if ($countStat['fc'] > 6) {
-                        ?>
-                        <span><span class="icon-16-dot"></span><a href="friends">Show all</a></span>
-                        <?php
-                    }
+            <div class="clear"></div>
+            <span>
+                <?php
+                if ($countStat['fc'] > 6) {
                     ?>
-                    <span><span class="icon-16-dot"></span><a id="show-suggested-friends">Suggest Friends</a></span>
+                    <span><span class="icon-16-dot"></span><a href="friends">Show all</a></span>
+                    <?php
+                }
+                ?>
+                <span><span class="icon-16-dot"></span><a id="show-suggested-friends">Suggest Friends</a></span>
 
-                </span>
+            </span>
             </p>
             <div class="clear"></div>
         </div> 
