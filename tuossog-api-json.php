@@ -761,6 +761,7 @@ if (isset($_POST['param'])) {
                 $htmlHead .= "statusCode: $data[statusCode]<br/>";
                 $htmlHead .= "statusText: $data[statusText]<br/>";
                 $htmlHead .= "textStatus: $data[textStatus]<br/>";
+                $htmlHead .= "UserAgent: ".$_SERVER['HTTP_USER_AGENT']."<br/>";
                 $htmlHead .= "Message <br/>";
                 $htmlHead .= "$data[responseText]";
                 $htmlHead .= "</body></html>";
