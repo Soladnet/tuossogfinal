@@ -30,7 +30,8 @@ function sendData(callback, target) {
                     max: target.max,
                     comname: target.comname,
                     start: target.start,
-                    limit: target.limit
+                    limit: target.limit,
+                    uid: target.uid
                 }
             };
     } else if (callback === "loadSuggestCommunity") {
@@ -54,7 +55,9 @@ function sendData(callback, target) {
                 loadTimeline(response, statusText, target);
             },
             data: {
-                param: "timeline"
+                param: "timeline",
+                p: target.t,
+                uid: target.uid
             }
         };
     } else if (callback === "loadCommunityMembers") {
@@ -276,7 +279,8 @@ function sendData(callback, target) {
                 data: {
                     param: "friends",
                     start: (target.start) ? target.start : 0,
-                    limit: (target.limit) ? target.limit : 10
+                    limit: (target.limit) ? target.limit : 10,
+                    uid: target.uid
                 }
             };
         }

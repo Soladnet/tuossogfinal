@@ -60,6 +60,8 @@ if (isset($_GET['page'])) {
         include_once './rights.php';
     } else if ($_GET['page'] == "terms") {
         include_once './terms.php';
+    } else if ($_GET['page'] == "user") {
+        include_once 'user-profile.php';
     } else {
         header("Location: communities/$_GET[page]");
     }

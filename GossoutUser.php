@@ -36,6 +36,7 @@ class GossoutUser {
                         if ($result->num_rows > 0) {
                             $row = $result->fetch_assoc();
                             $response = $row['id'];
+                            $this->id = $row['id'];
                         }
                     }
                 }
@@ -49,6 +50,7 @@ class GossoutUser {
                         if ($result->num_rows > 0) {
                             $row = $result->fetch_assoc();
                             $response = $row['id'];
+                            $this->id = $row['id'];
                         }
                     }
                 }
@@ -1048,7 +1050,7 @@ class GossoutUser {
         return $response;
     }
 
-    public function getTimeline() {
+    public function getTimeline($userTimeline = FALSE) {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
         if ($mysql->connect_errno > 0) {
@@ -1058,7 +1060,11 @@ class GossoutUser {
             $user = new GossoutUser(0);
             $com = new Community();
             //post notiif
-            $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where p.sender_id=$this->id OR p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') AND p.`deleteStatus`=0 order by p.id desc";
+            if ($userTimeline) {
+                $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where (p.sender_id=$this->id AND p.`deleteStatus`=0) order by p.id desc";
+            } else {
+                $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where (p.sender_id=$this->id AND p.`deleteStatus`=0) OR p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') AND p.`deleteStatus`=0 order by p.id desc";
+            }
             if ($result = $mysql->query($sql1)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
@@ -1096,8 +1102,12 @@ class GossoutUser {
                 $arrFetch['status'] = FALSE;
             }
             //community creation by friend
-            $sql1 = "SELECT c.`id`, c.`unique_name`,u.firstname,u.lastname, c.`name`, c.`category`, c.`type`, c.`description`,c.`thumbnail100`, c.`datecreated` as time, c.`creator_id` FROM `community` as c JOIN user_personal_info as u ON c.creator_id=u.id WHERE `creator_id` IN(Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y')";
-            if ($result = $mysql->query($sql1)) {
+            if ($userTimeline) {
+                $sql2 = "SELECT c.`id`, c.`unique_name`,u.firstname,u.lastname, c.`name`, c.`category`, c.`type`, c.`description`,c.`thumbnail100`, c.`datecreated` as time, c.`creator_id` FROM `community` as c JOIN user_personal_info as u ON c.creator_id=u.id WHERE `creator_id` =$this->id";
+            } else {
+                $sql2 = "SELECT c.`id`, c.`unique_name`,u.firstname,u.lastname, c.`name`, c.`category`, c.`type`, c.`description`,c.`thumbnail100`, c.`datecreated` as time, c.`creator_id` FROM `community` as c JOIN user_personal_info as u ON c.creator_id=u.id WHERE `creator_id` IN(Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y')";
+            }
+            if ($result = $mysql->query($sql2)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
                         $row['firstname'] = $this->toSentenceCase($row['firstname']);
@@ -1127,8 +1137,12 @@ class GossoutUser {
                     $arrFetch['status'] = FALSE;
             }
             //friends who joined community
-            $sql1 = "SELECT c.name,cs.community_id,cs.`user`, cs.datejoined as time,cs.leave_status FROM community_subscribers as cs JOIN community as c ON cs.community_id=c.id WHERE cs.leave_status=0 cs.`user` IN(Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y')";
-            if ($result = $mysql->query($sql1)) {
+            if ($userTimeline) {
+                $sql3 = "SELECT c.name,cs.community_id,cs.`user`, cs.datejoined as time,cs.leave_status FROM community_subscribers as cs JOIN community as c ON cs.community_id=c.id WHERE cs.leave_status=0 cs.`user`=$this->id ";
+            } else {
+                $sql3 = "SELECT c.name,cs.community_id,cs.`user`, cs.datejoined as time,cs.leave_status FROM community_subscribers as cs JOIN community as c ON cs.community_id=c.id WHERE cs.leave_status=0 cs.`user` IN(Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y')";
+            }
+            if ($result = $mysql->query($sql3)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
                         $row['type'] = "joinCom";
@@ -1672,6 +1686,24 @@ class GossoutUser {
                 $arrFetch['status'] = FALSE;
             }
 //                $result->free();
+        }
+    }
+
+    function encodeData($param, $useBase64 = TRUE) {
+        $encrypt = new Encryption();
+        if ($useBase64) {
+            return $encrypt->safe_b64encode($param);
+        } else {
+            return $encrypt->encode($param);
+        }
+    }
+
+    function decodeData($param, $useBase64 = TRUE) {
+        $encrypt = new Encryption();
+        if ($useBase64) {
+            return $encrypt->safe_b64decode($param);
+        } else {
+            return $encrypt->decode($param);
         }
     }
 

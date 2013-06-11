@@ -15,7 +15,7 @@ Options -Multiviews
 
 #RewriteCond %{SCRIPT_FILENAME} !-d
 #RewriteRule ^([^\.]+)$ $1.php [NC,L]
-RewriteRule ^([a-zA-Z0-9_-\s]+)/?([a-zA-Z0-9_-\s]+)?$ index.php?page=$1&param=$2
+RewriteRule ^([a-zA-Z0-9_-\s]+)/?([a-zA-Z0-9_-\s]+)?/?([a-zA-Z0-9_-\s]+)?$ index.php?page=$1&param=$2&param2=$3
 <IfModule mod_deflate.c>
     #The following line is enough for .js and .css
     AddOutputFilter DEFLATE js css

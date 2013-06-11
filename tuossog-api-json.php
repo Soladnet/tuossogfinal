@@ -69,7 +69,7 @@ if (isset($_POST['param'])) {
         } else {
             displayError(400, "The request cannot be fulfilled due to bad syntax");
         }
-    } 
+    }
 //     else if ($_POST['param'] == "allFriends") {
 //        include_once './GossoutUser.php';
 //        if (isset($_POST['uid'])) {
@@ -259,7 +259,7 @@ if (isset($_POST['param'])) {
                         $SortedArray = $SMA->GetSortedArray($val['status'] ? $val['time'] : FALSE);
                     } else {
                         $SortedArray = $SMA->GetSortedArray();
-                        $SortedArray = array_slice($SortedArray, $start,$limit);
+                        $SortedArray = array_slice($SortedArray, $start, $limit);
                     }
                     if ($_POST['update'] == "false" ? FALSE : TRUE) {
                         $bag->updateTime();
@@ -278,8 +278,7 @@ if (isset($_POST['param'])) {
         } else {
             displayError(400, "The request cannot be fulfilled due to bad syntax");
         }
-    } 
-    else if ($_POST['param'] == "loadWink") {
+    } else if ($_POST['param'] == "loadWink") {
         include_once './GossoutUser.php';
         if (isset($_POST['uid'])) {
             $id = decodeText($_POST['uid']);
@@ -293,7 +292,7 @@ if (isset($_POST['param'])) {
                     $tz = "Africa/Lagos";
                 }
                 $wink->setTimezone($tz);
-                
+
                 if (isset($_POST['start']) && is_numeric($_POST['start'])) {
                     $start = $_POST['start'];
                 }
@@ -306,8 +305,7 @@ if (isset($_POST['param'])) {
                 if ($user_bag['status']) {
                     echo json_encode($user_bag);
 //                 
-                }
-                else {
+                } else {
                     displayError(404, "Not Found");
                 }
             } else {
@@ -316,13 +314,12 @@ if (isset($_POST['param'])) {
         } else {
             displayError(400, "The request cannot be fulfilled due to bad syntax");
         }
-    } 
-    else if ($_POST['param'] == "loadGossComment") {
+    } else if ($_POST['param'] == "loadGossComment") {
         include_once './GossoutUser.php';
         if (isset($_POST['uid'])) {
             $id = decodeText($_POST['uid']);
             if (is_numeric($id)) {
-                $user= new GossoutUser($id);
+                $user = new GossoutUser($id);
                 if (isset($_COOKIE['tz'])) {
                     $tz = decodeText($_COOKIE['tz']);
                 } else if (isset($_SESSION['auth']['tz'])) {
@@ -331,7 +328,7 @@ if (isset($_POST['param'])) {
                     $tz = "Africa/Lagos";
                 }
                 $user->setTimezone($tz);
-                
+
                 if (isset($_POST['start']) && is_numeric($_POST['start'])) {
                     $start = $_POST['start'];
                 }
@@ -344,8 +341,7 @@ if (isset($_POST['param'])) {
                 if ($user_comments['status']) {
                     echo json_encode($user_comments);
 //                 
-                }
-                else {
+                } else {
                     displayError(404, "Not Found");
                 }
             } else {
@@ -354,13 +350,12 @@ if (isset($_POST['param'])) {
         } else {
             displayError(400, "The request cannot be fulfilled due to bad syntax");
         }
-    }
-    else if ($_POST['param'] == "loadGossFrq") {
+    } else if ($_POST['param'] == "loadGossFrq") {
         include_once './GossoutUser.php';
         if (isset($_POST['uid'])) {
             $id = decodeText($_POST['uid']);
             if (is_numeric($id)) {
-                $user= new GossoutUser($id);
+                $user = new GossoutUser($id);
                 if (isset($_COOKIE['tz'])) {
                     $tz = decodeText($_COOKIE['tz']);
                 } else if (isset($_SESSION['auth']['tz'])) {
@@ -369,7 +364,7 @@ if (isset($_POST['param'])) {
                     $tz = "Africa/Lagos";
                 }
                 $user->setTimezone($tz);
-                
+
                 if (isset($_POST['start']) && is_numeric($_POST['start'])) {
                     $start = $_POST['start'];
                 }
@@ -381,7 +376,7 @@ if (isset($_POST['param'])) {
                 $user_frq = $user->loadGossFrq();
                 if ($user_frq['status']) {
                     echo json_encode($user_frq);
-                }else {
+                } else {
                     displayError(404, "Not Found");
                 }
             } else {
@@ -390,13 +385,12 @@ if (isset($_POST['param'])) {
         } else {
             displayError(400, "The request cannot be fulfilled due to bad syntax");
         }
-    }
-    else if ($_POST['param'] == "loadGossPost") {
+    } else if ($_POST['param'] == "loadGossPost") {
         include_once './GossoutUser.php';
         if (isset($_POST['uid'])) {
             $id = decodeText($_POST['uid']);
             if (is_numeric($id)) {
-                $user= new GossoutUser($id);
+                $user = new GossoutUser($id);
                 if (isset($_COOKIE['tz'])) {
                     $tz = decodeText($_COOKIE['tz']);
                 } else if (isset($_SESSION['auth']['tz'])) {
@@ -405,7 +399,7 @@ if (isset($_POST['param'])) {
                     $tz = "Africa/Lagos";
                 }
                 $user->setTimezone($tz);
-                
+
                 if (isset($_POST['start']) && is_numeric($_POST['start'])) {
                     $start = $_POST['start'];
                 }
@@ -418,8 +412,7 @@ if (isset($_POST['param'])) {
                 if ($user_post['status']) {
                     echo json_encode($user_post);
 //                 
-                }
-                else {
+                } else {
                     displayError(404, "Not Found");
                 }
             } else {
@@ -428,8 +421,7 @@ if (isset($_POST['param'])) {
         } else {
             displayError(400, "The request cannot be fulfilled due to bad syntax");
         }
-    }
-    else if ($_POST['param'] == "timeline") {
+    } else if ($_POST['param'] == "timeline") {
         include_once './GossoutUser.php';
         if (isset($_POST['uid'])) {
             $id = decodeText($_POST['uid']);
@@ -453,7 +445,11 @@ if (isset($_POST['param'])) {
                 }
                 $timeline->setStart($start);
                 $timeline->setLimit($limit);
-                $user_timeline = $timeline->getTimeline();
+                if (isset($_POST['p'])) {
+                    $user_timeline = $timeline->getTimeline(TRUE);
+                } else {
+                    $user_timeline = $timeline->getTimeline();
+                }
                 if ($user_timeline['status']) {
                     include_once("./sortArray_$.php");
                     $SMA = new SortMultiArray($user_timeline['timeline'], "time", 1);
@@ -761,7 +757,7 @@ if (isset($_POST['param'])) {
                 $htmlHead .= "statusCode: $data[statusCode]<br/>";
                 $htmlHead .= "statusText: $data[statusText]<br/>";
                 $htmlHead .= "textStatus: $data[textStatus]<br/>";
-                $htmlHead .= "UserAgent: ".$_SERVER['HTTP_USER_AGENT']."<br/>";
+                $htmlHead .= "UserAgent: " . $_SERVER['HTTP_USER_AGENT'] . "<br/>";
                 $htmlHead .= "Message <br/>";
                 $htmlHead .= "$data[responseText]";
                 $htmlHead .= "</body></html>";
@@ -1480,7 +1476,7 @@ function displayError($code, $meesage) {
     $response_arr['error']['code'] = $code;
     $response_arr['error']['message'] = $meesage;
     if ($meesage == "The request cannot be fulfilled due to bad syntax") {
-        @mail("soladnet@gmail.com", "bad syntax from user ".$_SERVER['HTTP_REFERER'], json_encode($_POST));
+        @mail("soladnet@gmail.com", "bad syntax from user " . $_SERVER['HTTP_REFERER'], json_encode($_POST));
     }
     echo json_encode($response_arr);
 }

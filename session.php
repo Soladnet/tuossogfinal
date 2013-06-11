@@ -67,7 +67,10 @@ session_start();
 include './encryptionClass.php';
 $encrypt = new Encryption();
 //echo ($encrypt->safe_b64decode("GIWzvI0FSIDDyI0FUAA="));
-echo $_SERVER['HTTP_USER_AGENT'];
+//echo $_SERVER['HTTP_USER_AGENT'];
+$ip = $_SERVER['REMOTE_ADDR'];
+$json = @file_get_contents('http://smart-ip.net/geoip-json/' . $ip);
+echo $json;
 //$str = "_-thissdfkj";
 //print_r(preg_match("/[^A-Za-z0-9_-]/", $str));
 //function prepareUsername($email) {
