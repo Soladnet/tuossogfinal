@@ -42,9 +42,10 @@ function sendData(callback, target) {
             },
             data: {
                 param: "timeline",
+                p: target.t,
+                uid: target.uid,
                 start: target.start,
                 limit: target.limit
-//                    loadMore: target.loadMore
             }
         };
 
