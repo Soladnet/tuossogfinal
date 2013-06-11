@@ -1082,7 +1082,7 @@ if (isset($_POST['param'])) {
                                 }
                             }
                             $load['post']['name'] = $_SESSION['auth']['firstname'] . " " . $_SESSION['auth']['lastname'];
-                            $load['post']['photo'] = $_SESSION['auth']['photo']['thumbnail45'] ? $_SESSION['auth']['photo']['thumbnail45'] : "images/user-no-pic.png";
+                            $load['post']['photo'] = isset($_SESSION['auth']['photo']['thumbnail45']) ? $_SESSION['auth']['photo']['thumbnail45'] : "images/user-no-pic.png";
                         }
                     } else {
                         $load['status'] = FALSE;

@@ -57,16 +57,20 @@ if (isset($_COOKIE['user_auth'])) {
         }
         ?>
         <script type="text/javascript">
+
             $(document).ready(function() {
+ 
 <?php
 if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FALSE) {
     ?>
-                    sendData("loadCommunity", {target: "#rightcolumn", loadImage: true, max: true, loadAside: true, comname: '<?php echo $_GET['param'] ?>'});
+                    sendData("loadCommunity", {target: "#rightcolumn", loadImage: true, max: true, loadAside: true, comname: '<?php echo $_GET['param'] ?>', start: 0, limit: 10});
+
     <?php
 } else {
     ?>
-                    sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true, start:0,limit:10});
-                    $("#searchForm").validationEngine();
+                    sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true, start: 0, limit: 10,first:true});
+                    
+                     $("#searchForm").validationEngine();
                     $("#searchForm").ajaxForm({
                         beforeSend: function() {
                             if (!($('#searchTerm').val().length > 2) && $('#searchTerm').val() !== "*") {
@@ -87,7 +91,7 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                                                 '</div><div class="members">' + response.type + '</div><div class="members">' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</div><div class="members">' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</div></div><div class="clear"></div></div>';
                                     });
                                     $(".community-box").html(htmlstr);
-                                       } else {
+                                } else {
                                 }
                             } else {
                                 if (responseText.status) {
@@ -125,15 +129,16 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                         $('#suggestions').removeClass('active');
                         $('#my-communities').addClass('active');
                     });
-                        var start = 0,limit=10;
-                       $('#loader1').hide();
-                     $('#loadMoreComm').click(function(){
-                         start = parseInt($(this).attr('comm')); 
-                          $('#loader1').show();
-                         sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true, start:start,limit:limit,more:true});
-//                         alert('clicked');
-                         return false;
-                     });
+                    var start = 0, limit = 10;
+                    $('#loader1').hide();
+                    $('#loadMoreComm').click(function() {
+                        start = parseInt($(this).attr('comm'));
+                        $('#loader1').show();
+                        sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true, start: start, limit: limit, more: true});
+                        //                         alert('clicked');
+                         $('#loader1').hide();
+                        return false;
+                    });
     <?php
 }
 ?>
@@ -172,20 +177,20 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                         <hr/>
                         <div id="creatComDiv">
                             <h3>Would you like to create one? It's very easy and free! 
-                               
+
                                 <div class="button"><a href="create-community">Start a Community</a></div>
                             </h3>
-                             <!--fgsgh,vmcpeirvohh-->
+                            <!--fgsgh,vmcpeirvohh-->
                         </div>
-                      
+
                         <div class="community-box">
-                          
-                         </div><p>
+
+                        </div><p>
                         <div class="button" style="float:left;" id="loadMoreComm" comm="10">
-                        <a href="" class="loadMoreFrnd" id="loadMoreFrnd">Load more > ></a>
-                    </div><img src='images/loading.gif' style='border:none' id="loader1"/>
+                            <a href="">Load more > ></a>
+                        </div><img src='images/loading.gif' style='border:none' id="loader1"/>
                     </div>
-                     
+
                 </span>
 
                 <?php
@@ -200,6 +205,11 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
             include("footer.php");
             ?>
         </div>
+      
+        <script>
+           
+              
 
+        </script>
     </body>
 </html>

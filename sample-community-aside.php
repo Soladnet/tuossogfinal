@@ -17,6 +17,7 @@
         <button class=" button profile-button" id="joinleave"><span class="icon-16-star"></span> <span id="joinleave-text">Join</span><input type="hidden" id="joinleave-comid" value="0"/></button>
         <span id="otherCommOption"></span>
         <div class="clear"></div>
+        
     </div>
 
 
@@ -26,34 +27,24 @@
         </span>
         <script>
             $(document).ready(function() {
-                sendData("loadCommunityMembers", {target: "#commember-aside",loadImage: true, comname: '<?php echo $_GET['param'] ?>'});
+                sendData("loadCommunityMembers", {target: "#commember-aside", loadImage: true, comname: '<?php echo $_GET['param'] ?>',start:0, limit:12});
             });
         </script>
         <p class="community-listing">
-            <div class="clear"></div>
-            <span>
-                <span id="showAllCommem"><span class="icon-16-dot"></span><a href="friends">Show all</a></span>
-            </span>
+        <div class="clear"></div>
+        <span>
+            <span id="showAllCommem"><span class="icon-16-dot"></span><a href="friends">Show all</a></span>
+        </span>
         </p>
         <div class="clear"></div>
     </div>
     <?php
     include("suggested-friends.php");
     ?>
-    <!--    <div class="aside-wrapper">
-            <h3>Trends</h3>
-            <p><a>#newGossout</a></p>
-            <p><a>#newGossout</a></p>
-            <p><a>#newGossout</a></p>
-            <p><a>#newGossout</a></p>
-            <p><a>#newGossout</a></p>
-            <p class="community-listing">
-                <span>
-                    <span><span class="icon-16-dot"></span><a href="">Show all</a></span>
-                </span>
-            </p>
-        </div>-->
 
     <div class="clear"></div>
+
 </div>	
 <div class="clear"></div>
+<!--<hr>-->
+

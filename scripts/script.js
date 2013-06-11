@@ -1,38 +1,24 @@
 function sendData(callback, target) {
     var option;
     if (callback === "loadCommunity") {
-        if (target.more)
-            option = {
-                beforeSend: function() {
+//        if (target.more)
+        option = {
+            beforeSend: function() {
 //                showuidfeedback(target);
-                },
-                success: function(response, statusText, xhr) {
-                    loadCommunity(response, statusText, target);
-                },
-                data: {
-                    param: "community",
-                    max: target.max,
-                    comname: target.comname,
-                    start: target.start,
-                    limit: target.limit
-                }
-            };
-        else
-            option = {
-                beforeSend: function() {
-                    showuidfeedback(target);
-                },
-                success: function(response, statusText, xhr) {
-                    loadCommunity(response, statusText, target);
-                },
-                data: {
-                    param: "community",
-                    max: target.max,
-                    comname: target.comname,
-                    start: target.start,
-                    limit: target.limit
-                }
-            };
+            },
+            success: function(response, statusText, xhr) {
+                loadCommunity(response, statusText, target);
+            },
+            data: {
+                param: "community",
+                max: target.max,
+                comname: target.comname,
+                start: target.start,
+                limit: target.limit,
+                more: target.more
+            }
+        };
+
     } else if (callback === "loadSuggestCommunity") {
         option = {
             beforeSend: function() {
@@ -46,6 +32,7 @@ function sendData(callback, target) {
             }
         };
     } else if (callback === "loadTimeline") {
+//        if(target.loadMore)
         option = {
             beforeSend: function() {
                 showuidfeedback(target);
@@ -54,9 +41,14 @@ function sendData(callback, target) {
                 loadTimeline(response, statusText, target);
             },
             data: {
-                param: "timeline"
+                param: "timeline",
+                start: target.start,
+                limit: target.limit
+//                    loadMore: target.loadMore
             }
         };
+
+//                
     } else if (callback === "loadCommunityMembers") {
         option = {
             beforeSend: function() {
@@ -68,7 +60,9 @@ function sendData(callback, target) {
             data: {
                 param: "community",
                 m: target.comname,
-                user: target.uid
+                user: target.uid,
+                start: target.start,
+                limit: target.limit
             }
         };
     } else if (callback === "loadSuggestFriends") {
@@ -251,35 +245,20 @@ function sendData(callback, target) {
             }
         };
     } else if (callback === "loadFriends") {
-        if (target.individualFriend) {
-            option = {
-                beforeSend: function() {
-                    showuidfeedback(target.targetLoader);
-                },
-                success: function(response, statusText, xhr) {
-                    loadFriends(response, statusText, target);
-                },
-                data: {
-                    param: "friends",
-                    start: (target.start) ? target.start : 0,
-                    limit: (target.limit) ? target.limit : 10
-                }
-            };
-        } else {
-            option = {
-                beforeSend: function() {
-                    showuidfeedback(target);
-                },
-                success: function(response, statusText, xhr) {
-                    loadFriends(response, statusText, target);
-                },
-                data: {
-                    param: "friends",
-                    start: (target.start) ? target.start : 0,
-                    limit: (target.limit) ? target.limit : 10
-                }
-            };
-        }
+        option = {
+            beforeSend: function() {
+                showuidfeedback(target);
+            },
+            success: function(response, statusText, xhr) {
+                loadFriends(response, statusText, target);
+            },
+            data: {
+                param: "friends",
+                start: (target.start) ? target.start : 0,
+                limit: (target.limit) ? target.limit : 10
+            }
+        };
+//        }
 
     } else if (callback === "inviteFriends") {
         option = {
@@ -320,7 +299,8 @@ function sendData(callback, target) {
                 param: "loadPost",
                 cid: target.comid,
                 start: target.start,
-                limit: target.limit
+                limit: target.limit,
+                append: target.append
             }
         };
     } else if (callback === "deletePost") {
@@ -450,7 +430,18 @@ function loadTimeline(response, statusText, target) {
              '<p><a href="">Join</a></p></div><div class="clear"></div></div>';
              }*/
         });
-        $(target.target).html(htmlstr);
+        if (target.loadMore) {
+            if (htmlstr !== "") {
+                $(target.target).append(htmlstr);
+                $('.loadMoreTimeLine').attr("timeLine", parseInt($('.loadMoreTimeLine').attr("timeLine")) + 10);
+                $('#loadMoreImg').hide();
+            } else {
+                humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                $('#loadMoreImg,#loadMoreNotifDiv').hide();
+            }
+        }
+        else
+            $(target.target).html(htmlstr);
         prepareDynamicDates();
         $(".timeago").timeago();
         if (toggleId !== "") {
@@ -1029,6 +1020,7 @@ function loadCommunityMembers(response, statusText, target) {
 }
 function loadCommunity(response, statusText, target) {
     if (!response.error) {
+
         var comid = "", htmlstr = "", isAmember;
         if (target.loadAside) {
             if (target.uid === 0) {
@@ -1128,14 +1120,22 @@ function loadCommunity(response, statusText, target) {
                             '<div class="button hint hint--left  float-right" data-hint="Upload image" id="uploadImagePost"><span class="icon-16-camera"></span></div>' +
                             '<div class="progress" style="display:none"><div class="bar"></div ><div class="percent">0%</div></div><div id="filesSelected" class="float-right" style="font-size: 12px; color: #99c53d"></div>' +
                             '</form>' +
-                            '<div class="clear"></div></div><span id="loadPost"></span></div>';
+                            '<div class="clear"></div></div><span id="loadPost"></span>\n\
+                            <hr/><div class="button" style="float:left;" id ="commMorePostDiv"><a commPost="20"  class="commMorePost" id="commMorePost">Load more > ></a></div><div id="loadMoreImg" style="display:none;"> &nbsp;<img src="images/loading.gif"/>\n\
+                                </div></div>';
                 } else {
-                    htmlstr += '<div class="posts"><h1>' + response.name + '</h1><hr/><span id="loadPost"></span></div>';
+                    htmlstr += '<div class="posts"><h1>' + response.name + '</h1><hr/><span id="loadPost"></span>\n\<hr/><div class="button" style="float:left;" id ="commMorePostDiv"><a commPost="20"  class="commMorePost" id="commMorePost">Load more > ></a></div><div id="loadMoreImg" style="display:none;"> &nbsp;<img src="images/loading.gif"/>\n\
+                                </div></div>';
                 }
+
             });
+
+//            var append = false;
             if (htmlstr !== "") {
                 $(target.target).html(htmlstr);
-                sendData("loadPost", {target: "#loadPost", uid: readCookie("user_auth"), comid: comid, start: 0, limit: 10, loadImage: true});
+
+
+                sendData("loadPost", {target: "#loadPost", uid: readCookie("user_auth"), comid: comid, start: 0, limit: 25, loadImage: true, loadAside: true});
                 if (isAmember === "true") {
                     $("#uploadImagePost,#loadCommore,#inviteMemBtn,#commViewMoreDesc").click(function() {
                         if (this.id === "uploadImagePost") {
@@ -1241,10 +1241,19 @@ function loadCommunity(response, statusText, target) {
                     });
                     $("#otherCommOption").hide();
                 }
+
             } else {
                 $(target.target).html('<div class="posts"></div>');
             }
-        } else {
+            $('#commMorePostDiv').click(function() {
+                var start = parseInt($('#commMorePost').attr('commpost'));
+                sendData("loadPost", {target: "#loadPost", uid: readCookie("user_auth"), comid: comid, start: start, limit: 10, loadImage: false, append: true, commPost: true});
+                $('#commMorePost').attr('commpost', parseInt($('#commMorePost').attr('commpost')) + 10);
+//                    alert(start);
+            });
+
+        }
+        else {
             var countResponse = response.length;
             $.each(response, function(i, response) {
                 if (target.target === "#aside-community-list") {
@@ -1258,9 +1267,16 @@ function loadCommunity(response, statusText, target) {
                 }
             });
 //             htmlstr +='<p><a href="" frnd="10" class="loadMoreFrnd" id="loadMoreFrnd">Load more > ></a>';
-            if (countResponse < 10 && target.more)
+            if (countResponse < 10 && target.more) {
                 $('#loadMoreComm').hide();
+                humane.log("Oops! You've got it all!", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            }
 
+            if (countResponse < 10)
+                if (target.first)
+                    $('#loadMoreComm').hide();
+
+//                $('#loadMoreComm').hide();
             if (target.more) {
                 if (htmlstr !== "")
                     $('.community-box').append(htmlstr);
@@ -1298,6 +1314,8 @@ function loadCommunity(response, statusText, target) {
             }
         }
     }
+    if (target.more)
+        $("#pageTitle").html("My Community");
 }
 function leaveJoinCommunity(response, statusText, target) {
     if (!response.error) {
@@ -1350,6 +1368,7 @@ function loadPost(response, statusText, target) {
     if (!response.error) {
         var htmlstr = "";
         var toggleId = "", formBox = "";
+        count = response.length;
         $.each(response, function(i, responseItem) {
             htmlstr += '<div class="post" id="post-' + responseItem.id + '"><div class="post-content"><p>' + (responseItem.post.length > 200 ? nl2br(linkify(responseItem.post.substring(0, 200))) + '<span style="display:none" id="continuereading-' + responseItem.id + '">' + nl2br(linkify(responseItem.post.substring(200))) + '</span> <a id="continue-' + responseItem.id + '">continue reading...</a>' : nl2br(linkify(responseItem.post))) + '</p>';
             if (responseItem.post_photo) {
@@ -1388,10 +1407,21 @@ function loadPost(response, statusText, target) {
                 toggleId += ",#continue-" + responseItem.id;
             }
             if (target.uid === responseItem.sender_id) {
-                toggleId += ",#deletePost-" + responseItem.id
+                toggleId += ",#deletePost-" + responseItem.id;
             }
         });
-        $(target.target).html(htmlstr);
+        if (target.append) {
+            $(target.target).append(htmlstr);
+            if (count < 10) {
+                $('#commMorePostDiv').hide();
+                humane.log("Oops! You've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            }
+        }
+        else {
+            $(target.target).html(htmlstr);
+            if (count < 20)
+                $('#commMorePostDiv').hide();
+        }
         $(".fancybox").fancybox({openEffect: "none", closeEffect: "none"});
         prepareDynamicDates();
         $(".timeago").timeago();
@@ -1429,7 +1459,12 @@ function loadPost(response, statusText, target) {
             showOption(this);
         });
     } else {
-        $(target.target).html('<div class="post" id="noPost-text"><div class="post-content"><p>No Post Found.</p></div></div>');
+        if (target.append) {
+            humane.log("Oops! You've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            $('#commMorePostDiv').hide();
+        } else
+            $(target.target).html('<div class="post" id="noPost-text"><div class="post-content"><p>No Post Found.</p></div></div>');
+        $('#commMorePostDiv').hide();
     }
 }
 function deletePost(response, statusText, target) {

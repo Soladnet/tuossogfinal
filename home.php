@@ -50,12 +50,20 @@ if (isset($_COOKIE['user_auth'])) {
             }
             $(document).ready(function() {
                 sendData("loadNotificationCount", {title: document.title});
-                sendData("loadTimeline", {target: ".timeline-container", loadImage: true});
+                sendData("loadTimeline", {target: ".timeline-container", loadImage: true, start:0, limit:20});
                 $(".chzn-select").chosen();
                 $(".fancybox").fancybox({
                     openEffect: 'none',
                     closeEffect: 'none',
                     minWidth: 250
+                });
+                var start = 10,limit = 10;
+                $('#loadMoreTimeLine').click(function(){
+                     start = parseInt($('.loadMoreTimeLine').attr("timeLine"));
+                     $('#loadMoreImg').show();
+                     sendData("loadTimeline", {target: ".timeline-container", loadImage: false, loadMore: true,start:start, limit:10});
+                     return false;
+                
                 });
                 $("#uploadImagePost").click(function() {
                     $("#uploadInput").focus().trigger('click');
@@ -132,11 +140,9 @@ if (isset($_COOKIE['user_auth'])) {
                 } else {
                     $('#logo').html('<a href="index"><img src="images/gossout-logo-text-svg.png" alt="Gossout" /></a>');
                 }
-            });</script>
-
-        <script>
-
-            function setCookie(c_name, value, exdays)
+                
+            });
+             function setCookie(c_name, value, exdays)
             {
                 var exdate = new Date();
                 exdate.setDate(exdate.getDate() + exdays);
@@ -183,6 +189,10 @@ if (isset($_COOKIE['user_auth'])) {
                     });
                 });
             }
+            
+            function loadMoreTimeLine(){
+            }
+           
         </script>
         <style>
             .progress { position:relative; width:60%; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
