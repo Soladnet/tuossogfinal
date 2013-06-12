@@ -72,16 +72,19 @@ if (isset($_COOKIE['user_auth'])) {
                 var percent = $('.percent');
                 $("#timelineForm").ajaxForm({
                     beforeSubmit: function(formData, jqForm, options) {
-                        if ($("#uploadInput").val() !== "") {
-                            $(".progress").show();
-                            var percentVal = '0%';
-                            bar.width(percentVal)
-                            percent.html(percentVal);
-                        }
+                        $(".progress").show();
+                        var percentVal = '0%';
+                        bar.width(percentVal);
+                        percent.html(percentVal);
+
                         $("#postBtn,textarea").prop('disabled', true);
                         $("#hiddenComm").val($(".chzn-select").val());
                         if ($(".chzn-select").val() === null) {
                             humane.log("You must select a community first.", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                            $("#postBtn,textarea").prop('disabled', false);
+                            $(".progress").hide(500);
+                            return false;
+                        } else if ($("#postText").val() === "") {
                             $("#postBtn,textarea").prop('disabled', false);
                             $(".progress").hide(500);
                             return false;
@@ -119,9 +122,10 @@ if (isset($_COOKIE['user_auth'])) {
                                 $(".timeline-container").prepend(htmlstr);
                                 prepareDynamicDates();
                                 $(".timeago").timeago();
-                            } else {
                             }
-                        } else {
+                        }
+                        if ($("#filesSelected").html() !== "") {
+                            $("#filesSelected").html("");
                         }
                     },
                     complete: function(response, statusText, xhr, $form) {

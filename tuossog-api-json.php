@@ -453,7 +453,11 @@ if (isset($_POST['param'])) {
                 }
                 $timeline->setStart($start);
                 $timeline->setLimit($limit);
-                $user_timeline = $timeline->getTimeline();
+                if (isset($_POST['p'])) {
+                    $user_timeline = $timeline->getTimeline(TRUE);
+                } else {
+                    $user_timeline = $timeline->getTimeline();
+                }
                 if ($user_timeline['status']) {
                     include_once("./sortArray_$.php");
                     $SMA = new SortMultiArray($user_timeline['timeline'], "time", 1);

@@ -15,7 +15,7 @@ if (isset($user)) {
             </span>
         </a>
         <table>
-            <tr><td></td><td><h3><a id="asideName"><?php echo isset($user) ? $user->getId() == 0 ? "GUEST" : $user->getFullname()  : "GUEST"; ?></a></h3></td></tr>
+            <tr><td></td><td><h3><a id="asideName" href="user/<?php echo isset($user) ? $user->getScreenName() : "" ?>"><?php echo isset($user) ? $user->getId() == 0 ? "GUEST" : $user->getFullname()  : "GUEST"; ?></a></h3></td></tr>
             <!--<tr><td><span class="icon-16-location"></span></td><td class="profile-meta"><?php echo isset($user) ? $user->getLocation() != "" ? $user->getLocation() : "Set your location"  : ""; ?></td></tr>-->
             <!--<tr><td><span class="icon-16-calendar"></span></td><td class="profile-meta">Joined on Feb 18, 2013 </td></tr>-->
             <?php ?><tr><td><span class="icon-16-male"></span></td><td class="profile-meta"><?php echo isset($user) ? $user->getId() == 0 ? "GUEST" : ($user->getGender() == "M" ? "Male" : "Female")  : "GUEST"; ?></td></tr>
@@ -24,13 +24,12 @@ if (isset($user)) {
         </table>
         <div class="clear"></div>
         <div class="profile-summary">
-            <div class="profile-summary-wrapper"><a><p class="number"><?php echo isset($user) ? $user->getMiniStat("pc") : "0" ?></p> <p class="type">Posts</p></a></div>
+            <div class="profile-summary-wrapper"><a href="user/<?php echo isset($user) ? $user->getScreenName() : "" ?>"><p class="number"><?php echo isset($user) ? $user->getMiniStat("pc") : "0" ?></p> <p class="type">Posts</p></a></div>
             <div class="profile-summary-wrapper"><a href="communities"><p class="number" id="cc"><?php echo isset($user) ? $user->getMiniStat("cc") : "0" ?></p> <p class="type">Communities</p></a></div>
             <div class="profile-summary-wrapper"><a href="friends"><p class="number"><?php echo isset($user) ? $user->getMiniStat("fc") : "0" ?></p> <p class="type">Friends</p></a></div>
             <div class="clear"></div>
         </div>
         <div class="clear"></div>
-
         <div id="full-profile-data" class="no-display">
             <hr>
             <b>Personal Information</b>

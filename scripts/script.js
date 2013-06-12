@@ -1,10 +1,9 @@
 function sendData(callback, target) {
     var option;
     if (callback === "loadCommunity") {
-//        if (target.more)
         option = {
             beforeSend: function() {
-//                showuidfeedback(target);
+                showuidfeedback(target);
             },
             success: function(response, statusText, xhr) {
                 loadCommunity(response, statusText, target);
@@ -15,7 +14,8 @@ function sendData(callback, target) {
                 comname: target.comname,
                 start: target.start,
                 limit: target.limit,
-                more: target.more
+                more: target.more,
+                uid: target.uid
             }
         };
 
@@ -32,7 +32,6 @@ function sendData(callback, target) {
             }
         };
     } else if (callback === "loadTimeline") {
-//        if(target.loadMore)
         option = {
             beforeSend: function() {
                 showuidfeedback(target);
@@ -256,7 +255,8 @@ function sendData(callback, target) {
             data: {
                 param: "friends",
                 start: (target.start) ? target.start : 0,
-                limit: (target.limit) ? target.limit : 10
+                limit: (target.limit) ? target.limit : 10,
+                uid: target.uid
             }
         };
 //        }
@@ -386,7 +386,7 @@ function loadTimeline(response, statusText, target) {
             if (response.type === "post") {
                 htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
                         '<img onload="OnImageLoad(event);" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                        '</div><p><a>' + (response.sender_id === readCookie("user_auth") ? "You" : response.firstname.concat(' ', response.lastname)) + '</a> posted to <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
+                        '</div><p><a href="user/'+response.username+'">' + (response.sender_id === readCookie("user_auth") ? "You" : response.firstname.concat(' ', response.lastname)) + '</a> posted to <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
                         '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p>';
                 if (response.post_photo) {
                     htmlstr += '<p class="timeline-photo-upload">';
@@ -407,7 +407,7 @@ function loadTimeline(response, statusText, target) {
             } else if (response.type === "comcrea") {
                 htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
                         '<img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"></div>' +
-                        '<p><a>' + response.firstname.concat(' ', response.lastname) + '</a> created a new <a href="' + response.unique_name + '">Community</a></p>' +
+                        '<p><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a> created a new <a href="' + response.unique_name + '">Community</a></p>' +
                         '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p><div class="community-meta">' +
                         '<img src="' + response.thumbnail100 + '">' +
                         '<h3><a href="' + response.unique_name + '">' + response.name + '</a></h3>' +
@@ -1315,8 +1315,10 @@ function loadCommunity(response, statusText, target) {
             }
         }
     }
-    if (target.more)
+    if (target.more){
+        $('#loader1').hide();
         $("#pageTitle").html("My Community");
+    }
 }
 function leaveJoinCommunity(response, statusText, target) {
     if (!response.error) {
@@ -1377,7 +1379,7 @@ function loadPost(response, statusText, target) {
                     htmlstr += '<a class="fancybox" rel="gallery' + responseItem.id + '"  href="' + photo.original + '" rel="group"><img src="' + photo.thumbnail + '"></a>';
                 });
             }
-            htmlstr += '<hr><h3 class="name"><img onload="OnImageLoad(event);" class="post-profile-pic" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail45) + '">' + responseItem.firstname.concat(' ', responseItem.lastname) +
+            htmlstr += '<hr><h3 class="name"><img onload="OnImageLoad(event);" class="post-profile-pic" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail45) + '"><a href="user/'+responseItem.username+'">' + responseItem.firstname.concat(' ', responseItem.lastname) +'</a>'+
                     '<div class="float-right"><span class="post-time"><span class="icon-16-comment"></span><span id="numComnt-' + responseItem.id + '">' + responseItem.numComnt + '</span> </span>' +
 //                    '<span class="post-time"><span class="icon-16-share"></span>24</span>' +
                     '<span class="post-time"><span class="icon-16-clock"></span><span class="timeago" title="' + responseItem.time + '">' + responseItem.time + '</span></span>' +
@@ -1510,7 +1512,7 @@ function loadComment(response, statusText, target) {
     if (!response.error) {
         var htmlstr = "", toggleId = "";
         $.each(response, function(i, responseItem) {
-            htmlstr += '<div class="post-comment" id="comment-' + responseItem.id + '"><div class="post-thumb"><img onload="OnImageLoad(event);" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail50) + '"> </div><h4 class="name">' + responseItem.firstname.concat(' ', responseItem.lastname) + '</h4><span class="post-time timeago" title="' + responseItem.time + '">' + responseItem.time + '</span><p>' + linkify(responseItem.comment);
+            htmlstr += '<div class="post-comment" id="comment-' + responseItem.id + '"><div class="post-thumb"><img onload="OnImageLoad(event);" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail50) + '"> </div><h4 class="name"><a href="user/'+responseItem.username+'">' + responseItem.firstname.concat(' ', responseItem.lastname) + '</a></h4><span class="post-time timeago" title="' + responseItem.time + '">' + responseItem.time + '</span><p>' + linkify(responseItem.comment);
             if (target.uid === responseItem.sender_id) {
                 htmlstr += '<hr><span class="post-meta-delete" id="deleteComment-' + responseItem.id + "_" + target.post_id + '"><span class="icon-16-trash"></span>Delete</span>';
                 if (i > 0 && toggleId !== "") {

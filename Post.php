@@ -93,7 +93,7 @@ class Post {
             throw new Exception("Connection to server failed!");
         } else {
             $encrypt = new Encryption();
-            $sql = "SELECT p.`id`, p.`post`, p.`sender_id`,u.firstname,u.lastname, p.`time`, p.`status` FROM `post` as p JOIN user_personal_info as u ON p.sender_id=u.id WHERE p.`community_id`=$this->comId  AND p.deleteStatus=0 order by p.`id` desc LIMIT $this->start,$this->limit";
+            $sql = "SELECT p.`id`, p.`post`, p.`sender_id`,u.username,u.firstname,u.lastname, p.`time`, p.`status` FROM `post` as p JOIN user_personal_info as u ON p.sender_id=u.id WHERE p.`community_id`=$this->comId  AND p.deleteStatus=0 order by p.`id` desc LIMIT $this->start,$this->limit";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
@@ -190,7 +190,7 @@ class Post {
             throw new Exception("Connection to server failed!");
         } else {
             $encrypt = new Encryption();
-            $sql = "SELECT c.`id`, c.`comment`, c.`post_id`, c.`sender_id`,u.firstname,u.lastname, c.`time`, c.`status` FROM `comments` as c JOIN user_personal_info as u ON c.`sender_id`=u.id WHERE c.`post_id`=$postId AND c.`deleteStatus`=0 order by c.id ASC";
+            $sql = "SELECT c.`id`, c.`comment`, c.`post_id`, c.`sender_id`,u.username,u.firstname,u.lastname, c.`time`, c.`status` FROM `comments` as c JOIN user_personal_info as u ON c.`sender_id`=u.id WHERE c.`post_id`=$postId AND c.`deleteStatus`=0 order by c.id ASC";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {

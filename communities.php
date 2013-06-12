@@ -134,9 +134,7 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                     $('#loadMoreComm').click(function() {
                         start = parseInt($(this).attr('comm'));
                         $('#loader1').show();
-                        sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true, start: start, limit: limit, more: true});
-                        //                         alert('clicked');
-                         $('#loader1').hide();
+                        sendData("loadCommunity", {target: ".community-box", loadImage: false, max: true, start: start, limit: limit, more: true});
                         return false;
                     });
     <?php

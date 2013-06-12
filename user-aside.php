@@ -7,7 +7,9 @@ if (isset($user)) {
 ?>
 <div class="aside">
     <div class="aside-wrapper">
-        <img class="profile-pic" src="<?php echo isset($pix['thumbnail150']) ? $pix['thumbnail150'] : "images/user-no-pic.png" ?>">
+        <a class= "fancybox " rel="profilePix" href="<?php echo isset($pix['original']) ? $pix['original'] : "images/user-no-pic.png" ?>">
+            <img class="profile-pic" src="<?php echo isset($pix['thumbnail150']) ? $pix['thumbnail150'] : "images/user-no-pic.png" ?>">
+        </a>
         <table>
             <tr><td></td><td><h3><a href="user/<?php echo isset($user) ? $user->getScreenName() : "" ?>"><?php echo isset($user) ? $user->getFullname() : "Guest" ?></a></h3></td></tr>
             <!--<tr><td><span class="icon-16-location"></span></td><td class="profile-meta"><?php echo isset($user) ? $user->getLocation() != "" ? $user->getLocation() : "Set your location"  : ""; ?></td></tr>-->
