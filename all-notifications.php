@@ -104,8 +104,9 @@ if (isset($_COOKIE['user_auth'])) {
                     doSeparatGoss($(this).attr('id'));
                 });
                 $('.gossbag-separation-icons').click(function() {
-                    $('#loadMoreNotifDiv').show();
+                    $('#loadMoreNotifDiv').hide();
                 });
+                $('#loadMoreNotifDiv').hide();
                 $('.loadMoreGossContent').click(function() {
                     var hold = $(this).attr('hold');
                     var winkStart = $(this).attr('wink');

@@ -1492,7 +1492,7 @@ class GossoutUser {
                 $arr = array($arr[0], $merg);
                 $searchCombination = "((`firstname` LIKE '%$arr[0]%' OR `firstname` LIKE '%$arr[1]%') AND (`lastname` LIKE '%$arr[1]%' OR `lastname` LIKE '%$arr[0]%'))";
             }
-            $sql = "SELECT id,firstname,lastname,location,gender,`dateJoined` FROM `user_personal_info` WHERE $searchCombination LIMIT $this->start,$this->limit";
+            $sql = "SELECT id,username,firstname,lastname,location,gender,`dateJoined` FROM `user_personal_info` WHERE $searchCombination LIMIT $this->start,$this->limit";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {

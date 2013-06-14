@@ -1,15 +1,16 @@
 <?php
 //session_start();
+include_once './encryptionClass.php';
+include_once './GossoutUser.php';
+include_once './Community.php';
+$encrypt = new Encryption();
+$user = new GossoutUser(0);
+$userCommunity = new Community();
 if (isset($_COOKIE['user_auth'])) {
-    include_once './encryptionClass.php';
-    include_once './GossoutUser.php';
-    include_once './Community.php';
-    $encrypt = new Encryption();
     $uid = $encrypt->safe_b64decode($_COOKIE['user_auth']);
     if (is_numeric($uid)) {
         $user = new GossoutUser($uid);
         $userProfile = $user->getProfile();
-        $userCommunity = new Community();
         $userCommunity->setUser($uid);
     }
     if (isset($_GET['param']) && trim($_GET['param']) != "") {
@@ -27,13 +28,15 @@ if (isset($_COOKIE['user_auth'])) {
     if (isset($_GET['param']) && trim($_GET['param']) != "") {
         $user->setUserId(NULL);
         $user->setScreenName($_GET['param']);
-        $user->getId();
+        $id = $user->getId();
         if (is_numeric($id)) {
             $user->getProfile();
         } else {
             header("HTTP/1.0 404 Not Found");
             exit;
         }
+    } else {
+        header("Location: login");
     }
 }
 ?>
@@ -82,7 +85,9 @@ if (isset($_GET['param']) && trim($_GET['param']) == "") {
     <?php
 }
 ?>
-                sendData("loadNotificationCount", {title: document.title});
+                var user = readCookie("user_auth");
+                if (user !== 0 && user !== "")
+                    sendData("loadNotificationCount", {title: document.title});
                 sendData("loadTimeline", {target: ".timeline-container", uid: "<?php echo $user->encodeData($user->getId()) ?>", t: true, loadImage: true});
                 $(".chzn-select").chosen();
                 $(".fancybox").fancybox({
@@ -164,6 +169,13 @@ if (isset($_GET['param']) && trim($_GET['param']) == "") {
                         uid: readCookie("user_auth")
                     }
                 });
+                $('#loadMoreNotifDiv').hide();
+                $('#loadMoreNotifDiv').click(function(){
+//                    alert('Ok man!');
+                       start = parseInt($('.loadMoreTimeLine').attr("timeLine"));
+                       $('#loadMoreImg').show();
+                    sendData("loadTimeline", {target: ".timeline-container", uid: "<?php echo $user->encodeData($user->getId()) ?>", t: true, loadImage: false,start:start,limit:10,loadMore:true});
+                });
                 if (Modernizr.inlinesvg) {
                     $('#logo').html('<a href="index"><img src="images/gossout-logo-text-svg.png" alt="Gossout" /></a>');
                 } else {
@@ -186,7 +198,11 @@ if (isset($_GET['param']) && trim($_GET['param']) == "") {
                     <h1><?php echo $user->getFullname() == "" ? "Timeline" : $user->getFullname() ?></h1>
                     <hr>
                     <?php
-                    include("post-box.php");
+                    if (isset($_COOKIE['user_auth'])) {
+                        if ($_COOKIE['user_auth'] == $user->encodeData($user->getId())){
+                            include("post-box.php");
+                        }
+                    }
                     include("timeline.php");
                     ?>
 

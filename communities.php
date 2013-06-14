@@ -107,6 +107,7 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                             uid: readCookie('user_auth')
                         }
                     });
+                    $('#loadMoreComm').hide();
                     $('#all').addClass('active');
                     $("#all").click(function() {
                         $('#my-communities-list').show();
@@ -186,7 +187,7 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                         </div><p>
                         <div class="button" style="float:left;" id="loadMoreComm" comm="10">
                             <a href="">Load more > ></a>
-                        </div><img src='images/loading.gif' style='border:none' id="loader1"/>
+                        </div>&nbsp;<img src='images/loading.gif' style='border:none' id="loader1"/>
                     </div>
 
                 </span>

@@ -36,4 +36,4 @@
         $("#nav-user").sticky({topSpacing:-4});
     });
 </script>
-<script type="text/javascript" src="scripts/script.js?v=1.7.4"></script>
+<script type="text/javascript" src="scripts/script.js?v=1.7.6"></script>

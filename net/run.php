@@ -10,7 +10,7 @@ if (isset($_POST['option'])) {
             if (isset($_POST['decode'])) {
                 $input = $encrypt->safe_b64decode($input);
             }
-            
+
             if (is_numeric($input)) {
                 $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
                 if ($mysql->connect_errno > 0) {
@@ -20,11 +20,11 @@ if (isset($_POST['option'])) {
                     if ($result = $mysql->query($sql)) {
                         if ($result->num_rows > 0) {
                             $row = $result->fetch_assoc();
-                            echo json_encode(array("response"=>$row));
-                        }else{
+                            echo json_encode(array("response" => $row));
+                        } else {
                             displayError(404, "$_POST[input] = $input does not exist");
                         }
-                    }else{
+                    } else {
                         displayError(404, "Query failed!");
                     }
                 }
@@ -33,6 +33,39 @@ if (isset($_POST['option'])) {
             }
         } else {
             displayError(404, "Method not defined!");
+        }
+    } else if ($_POST['option'] == "regStat") {
+        $arr['totalReg'] = 0;
+        $arr['regToday'] = 0;
+        $arr['lastTen'] = array();
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "SELECT count(*) as count FROM `user_personal_info`";
+            if ($result = $mysql->query($sql)) {
+                if ($result->num_rows > 0) {
+                    $row = $result->fetch_assoc();
+                    $arr['totalReg'] = $row['count'];
+                }
+            }
+            $date = date("Y-m-d");
+            $sql = "SELECT count(*) as count FROM `user_personal_info` WHERE `dateJoined`<=$date";
+            if ($result = $mysql->query($sql)) {
+                if ($result->num_rows > 0) {
+                    $row = $result->fetch_assoc();
+                    $arr['regToday'] = $row['count'];
+                }
+            }
+            $sql = "SELECT * FROM `user_personal_info` order by id desc LIMIT 0,100";
+            if ($result = $mysql->query($sql)) {
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $arr['lastTen'][] = $row;
+                    }
+                }
+            }
+            echo json_encode($arr);
         }
     } else {
         displayError(404, "Method not defined!");

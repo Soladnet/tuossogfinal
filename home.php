@@ -58,6 +58,7 @@ if (isset($_COOKIE['user_auth'])) {
                     minWidth: 250
                 });
                 var start = 10,limit = 10;
+                $('#loadMoreNotifDiv').hide();
                 $('#loadMoreTimeLine').click(function(){
                      start = parseInt($('.loadMoreTimeLine').attr("timeLine"));
                      $('#loadMoreImg').show();

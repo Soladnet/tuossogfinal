@@ -8,7 +8,9 @@ if (isset($user)) {
 <div class="aside">
     <div class="aside-wrapper">
         <a class= "fancybox " rel="profilePix" href="<?php echo isset($pix['original']) ? $pix['original'] : "images/user-no-pic.png" ?>">
-            <img class="profile-pic" src="<?php echo isset($pix['thumbnail150']) ? $pix['thumbnail150'] : "images/user-no-pic.png" ?>">
+            <span class="profile-pic">
+                <img onload="OnImageLoad(event);" src="<?php echo isset($pix['thumbnail150']) ? $pix['thumbnail150'] : "images/user-no-pic.png" ?>">
+            </span>
         </a>
         <table>
             <tr><td></td><td><h3><a href="user/<?php echo isset($user) ? $user->getScreenName() : "" ?>"><?php echo isset($user) ? $user->getFullname() : "Guest" ?></a></h3></td></tr>
@@ -61,7 +63,7 @@ if (isset($user)) {
                         <span><span class="icon-16-dot"></span><a href="communities">Show all</a></span>
                         <?php
                     }
-                    if ($_COOKIE['user_auth'] == $user->encodeData($user->getId())) {
+                    if (isset($_COOKIE['user_auth']) && $_COOKIE['user_auth'] == $user->encodeData($user->getId())) {
                         ?>
                         <span><span class="icon-16-dot"></span><a id="show-suggested-community">Suggest Communities</a></span>
                     <?php } ?>
@@ -75,13 +77,10 @@ if (isset($user)) {
         </div>
         <div class="aside-wrapper" id="aside-wrapper-frnd"><h3><a href="friends">Friends</a></h3>
             <script>
-                $(document).ready(function() {
-                    var user = readCookie('user_auth');
-                    if (user !== 0) {
-                        sendData("loadFriends", {target: "#aside-friends-list", uid: "<?php echo $user->encodeData($user->getId()) ?>", start: 0, limit: 12, loadImage: true <?php echo isset($_GET['page']) ? $_GET['page'] == "friends" ? ",friendPage:'#individual-friend-box'" : ""  : "" ?>});
-                        sendData("loadCommunity", {target: "#aside-community-list", uid: "<?php echo $user->encodeData($user->getId()) ?>", loadImage: true, max: "", start: 0, limit: 5});
-                    }
-                });
+                        $(document).ready(function() {
+                            sendData("loadFriends", {target: "#aside-friends-list", uid: "<?php echo $user->encodeData($user->getId()) ?>", start: 0, limit: 12, loadImage: true <?php echo isset($_GET['page']) ? $_GET['page'] == "friends" ? ",friendPage:'#individual-friend-box'" : ""  : "" ?>});
+                            sendData("loadCommunity", {target: "#aside-community-list", uid: "<?php echo $user->encodeData($user->getId()) ?>", loadImage: true, max: "", start: 0, limit: 5});
+                        });
             </script>
             <span id="aside-friends-list"></span>
             <p class="community-listing">
@@ -93,7 +92,7 @@ if (isset($user)) {
                     <span><span class="icon-16-dot"></span><a href="friends">Show all</a></span>
                     <?php
                 }
-                if ($_COOKIE['user_auth'] == $user->encodeData($user->getId())) {
+                if (isset($_COOKIE['user_auth']) && $_COOKIE['user_auth'] == $user->encodeData($user->getId())) {
                     ?>
                     <span><span class="icon-16-dot"></span><a id="show-suggested-friends">Suggest Friends</a></span>
                 <?php } ?>

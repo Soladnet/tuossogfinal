@@ -31,7 +31,7 @@ if (isset($_COOKIE['user_auth'])) {
         <link rel="shortcut icon" href="favicon.ico">
         <script src="scripts/humane.min.js"></script>
         <script type="text/javascript" src="scripts/modernizr.custom.77319.js"></script>
-        <script type="text/javascript" src="scripts/searchscript.js"></script>
+        <script type="text/javascript" src="scripts/searchscript.js?v=1.1"></script>
         <script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
         <script src="scripts/test_helpers.js" type="text/javascript"></script>

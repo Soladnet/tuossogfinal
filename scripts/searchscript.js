@@ -83,7 +83,7 @@ function loadPostResult(response, statusText, target) {
     if (!response.error) {
         $.each(response, function(i, response) {
             htmlstr += '<div class="index-search-result"><h3>' +
-                    '<a><img class="post-profile-pic" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail45) + '">' + response.firstname.concat(' ', response.lastname) + '</a>' +
+                    '<a href="user/'+response.username+'"><img class="post-profile-pic" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail45) + '">' + response.firstname.concat(' ', response.lastname) + '</a>' +
                     '<div class="float-right">' +
 //                    '<span class="post-time"><span class="icon-16-share"></span>24</span>' +
                     '<span class="post-time"><span class="icon-16-clock"></span><span class="timeago" title="' + response.time + '">' + response.time + '</span></span>' +
@@ -159,7 +159,7 @@ function loadPeopleResult(response, statusText, target) {
     if (!response.error) {
         $.each(response, function(i, response) {
             htmlstr += '<div class="index-search-result">' +
-                    '<h3><a>' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                    '<h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
                     '<img class="float-left" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail150) + '">' +
                     '<p> <span class="icon-16-location"></span>' + (response.location === "" ? "Location not set" : response.location) + '</p>' +
                     '<p> <span class="icon-16-calendar"></span>Joined on ' + response.dateJoined + '</p>' +

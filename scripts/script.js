@@ -382,11 +382,12 @@ function showuidfeedback(target) {
 function loadTimeline(response, statusText, target) {
     if (!response.error) {
         var htmlstr = "", toggleId = "";
+        var TimeLineCount = response.length;
         $.each(response, function(i, response) {
             if (response.type === "post") {
                 htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
                         '<img onload="OnImageLoad(event);" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                        '</div><p><a href="user/'+response.username+'">' + (response.sender_id === readCookie("user_auth") ? "You" : response.firstname.concat(' ', response.lastname)) + '</a> posted to <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
+                        '</div><p><a href="user/' + response.username + '">' + (response.sender_id === readCookie("user_auth") ? "You" : response.firstname.concat(' ', response.lastname)) + '</a> posted to <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
                         '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p>';
                 if (response.post_photo) {
                     htmlstr += '<p class="timeline-photo-upload">';
@@ -407,7 +408,7 @@ function loadTimeline(response, statusText, target) {
             } else if (response.type === "comcrea") {
                 htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
                         '<img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"></div>' +
-                        '<p><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a> created a new <a href="' + response.unique_name + '">Community</a></p>' +
+                        '<p><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a> created a new <a href="' + response.unique_name + '">Community</a></p>' +
                         '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p><div class="community-meta">' +
                         '<img src="' + response.thumbnail100 + '">' +
                         '<h3><a href="' + response.unique_name + '">' + response.name + '</a></h3>' +
@@ -434,15 +435,27 @@ function loadTimeline(response, statusText, target) {
         if (target.loadMore) {
             if (htmlstr !== "") {
                 $(target.target).append(htmlstr);
-                $('.loadMoreTimeLine').attr("timeLine", parseInt($('.loadMoreTimeLine').attr("timeLine")) + 10);
-                $('#loadMoreImg').hide();
+                if (TimeLineCount < 10) {
+                    $('#loadMoreImg,#loadMoreNotifDiv').hide();
+                    humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+
+                }
+                else {
+                    $('#loadMoreNotifDiv').show();
+
+                    $('.loadMoreTimeLine').attr("timeLine", parseInt($('.loadMoreTimeLine').attr("timeLine")) + 10);
+                    $('#loadMoreImg').hide();
+                }
             } else {
+
                 humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
                 $('#loadMoreImg,#loadMoreNotifDiv').hide();
             }
         }
-        else
+        else {
             $(target.target).html(htmlstr);
+            $('#loadMoreNotifDiv').show();
+        }
         prepareDynamicDates();
         $(".timeago").timeago();
         if (toggleId !== "") {
@@ -451,7 +464,7 @@ function loadTimeline(response, statusText, target) {
             });
         }
     } else {
-        $(target.target).html("");
+        $(target.target).html('<div class="timeline-news-single"><p>Oops!... no post is attached to this user</p></div>');
     }
 }
 
@@ -487,7 +500,7 @@ function loadWink(response, statusText, target) {
             $('#loadMoreNotifDiv').hide();
             $('#wink-notification-icon').addClass('noResult');
         } else {
-            htmlstr = "Hoops! You have no unviewed winks.";
+            htmlstr = "Oops! You have no unviewed winks.";
             $(target.target).html(htmlstr);
             $('#loadMoreNotifDiv').hide();
             $('#wink-notification-icon').addClass('noResult');
@@ -498,7 +511,6 @@ function loadWink(response, statusText, target) {
 function loadGossPost(response, statusText, target) {
 //     $.each(response.bag, function(i, response){alert(response.firstname)});
     var htmlstr = "", htmlFirst = "", accept_frq_text = "";
-//      alert('htmlstr');
     if (!response.error) {
         $.each(response.bag, function(i, response) {
             htmlstr += '<div class="individual-notification-box">' +
@@ -615,6 +627,7 @@ function loadGossFrq(response, statusText, target) {
 function loadGossbag(response, statusText, target) {
     if (!response.error) {
         var htmlstr = "", accept_frq_text = "", winkback = "", ignorewink = "";
+        var countGossBag = response.length;
         $.each(response, function(i, response) {
             if (response.type === "frq") {
                 if (target.target === "#individual-notification-box-a") {
@@ -716,13 +729,18 @@ function loadGossbag(response, statusText, target) {
             $(target.target).append(htmlstr);
             $("#loadMoreImg").hide();
             $('.loadMoreGossContent').attr("all", parseInt($('.loadMoreGossContent').attr("all")) + limit);
+            if (countGossBag < 10)
+                $('#loadMoreNotifDiv').hide();
+            else
+                $('#loadMoreNotifDiv').show();
         } else {
+            if (countGossBag >= 10)
+                $('#loadMoreNotifDiv').show();
             $(target.target).html(htmlstr);
         }
         $(accept_frq_text).click(function() {
             showOption(this);
         });
-//        alert(accept_frq_text);
         prepareDynamicDates();
         $(".timeago").timeago();
     } else {
@@ -1271,6 +1289,8 @@ function loadCommunity(response, statusText, target) {
             if (countResponse < 10 && target.more) {
                 $('#loadMoreComm').hide();
                 humane.log("Oops! You've got it all!", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            } else {
+                $('#loadMoreComm').show();
             }
 
             if (countResponse < 10)
@@ -1315,7 +1335,7 @@ function loadCommunity(response, statusText, target) {
             }
         }
     }
-    if (target.more){
+    if (target.more) {
         $('#loader1').hide();
         $("#pageTitle").html("My Community");
     }
@@ -1379,7 +1399,7 @@ function loadPost(response, statusText, target) {
                     htmlstr += '<a class="fancybox" rel="gallery' + responseItem.id + '"  href="' + photo.original + '" rel="group"><img src="' + photo.thumbnail + '"></a>';
                 });
             }
-            htmlstr += '<hr><h3 class="name"><img onload="OnImageLoad(event);" class="post-profile-pic" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail45) + '"><a href="user/'+responseItem.username+'">' + responseItem.firstname.concat(' ', responseItem.lastname) +'</a>'+
+            htmlstr += '<hr><h3 class="name"><img onload="OnImageLoad(event);" class="post-profile-pic" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail45) + '"><a href="user/' + responseItem.username + '">' + responseItem.firstname.concat(' ', responseItem.lastname) + '</a>' +
                     '<div class="float-right"><span class="post-time"><span class="icon-16-comment"></span><span id="numComnt-' + responseItem.id + '">' + responseItem.numComnt + '</span> </span>' +
 //                    '<span class="post-time"><span class="icon-16-share"></span>24</span>' +
                     '<span class="post-time"><span class="icon-16-clock"></span><span class="timeago" title="' + responseItem.time + '">' + responseItem.time + '</span></span>' +
@@ -1464,9 +1484,9 @@ function loadPost(response, statusText, target) {
     } else {
         if (target.append) {
             humane.log("Oops! You've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
-            $('#commMorePostDiv').hide();
-        } else
+        } else {
             $(target.target).html('<div class="post" id="noPost-text"><div class="post-content"><p>No Post Found.</p></div></div>');
+        }
         $('#commMorePostDiv').hide();
     }
 }
@@ -1512,7 +1532,7 @@ function loadComment(response, statusText, target) {
     if (!response.error) {
         var htmlstr = "", toggleId = "";
         $.each(response, function(i, responseItem) {
-            htmlstr += '<div class="post-comment" id="comment-' + responseItem.id + '"><div class="post-thumb"><img onload="OnImageLoad(event);" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail50) + '"> </div><h4 class="name"><a href="user/'+responseItem.username+'">' + responseItem.firstname.concat(' ', responseItem.lastname) + '</a></h4><span class="post-time timeago" title="' + responseItem.time + '">' + responseItem.time + '</span><p>' + linkify(responseItem.comment);
+            htmlstr += '<div class="post-comment" id="comment-' + responseItem.id + '"><div class="post-thumb"><img onload="OnImageLoad(event);" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail50) + '"> </div><h4 class="name"><a href="user/' + responseItem.username + '">' + responseItem.firstname.concat(' ', responseItem.lastname) + '</a></h4><span class="post-time timeago" title="' + responseItem.time + '">' + responseItem.time + '</span><p>' + linkify(responseItem.comment);
             if (target.uid === responseItem.sender_id) {
                 htmlstr += '<hr><span class="post-meta-delete" id="deleteComment-' + responseItem.id + "_" + target.post_id + '"><span class="icon-16-trash"></span>Delete</span>';
                 if (i > 0 && toggleId !== "") {
@@ -1544,7 +1564,7 @@ function loadFriends(response, statusText, target) {
             if (target.target === "#aside-friends-list") {
                 if (target.friendPage) {
                     friendsPage += '<div class="individual-friend-box"><a class= "fancyboxAlert" id="inline" href="#' + responseItem.username + '">' +
-                            '<div class="friend-image"><img src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail50) + '"></div><div class="friend-text">' +
+                            '<div class="friend-image"><img onload="OnImageLoad(event);"  src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail50) + '"></div><div class="friend-text">' +
                             '<div class="friend-name">' + responseItem.firstname.concat(" ", responseItem.lastname) + '</div>' +
                             '<div class="friend-location">' + responseItem.location + '</div></div>' +
                             '<div style="display:none"><div id="' + responseItem.username + '"><div class="aside-wrapper"><div class="profile-pic"><img class="holdam" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail150) + '"></div>' +

@@ -337,7 +337,7 @@ class Post {
             throw new Exception("Connection to server failed!");
         } else {
             $encrypt = new Encryption();
-            $sql = "SELECT p.id,p.post,p.`time`,p.status,p.sender_id,u.firstname,u.lastname FROM post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id WHERE p.post LIKE '%$term%' AND c.`type`='Public' AND p.`deleteStatus`=0 LIMIT $this->start,$this->limit";
+            $sql = "SELECT p.id,p.post,p.`time`,p.status,p.sender_id,u.username,u.firstname,u.lastname FROM post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id WHERE p.post LIKE '%$term%' AND c.`type`='Public' AND p.`deleteStatus`=0 LIMIT $this->start,$this->limit";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
