@@ -17,6 +17,7 @@ if (isset($_COOKIE['user_auth'])) {
         $user->setUserId(NULL);
         $user->setScreenName($_GET['param']);
         $id = $user->getId();
+        
         if (is_numeric($id)) {
             $user->getProfile();
         } else {

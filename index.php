@@ -63,7 +63,7 @@ if (isset($_GET['page'])) {
     }  else if ($_GET['page'] == "user") {
         include_once 'user-profile.php';
     }else {
-        header("Location: communities/$_GET[page]");
+        include_once './communities.php';
     }
 } else {
     if (isset($_COOKIE['user_auth'])) {

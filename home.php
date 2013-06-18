@@ -50,21 +50,21 @@ if (isset($_COOKIE['user_auth'])) {
             }
             $(document).ready(function() {
                 sendData("loadNotificationCount", {title: document.title});
-                sendData("loadTimeline", {target: ".timeline-container", loadImage: true, start:0, limit:20});
+                sendData("loadTimeline", {target: ".timeline-container", loadImage: true, start: 0, limit: 20});
                 $(".chzn-select").chosen();
                 $(".fancybox").fancybox({
                     openEffect: 'none',
                     closeEffect: 'none',
                     minWidth: 250
                 });
-                var start = 10,limit = 10;
+                var start = 10, limit = 10;
                 $('#loadMoreNotifDiv').hide();
-                $('#loadMoreTimeLine').click(function(){
-                     start = parseInt($('.loadMoreTimeLine').attr("timeLine"));
-                     $('#loadMoreImg').show();
-                     sendData("loadTimeline", {target: ".timeline-container", loadImage: false, loadMore: true,start:start, limit:10});
-                     return false;
-                
+                $('#loadMoreTimeLine').click(function() {
+                    start = parseInt($('.loadMoreTimeLine').attr("timeLine"));
+                    $('#loadMoreImg').show();
+                    sendData("loadTimeline", {target: ".timeline-container", loadImage: false, loadMore: true, start: start, limit: 10});
+                    return false;
+
                 });
                 $("#uploadImagePost").click(function() {
                     $("#uploadInput").focus().trigger('click');
@@ -93,12 +93,11 @@ if (isset($_COOKIE['user_auth'])) {
                     },
                     uploadProgress: function(event, position, total, percentComplete) {
                         var percentVal = percentComplete + '%';
-                        bar.width(percentVal)
+                        bar.width(percentVal);
                         percent.html(percentVal);
-                    },
-                    success: function(responseText, statusText, xhr, $form) {
+                    }, success: function(responseText, statusText, xhr, $form) {
                         var percentVal = '100%';
-                        bar.width(percentVal)
+                        bar.width(percentVal);
                         percent.html(percentVal);
                         var hiddenCom = $("#hiddenComm").val().split(",");
                         var post = $("#postText").val();
@@ -106,10 +105,7 @@ if (isset($_COOKIE['user_auth'])) {
                             if (responseText.time) {
                                 var htmlstr = "";
                                 $.each(responseText.id, function(i, id) {
-                                    htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
-                                            '<img src="' + responseText.photo + '">' +
-                                            '</div><p><a>You</a> posted to <a href="' + community[hiddenCom[i]].unique_name + '">' + community[hiddenCom[i]].name + '</a></p>' +
-                                            '<p class="timeline-time timeago" title="' + responseText.time + '">' + responseText.time + '</p><p>' + nl2br(linkify(post)) + '</p>';
+                                    htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' + '<img src="' + responseText.photo + '">' + '</div><p><a>You</a> posted to <a href="' + community[hiddenCom[i]].unique_name + '">' + community[hiddenCom[i]].name + '</a></p>' + '<p class="timeline-time timeago" title="' + responseText.time + '">' + responseText.time + '</p><p>' + nl2br(linkify(post)) + '</p>';
                                     if (responseText.post_photo) {
                                         htmlstr += '<p class="timeline-photo-upload">';
                                         $.each(responseText.post_photo, function(k, photo) {
@@ -117,8 +113,7 @@ if (isset($_COOKIE['user_auth'])) {
                                         });
                                         htmlstr += '</p><div class="clear"></div>';
                                     }
-                                    htmlstr += '<!--<p class="post-meta"><span id="post-new-comment-show-' + id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' +
-                                            '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share(20)</a></span></p>--><div class="clear"></div></div>';
+                                    htmlstr += '<!--<p class="post-meta"><span id="post-new-comment-show-' + id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' + '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share(20)</a></span></p>--><div class="clear"></div></div>';
                                 });
                                 $(".timeline-container").prepend(htmlstr);
                                 prepareDynamicDates();
@@ -128,8 +123,7 @@ if (isset($_COOKIE['user_auth'])) {
                         if ($("#filesSelected").html() !== "") {
                             $("#filesSelected").html("");
                         }
-                    },
-                    complete: function(response, statusText, xhr, $form) {
+                    }, complete: function(response, statusText, xhr, $form) {
                         $(".progress").hide(500);
                         $("#postBtn,textarea").prop('disabled', false);
                         $("#timelineForm").clearForm();
@@ -145,59 +139,45 @@ if (isset($_COOKIE['user_auth'])) {
                 } else {
                     $('#logo').html('<a href="index"><img src="images/gossout-logo-text-svg.png" alt="Gossout" /></a>');
                 }
-                
+
             });
-             function setCookie(c_name, value, exdays)
-            {
+            function setCookie(c_name, value, exdays) {
                 var exdate = new Date();
                 exdate.setDate(exdate.getDate() + exdays);
-                var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+                var c_value = escape(value) + ((exdays === null) ? "" : "; expires=" + exdate.toUTCString());
                 document.cookie = c_name + "=" + c_value;
             }
-
-            function getCookie(c_name)
-            {
+            function getCookie(c_name) {
                 var c_value = document.cookie;
                 var c_start = c_value.indexOf(" " + c_name + "=");
-                if (c_start == -1)
-                {
+                if (c_start === -1) {
                     c_start = c_value.indexOf(c_name + "=");
                 }
-                if (c_start == -1)
-                {
+                if (c_start === -1) {
                     c_value = null;
-                }
-                else
-                {
+                } else {
                     c_start = c_value.indexOf("=", c_start) + 1;
                     var c_end = c_value.indexOf(";", c_start);
-                    if (c_end == -1)
-                    {
+                    if (c_end === -1) {
                         c_end = c_value.length;
                     }
                     c_value = unescape(c_value.substring(c_start, c_end));
                 }
                 return c_value;
             }
-
             function callTour() {
                 $('#joyRideTipContent').joyride({
                     autoStart: true
                 });
             }
-
             if (getCookie('home_user_status') === null) {
-                setCookie('home_user_status', 'new_user',2592000);
+                setCookie('home_user_status', 'new_user', 2592000);
                 $(window).load(function() {
                     $('#joyRideTipContent').joyride({
                         autoStart: true
                     });
                 });
             }
-            
-            function loadMoreTimeLine(){
-            }
-           
         </script>
         <style>
             .progress { position:relative; width:60%; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }

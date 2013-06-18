@@ -1,5 +1,12 @@
 <?php
-session_start();
+$arr = array();
+$i = 0;
+while ($i < 15) {
+    $arr[] = rand(0, 15);
+    $i++;
+}
+sort($arr);
+echo $arr[count($arr) - 1];
 //echo "2013-05-17 21:03:36">"2013-05-17 22:03:05";
 //session_destroy();
 //print_r($_SESSION);
@@ -26,7 +33,6 @@ session_start();
 ////}
 //
 //echo "<br/>";
-
 //$ip = "41.71.149.159"; //$_SERVER['REMOTE_ADDR']; // means we got user's IP address 
 //$json = @file_get_contents('http://smart-ip.net/geoip-json/' . $ip); // this one service we gonna use to obtain timezone by IP
 //// maybe it's good to add some checks (if/else you've got an answer and if json could be decoded, etc.)
@@ -38,14 +44,12 @@ session_start();
 //    date_default_timezone_set("Africa/Lagos");
 //    echo convert_time_zone($row['time'], 'Africa/Lagos');
 //}
-
 //function convert_time_zone($timeFromDatabase_time, $tz) {
 //    $date = new DateTime($timeFromDatabase_time, new DateTimeZone(date_default_timezone_get()));
 //    $date->setTimezone(new DateTimeZone($tz));
 //    return $date->format('Y-m-d H:i:s');
 //    // or return $userTime; // if you want to return a DateTime object.
 //}
-
 //$email = "soladnnet@gmail.com";
 //$usernameTemp = explode('@', $email);
 //$username = FALSE;
@@ -64,10 +68,10 @@ session_start();
 //$user = new GossoutUser(0);
 //echo $user->encodeText("1");
 //echo '<<==<br/>';
-include './encryptionClass.php';
-$encrypt = new Encryption();
+//include './encryptionClass.php';
+//$encrypt = new Encryption();
 //echo ($encrypt->safe_b64decode("GIWzvI0FSIDDyI0FUAA="));
-echo date("Y-m-d");
+//echo date("Y-m-d");
 //$str = "_-thissdfkj";
 //print_r(preg_match("/[^A-Za-z0-9_-]/", $str));
 //function prepareUsername($email) {

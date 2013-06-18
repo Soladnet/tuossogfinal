@@ -23,9 +23,9 @@ if (isset($_COOKIE['user_auth'])) {
         <meta name="keywords" content="Community,Communities,Interest,Interests,Friend,Friends,Connect,Search,Discover,Discoveries,Gossout,Gossout.com,Zuma Communication Nigeria Limited,Soladnet Software,Soladoye Ola Abdulrasheed, Muhammad Kori,Ali Sani Mohammad,Lagos,Nigeria,Nigerian,Africa,Surulere,Pictures,Picture,Video,Videos,Blog,Blogs">
         <meta name="author" content="Soladnet Sofwares, Zuma Communication Nigeria Limited">
         <meta charset="UTF-8">
-        <script src="scripts/jquery-1.9.1.min.js"></script>
         <link rel="shortcut icon" href="favicon.ico">
         <link rel="stylesheet" media="screen" href="css/style.css">
+        <script src="scripts/jquery-1.9.1.min.js"></script>
         <link rel=" stylesheet" type="text/css" href="css/joyride-2.0.3.css">
         <script type="text/javascript" src="scripts/modernizr.custom.77319.js"></script>
         <script src="scripts/jquery.joyride-2.0.3.js"></script>
@@ -39,8 +39,7 @@ if (isset($_COOKIE['user_auth'])) {
                 }
                 $("#searchField").focus();
             });
-        </script>
-        <script>
+        
             function validate() {
                 if ($.trim($("#searchField").val()).length === 0) {
                     return false;
@@ -48,13 +47,12 @@ if (isset($_COOKIE['user_auth'])) {
                     return true;
                 }
             }
-        </script>
-        <script>
+        
             function setCookie(c_name, value, exdays)
             {
                 var exdate = new Date();
                 exdate.setDate(exdate.getDate() + exdays);
-                var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+                var c_value = escape(value) + ((exdays === null) ? "" : "; expires=" + exdate.toUTCString());
                 document.cookie = c_name + "=" + c_value;
             }
 
@@ -62,11 +60,11 @@ if (isset($_COOKIE['user_auth'])) {
             {
                 var c_value = document.cookie;
                 var c_start = c_value.indexOf(" " + c_name + "=");
-                if (c_start == -1)
+                if (c_start === -1)
                 {
                     c_start = c_value.indexOf(c_name + "=");
                 }
-                if (c_start == -1)
+                if (c_start === -1)
                 {
                     c_value = null;
                 }
@@ -74,7 +72,7 @@ if (isset($_COOKIE['user_auth'])) {
                 {
                     c_start = c_value.indexOf("=", c_start) + 1;
                     var c_end = c_value.indexOf(";", c_start);
-                    if (c_end == -1)
+                    if (c_end === -1)
                     {
                         c_end = c_value.length;
                     }
@@ -96,9 +94,6 @@ if (isset($_COOKIE['user_auth'])) {
                         autoStart: true
                     });
                 });
-            }
-            else
-            {
             }
         </script>
     </head>

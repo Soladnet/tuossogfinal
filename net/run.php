@@ -5,7 +5,7 @@ include_once './encryptionClass.php';
 $encrypt = new Encryption();
 if (isset($_POST['option'])) {
     if ($_POST['option'] == "gUser") {
-        $input = trim($_POST['input']);
+        $input = clean($_POST['input']);
         if ($input != "") {
             if (isset($_POST['decode'])) {
                 $input = $encrypt->safe_b64decode($input);
@@ -50,11 +50,11 @@ if (isset($_POST['option'])) {
                 }
             }
             $date = date("Y-m-d");
-            $sql = "SELECT count(*) as count FROM `user_personal_info` WHERE `dateJoined`<=$date";
-            if ($result = $mysql->query($sql)) {
-                if ($result->num_rows > 0) {
-                    $row = $result->fetch_assoc();
-                    $arr['regToday'] = $row['count'];
+            $sql1 = "SELECT count(*) as counts FROM `user_personal_info` WHERE `dateJoined`>='$date'";
+            if ($result1 = $mysql->query($sql1)) {
+                if ($result1->num_rows > 0) {
+                    $row1 = $result1->fetch_assoc();
+                    $arr['regToday'] = $row1['counts'];
                 }
             }
             $sql = "SELECT * FROM `user_personal_info` order by id desc LIMIT 0,100";
@@ -87,6 +87,18 @@ function displayError($code, $meesage) {
         @mail("soladnet@gmail.com", "bad syntax from user " . $_SERVER['HTTP_REFERER'], json_encode($_POST));
     }
     echo json_encode($response_arr);
+}
+
+function clean($value) {
+    // If magic quotes not turned on add slashes.
+    if (!get_magic_quotes_gpc()) {
+        // Adds the slashes.
+        $value = addslashes($value);
+    }
+    // Strip any tags from the value.
+    $value = strip_tags($value);
+    // Return the value out of the function.
+    return $value;
 }
 
 ?>

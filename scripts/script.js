@@ -396,21 +396,28 @@ function loadTimeline(response, statusText, target) {
                     });
                     htmlstr += '</p><div class="clear"></div>';
                 }
-                htmlstr += '<p>' + (response.post.length > 200 ? response.post.substring(0, 200) + '<span style="display:none" id="continuereading-' + response.id + '">' + response.post.substring(200) + '</span> <a id="continue-' + response.id + '">continue reading...</a>' : response.post) + '</p>' +
-                        '<!--<p class="post-meta"><span id="post-new-comment-show-' + response.id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' +
-                        '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share(20)</a></span></p>--><div class="clear"></div></div>';
-                if (response.post.length > 200) {
-                    if (toggleId !== "") {
-                        toggleId += ",";
-                    }
-                    toggleId += "#continue-" + response.id;
+                if (response.post) {
+                    htmlstr += '<p>' + (response.post.length > 200 ? response.post.substring(0, 200) + '<span style="display:none" id="continuereading-' + response.id + '">' + response.post.substring(200) + '</span> <a id="continue-' + response.id + '">continue reading...</a>' : response.post) + '</p>' +
+                            '<!--<p class="post-meta"><span id="post-new-comment-show-' + response.id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' +
+                            '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share(20)</a></span></p>--><div class="clear"></div></div>';
+                } else {
+                    htmlstr += '<p></p>' +
+                            '<!--<p class="post-meta"><span id="post-new-comment-show-' + response.id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' +
+                            '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share(20)</a></span></p>--><div class="clear"></div></div>';
                 }
+                if (response.post)
+                    if (response.post.length > 200) {
+                        if (toggleId !== "") {
+                            toggleId += ",";
+                        }
+                        toggleId += "#continue-" + response.id;
+                    }
             } else if (response.type === "comcrea") {
                 htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
                         '<img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"></div>' +
-                        '<p><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a> created a new <a href="' + response.unique_name + '">Community</a></p>' +
+                        '<p><a href="user/' + response.username + '">' + (response.creator_id === readCookie("user_auth") ? "You" : response.firstname.concat(' ', response.lastname)) + '</a> created a new <a href="' + response.unique_name + '">Community</a></p>' +
                         '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p><div class="community-meta">' +
-                        '<img src="' + response.thumbnail100 + '">' +
+                        '<a class="fancybox" rel="gallery' + response.id + '"  href="' + response.pix + '" rel="group"><img src="' + response.thumbnail100 + '"></a>' +
                         '<h3><a href="' + response.unique_name + '">' + response.name + '</a></h3>' +
                         '<p>' + response.description + '</p>' +
                         (response.isAmember ? "" : '<p><a class="joinCom" id="joinCom-' + response.id + '">Join</a></p>') +
@@ -474,7 +481,7 @@ function loadWink(response, statusText, target) {
         $.each(response.bag, function(i, response) {
             htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-eye"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                     '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
-                    '<h3>' + response.firstname.concat(' ', response.lastname) + ' </h3>' +
+                    '<h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
                     '<div class="all-notifications-message">Winked you</div></div><hr><p>' +
                     '<a class="all-notifications-actions winkIgnore" id="winkIgnore-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
                     '<a class="all-notifications-actions wink-text" id="wink-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a>' +
@@ -516,8 +523,8 @@ function loadGossPost(response, statusText, target) {
             htmlstr += '<div class="individual-notification-box">' +
                     '<p><span class="icon-16-pencil"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                     '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                    '<div class="all-notification-text"><h3>' + response.firstname.concat(' ', response.lastname) + '</h3>' +
-                    '<div class="all-notifications-comment">posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '" in <a href="communities/' + response.unique_name + '">' + response.name + '</a></div></div><hr><p>' +
+                    '<div class="all-notification-text"><h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                    '<div class="all-notifications-comment">posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '" in <a href="' + response.unique_name + '">' + response.name + '</a></div></div><hr><p>' +
                     '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
         });
         if (target.status === "append") {
@@ -536,7 +543,7 @@ function loadGossPost(response, statusText, target) {
             $('#loadMoreNotifDiv').hide();
             $('#post-notification-icon').addClass('noResult');
         } else {
-            htmlstr = "Hoops! You have no post notification.";
+            htmlstr = "Oops! You have no post notification.";
             $(target.target).html(htmlstr);
             $('#loadMoreNotifDiv').hide();
         }
@@ -552,7 +559,7 @@ function loadGossComment(response, statusText, target) {
             htmlstr += '<div class="individual-notification-box">' +
                     '<p><span class="icon-16-comment"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                     '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                    '<div class="all-notification-text"><h3>' + response.firstname.concat(' ', response.lastname) + '</h3>' +
+                    '<div class="all-notification-text"><h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
                     '<div class="all-notifications-message">Commented on ' + (response.isMyPost ? "on your post" : "a post") + ' in ' + response.name + '</div>' +
                     '<div class="all-notifications-comment">"' + (response.comment.length > 50 ? response.comment.substring(0, 50) + "..." : response.comment) + '"</div></div><hr><p>' +
                     '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
@@ -573,7 +580,7 @@ function loadGossComment(response, statusText, target) {
             $('#loadMoreNotifDiv').hide();
             $('#comment-notification-icon').addClass('noResult');
         } else {
-            htmlstr = "Hoops! You have no comment notification.";
+            htmlstr = "Oops! You have no comment notification.";
             $(target.target).html(htmlstr);
             $('#loadMoreNotifDiv').hide();
         }
@@ -588,7 +595,7 @@ function loadGossFrq(response, statusText, target) {
         $.each(response.bag, function(i, response) {
             htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-user-add"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                     '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
-                    '<a href=""><h3>' + response.firstname.concat(' ', response.lastname) + ' </h3></a>' +
+                    '<h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
                     '<div class="all-notifications-message">Wants To Add You</div></div><hr><p>' +
                     '<a class="all-notifications-actions frqIgnore" id="frqIgnore-text-n-' + response.username1 + '"><span class="icon-16-cross"></span>Ignore</a>' +
                     '<a class="all-notifications-actions accept-frq" id="accept-frq-text-n-' + response.username1 + '"><span class="icon-16-checkmark"></span>Accept</a>' +
@@ -633,7 +640,7 @@ function loadGossbag(response, statusText, target) {
                 if (target.target === "#individual-notification-box-a") {
                     htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-user-add"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
-                            '<a href=""><h3>' + response.firstname.concat(' ', response.lastname) + ' </h3></a>' +
+                            '<h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
                             '<div class="all-notifications-message">Wants To Add You</div></div><hr><p>' +
                             '<a class="all-notifications-actions frqIgnore" id="frqIgnore-text-n-' + response.username1 + '"><span class="icon-16-cross"></span>Ignore</a>' +
                             '<a class="all-notifications-actions accept-frq" id="accept-frq-text-n-' + response.username1 + '"><span class="icon-16-checkmark"></span>Accept</a>' +
@@ -644,7 +651,7 @@ function loadGossbag(response, statusText, target) {
                     htmlstr += '<div class="individual-notification"><p><span class="icon-16-user-add"></span>' +
                             '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + '</p>' +
+                            '<div class="notification-text"> <p class="name"><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></p>' +
                             '<p>wants to add you as friend</p></div><div class="clear"></div><hr>' +
                             '<span id="frqOption-' + response.id + '"><a class="notification-actions frqIgnore" id="frqIgnore-text-' + response.username1 + '">Ignore</a>' +
                             '<a class="notification-actions accept-frq" id="accept-frq-text-' + response.username1 + '">Accept</a></span>' +
@@ -657,7 +664,7 @@ function loadGossbag(response, statusText, target) {
                 if (target.target === "#individual-notification-box-a") {
                     htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-eye"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
-                            '<h3>' + response.firstname.concat(' ', response.lastname) + ' </h3>' +
+                            '<h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
                             '<div class="all-notifications-message">Winked you</div></div><hr><p>' +
                             '<a class="all-notifications-actions winkIgnore" id="winkIgnore-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
                             '<a class="all-notifications-actions wink-text" id="wink-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a>' +
@@ -667,7 +674,7 @@ function loadGossbag(response, statusText, target) {
                     htmlstr += '<div class="individual-notification"><p><span class="icon-16-eye"></span>' +
                             '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + '</p>' +
+                            '<div class="notification-text"> <p class="name"><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></p>' +
                             '<p>winked you</p></div><div class="clear"></div><hr>' +
                             '<span id="winkOption-' + response.id + '"><a class="notification-actions winkIgnore" id="winkIgnore-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
                             '<a class="notification-actions wink-text" id="wink-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a></span>' +
@@ -679,14 +686,14 @@ function loadGossbag(response, statusText, target) {
                     htmlstr += '<div class="individual-notification-box">' +
                             '<p><span class="icon-16-comment"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="all-notification-text"><h3>' + response.firstname.concat(' ', response.lastname) + '</h3>' +
-                            '<div class="all-notifications-message">Commented on ' + (response.isMyPost ? "on your post" : "a post") + ' in ' + response.name + '</div>' +
+                            '<div class="all-notification-text"><h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                            '<div class="all-notifications-message">Commented on ' + (response.isMyPost ? "on your post" : "a post") + ' in <a href="'+response.unique_name+'">' + response.name + '</a></div>' +
                             '<div class="all-notifications-comment">"' + (response.comment.length > 50 ? response.comment.substring(0, 50) + "..." : response.comment) + '"</div></div><hr><p>' +
                             '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
                 } else {
                     htmlstr += '<div class="individual-notification"><p><span class="icon-16-comment"></span><span class="float-right timeago" title="' + response.time + '">' + response.time + '</span></p>' +
                             '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="notification-text">' +
-                            '<p class="name">' + response.firstname.concat(' ', response.lastname) + '</p><p>commented on ' + (response.isMyPost ? "on your post" : "a post") + ' in ' + response.name + '</p>' +
+                            '<p class="name"><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></p><p>commented on ' + (response.isMyPost ? "on your post" : "a post") + ' in <a href="'+response.unique_name+'">' + response.name + '</a></p>' +
                             '<p>"' + (response.comment.length > 31 ? response.comment.substring(0, 31) + "..." : response.comment) + '"</p></div><div class="clear"></div><hr>' +
                             '<!--<a class="notification-actions" title="' + response.name + '">View</a>--><div class="clear"></div></div>';
                 }
@@ -695,22 +702,22 @@ function loadGossbag(response, statusText, target) {
                     htmlstr += '<div class="individual-notification-box">' +
                             '<p><span class="icon-16-pencil"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="all-notification-text"><h3>' + response.firstname.concat(' ', response.lastname) + '</h3>' +
-                            '<div class="all-notifications-comment">posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '" in <a href="communities/' + response.unique_name + '">' + response.name + '</a></div></div><hr><p>' +
+                            '<div class="all-notification-text"><h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                            '<div class="all-notifications-comment">posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '" in <a href="' + response.unique_name + '">' + response.name + '</a></div></div><hr><p>' +
                             '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
                 } else {
                     htmlstr += '<div class="individual-notification viewed-notification"><p><span class="icon-16-pencil"></span>' +
                             '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + ' </p>' +
-                            '<p>posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '"</p><p>in <a href="communities/' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><!--<a class="notification-actions">View</a>-->' +
+                            '<div class="notification-text"> <p class="name"><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></p>' +
+                            '<p>posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '"</p><p>in <a href="' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><!--<a class="notification-actions">View</a>-->' +
                             '<div class="clear"></div></div>';
                 }
             } else if (response.type === "IV") {
                 if (target.target === "#individual-notification-box-a") {
                     htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-earth"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
-                            '<h3>' + response.firstname.concat(' ', response.lastname) + ' </h3>' +
-                            '<div class="all-notifications-message">invites you to join <a href="communities/' + response.unique_name + '">' + response.name + '</a></div></div><hr><p id="invitationtarget">' +
+                            '<h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                            '<div class="all-notifications-message">invites you to join <a href="' + response.unique_name + '">' + response.name + '</a></div></div><hr><p id="invitationtarget">' +
                             '<a class="all-notifications-actions invitationIgnore" id="invitationIgnore-text-' + response.comid + '"><span class="icon-16-cross"></span>Ignore</a>' +
                             '<a class="all-notifications-actions invitation-text" id="invitation-text-' + response.comid + '"><span class="icon-16-earth"></span>Join</a>' +
                             '</p></div>';
@@ -718,8 +725,8 @@ function loadGossbag(response, statusText, target) {
                 } else {
                     htmlstr += '<div class="individual-notification viewed-notification"><p><span class="icon-16-earth"></span>' +
                             '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + '</p><p>invites you to join</p>' +
-                            '<p><a href="communities/' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><span id="invitationtarget"><a class="notification-actions invitationIgnore" id="invitationIgnore-text-n-' + response.comid + '">Ignore</a>' +
+                            '<div class="notification-text"> <p class="name"><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></p><p>invites you to join</p>' +
+                            '<p><a href="' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><span id="invitationtarget"><a class="notification-actions invitationIgnore" id="invitationIgnore-text-n-' + response.comid + '">Ignore</a>' +
                             '<a class="notification-actions invitation-text" id="invitation-text-n-' + response.comid + '">Join</a></span><div class="clear"></div></div>';
                     accept_frq_text += accept_frq_text === "" ? ".invitationIgnore,.invitation-text" : ",.invitationIgnore,.invitation-text";
                 }
@@ -786,7 +793,7 @@ function loadNewGossbag(response, statusText, target) {
 //                var html = '<div class="individual-notification viewed-notification"><p><span class="icon-16-pencil"></span>' +
 //                        '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
 //                        '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + ' </p>' +
-//                        '<p>posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '"</p><p>in <a href="communities/' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><!--<a class="notification-actions'+response.id+'">View</a>-->' +
+//                        '<p>posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '"</p><p>in <a href="' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><!--<a class="notification-actions'+response.id+'">View</a>-->' +
 //                        '<div class="clear"></div></div>';
 //                if (target.status === "prepend") {
 //                    $(target.target).prepend(html).fadeIn("slow");
@@ -1046,8 +1053,17 @@ function loadCommunity(response, statusText, target) {
                 $("#joinleave").remove();
             }
             $.each(response, function(i, response) {
-                $("#commTitle").html("<a href='communities/" + target.comname + "'>" + response.name + "</a>");
+                //load community details on aside column
+                $("#commTitle").html("<a href='" + target.comname + "'>" + response.name + "</a>");
                 $("#commDesc").html(response.description.length > 250 ? (nl2br(linkify(response.description.substring(0, 250)))) + "<span style='display:none' id='comdisplayMoreDesc'>" + (nl2br(linkify(response.description.substring(250)))) + "</span>" + " <a id='commViewMoreDesc'>view more...</a>" : (nl2br(linkify(response.description))));
+                if (response.description) {
+                    $("#metaDescription").attr("content", response.description.substring(0, 160));
+                } else {
+                    $("#metaDescription").attr("content", "Start or join existing communities/interests on Gossout and start sharing pictures and videos. People use Gossout search, Discover and connect with communities");
+                }
+                var keywords = response.description.split();
+                keywords.unshift(target.comname + "," + response.name);
+                $("#metaKeywords").attr("content", keywords.join());
                 $("#commUrl").html("<a href='" + target.comname + "'>www.gossout.com/" + target.comname + "</a>");
                 $("#comType").html((response.type === "Private" ? '<span class="icon-16-lock"></span>' : '') + response.type);
                 $("#joinleave").html(response.isAmember === "true" ? '<span class="icon-16-star-empty"></span> <span id="joinleave-text">Leave</span><input type="hidden" id="joinleave-comid" value="' + response.id + '"/>' : '<span class="icon-16-star"></span> <span id="joinleave-text">Join</span><input type="hidden" id="joinleave-comid" value="' + response.id + '"/>');
@@ -1056,7 +1072,7 @@ function loadCommunity(response, statusText, target) {
                 if (readCookie('user_auth') === 0) {
                     $("#joinleave").remove();
                 }
-                if (response.isAmember === "true" && !target.settings) {
+                if (response.isAmember === "true" && !target.settings) {//prepare setting option for member of this community
                     if (response.creator_id === readCookie('user_auth')) {
                         $("#otherCommOption").html('<div class=" button profile-button" id="loadCommore">More<span class="icon-16-arrow-down"></span>' +
                                 '<div class="more-container" id="pop-up-community-more"><div class="more"><ul>' +
@@ -1140,10 +1156,10 @@ function loadCommunity(response, statusText, target) {
                             '<div class="progress" style="display:none"><div class="bar"></div ><div class="percent">0%</div></div><div id="filesSelected" class="float-right" style="font-size: 12px; color: #99c53d"></div>' +
                             '</form>' +
                             '<div class="clear"></div></div><span id="loadPost"></span>\n\
-                            <hr/><div class="button" style="float:left;" id ="commMorePostDiv"><a commPost="20"  class="commMorePost" id="commMorePost">Load more > ></a></div><div id="loadMoreImg" style="display:none;"> &nbsp;<img src="images/loading.gif"/>\n\
+                            <hr/><div class="button" style="float:left;display:none;" id ="commMorePostDiv"><a commPost="20"  class="commMorePost" id="commMorePost">Load more > ></a></div><div id="loadMoreImg" style="display:none;"> &nbsp;<img src="images/loading.gif"/>\n\
                                 </div></div>';
                 } else {
-                    htmlstr += '<div class="posts"><h1>' + response.name + '</h1><hr/><span id="loadPost"></span>\n\<hr/><div class="button" style="float:left;" id ="commMorePostDiv"><a commPost="20"  class="commMorePost" id="commMorePost">Load more > ></a></div><div id="loadMoreImg" style="display:none;"> &nbsp;<img src="images/loading.gif"/>\n\
+                    htmlstr += '<div class="posts"><h1>' + response.name + '</h1><hr/><span id="loadPost"></span>\n\<hr/><div class="button" style="float:left;display:none;" id ="commMorePostDiv"><a commPost="20"  class="commMorePost" id="commMorePost">Load more > ></a></div><div id="loadMoreImg" style="display:none;"> &nbsp;<img src="images/loading.gif"/>\n\
                                 </div></div>';
                 }
 
@@ -1154,7 +1170,7 @@ function loadCommunity(response, statusText, target) {
                 $(target.target).html(htmlstr);
 
 
-                sendData("loadPost", {target: "#loadPost", uid: readCookie("user_auth"), comid: comid, start: 0, limit: 25, loadImage: true, loadAside: true});
+                sendData("loadPost", {target: "#loadPost", uid: readCookie("user_auth"), comid: comid, start: 0, limit: 20, loadImage: true, loadAside: true});
                 if (isAmember === "true") {
                     $("#uploadImagePost,#loadCommore,#inviteMemBtn,#commViewMoreDesc").click(function() {
                         if (this.id === "uploadImagePost") {
@@ -1264,13 +1280,6 @@ function loadCommunity(response, statusText, target) {
             } else {
                 $(target.target).html('<div class="posts"></div>');
             }
-            $('#commMorePostDiv').click(function() {
-                var start = parseInt($('#commMorePost').attr('commpost'));
-                sendData("loadPost", {target: "#loadPost", uid: readCookie("user_auth"), comid: comid, start: start, limit: 10, loadImage: false, append: true, commPost: true});
-                $('#commMorePost').attr('commpost', parseInt($('#commMorePost').attr('commpost')) + 10);
-//                    alert(start);
-            });
-
         }
         else {
             var countResponse = response.length;
@@ -1361,13 +1370,13 @@ function loadSuggestCommunity(response, statusText, target) {
                 htmlstr += '<div class="community-box-wrapper">';
                 htmlstr += '<div class="community-image"><img src="' + response.pix + '"></div>';
                 htmlstr += '<div class="community-text"><div class="community-name">' +
-                        '<a href="communities/' + response.unique_name + '">' + response.name + '</a> </div><hr><p class="community-privacy"><div class="details">' + (response.description.length > 100 ? br2nl(response.description).substring(0, 100) + "..." : br2nl(response.description)) +
+                        '<a href="' + response.unique_name + '">' + response.name + '</a> </div><hr><p class="community-privacy"><div class="details">' + (response.description.length > 100 ? br2nl(response.description).substring(0, 100) + "..." : br2nl(response.description)) +
                         '</div><div class="members">' + response.type + '</div><div class="members">' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</div><div class="members">' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</div></div><div class="clear"></div></div>';
             } else {
                 if (i > 0) {
                     htmlstr += '<hr>';
                 }
-                htmlstr += '<div class="community-listing"><span><a href="communities/' + response.unique_name + '">' + response.name + '</a></span></div>';
+                htmlstr += '<div class="community-listing"><span><a href="' + response.unique_name + '">' + response.name + '</a></span></div>';
             }
         });
         $(target.target).html(htmlstr);
@@ -1391,9 +1400,13 @@ function loadPost(response, statusText, target) {
     if (!response.error) {
         var htmlstr = "";
         var toggleId = "", formBox = "";
-        count = response.length;
+        var count = response.length;
         $.each(response, function(i, responseItem) {
-            htmlstr += '<div class="post" id="post-' + responseItem.id + '"><div class="post-content"><p>' + (responseItem.post.length > 200 ? nl2br(linkify(responseItem.post.substring(0, 200))) + '<span style="display:none" id="continuereading-' + responseItem.id + '">' + nl2br(linkify(responseItem.post.substring(200))) + '</span> <a id="continue-' + responseItem.id + '">continue reading...</a>' : nl2br(linkify(responseItem.post))) + '</p>';
+            if (responseItem.post) {
+                htmlstr += '<div class="post" id="post-' + responseItem.id + '"><div class="post-content"><p>' + (responseItem.post.length > 200 ? nl2br(linkify(responseItem.post.substring(0, 200))) + '<span style="display:none" id="continuereading-' + responseItem.id + '">' + nl2br(linkify(responseItem.post.substring(200))) + '</span> <a id="continue-' + responseItem.id + '">continue reading...</a>' : nl2br(linkify(responseItem.post))) + '</p>';
+            } else {
+                htmlstr += '<div class="post" id="post-' + responseItem.id + '"><div class="post-content"><p></p>';
+            }
             if (responseItem.post_photo) {
                 $.each(responseItem.post_photo, function(k, photo) {
                     htmlstr += '<a class="fancybox" rel="gallery' + responseItem.id + '"  href="' + photo.original + '" rel="group"><img src="' + photo.thumbnail + '"></a>';
@@ -1426,9 +1439,10 @@ function loadPost(response, statusText, target) {
             }
             toggleId += "#post-new-comment-show-" + responseItem.id;
             formBox += "#post-new-comment-form-" + responseItem.id;
-            if (responseItem.post.length > 200) {
-                toggleId += ",#continue-" + responseItem.id;
-            }
+            if (responseItem.post)
+                if (responseItem.post.length > 200) {
+                    toggleId += ",#continue-" + responseItem.id;
+                }
             if (target.uid === responseItem.sender_id) {
                 toggleId += ",#deletePost-" + responseItem.id;
             }
@@ -1439,11 +1453,19 @@ function loadPost(response, statusText, target) {
                 $('#commMorePostDiv').hide();
                 humane.log("Oops! You've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
             }
-        }
-        else {
+        } else {
             $(target.target).html(htmlstr);
-            if (count < 20)
+            if (count < 20) {
                 $('#commMorePostDiv').hide();
+            } else {
+                $('#commMorePostDiv').show();
+                $('#commMorePostDiv').click(function() {
+                    var start = parseInt($('#commMorePost').attr('commpost'));
+                    $("#loadMoreImg").show();
+                    sendData("loadPost", {target: "#loadPost", uid: readCookie("user_auth"), comid: target.comid, start: start, limit: 10, loadImage: false, append: true});
+                    $('#commMorePost').attr('commpost', parseInt($('#commMorePost').attr('commpost')) + 10);
+                });
+            }
         }
         $(".fancybox").fancybox({openEffect: "none", closeEffect: "none"});
         prepareDynamicDates();
@@ -1458,9 +1480,9 @@ function loadPost(response, statusText, target) {
                 var postId = (($form.attr('id')).substring(postIdPos));
                 if (responseText.id !== 0) {
                     var msg = $("#input-" + postId).val();
-//                    $("#post-comments-" + postId).html($("#post-comments-" + postId).html() + '<div class="post-comment"><img class = "post-thumb" src = "' + (responseText.photo.nophoto ? responseText.photo.alt : responseText.photo.thumbnail) + '"><h4 class = "name"> ' + responseText.name + ' </h4><span class = "post-time timeago" title="' + responseText.time + '"> ' + responseText.time + ' </span><p><pre>' + (htmlencode(msg)) + '</pre></p><div class = "clear"></div></div>');
-                    $("#post-comments-" + postId).html($("#post-comments-" + postId).html() + '<div class="post-comment"><img class="post-thumb" src="' + (responseText.photo.nophoto ? responseText.photo.alt : responseText.photo.thumbnail50) + '"><h4 class="name">' + responseText.name + '</h4><span class="post-time timeago" title="' + responseText.time + '">' + responseText.time + '</span><p>' + linkify(nl2br(htmlencode(msg))) + '<hr><span class="post-meta-delete" id="deleteComment-' + responseText.id + "_" + postId + '"><span class="icon-16-trash"></span>Delete</span></p><div class="clear"></div></div>');
-                    toggleId += "#deleteComment-" + responseText.id + "_" + postId;
+                    //$("#post-comments-" + postId).html() +
+                    $("#post-comments-" + postId).append('<div class="post-comment" id="comment-' + responseText.id + '"><div class="post-thumb"><img onload="OnImageLoad(event);" src="' + (responseText.photo.nophoto ? responseText.photo.alt : responseText.photo.thumbnail50) + '"></div><h4 class="name">' + responseText.name + '</h4><span class="post-time timeago" title="' + responseText.time + '">' + responseText.time + '</span><p>' + linkify(nl2br(htmlencode(msg))) + '<hr><span class="post-meta-delete" id="deleteComment-' + responseText.id + "_" + postId + '"><span class="icon-16-trash"></span>Delete</span></p><div class="clear"></div></div>');
+                    toggleId = "#deleteComment-" + responseText.id + "_" + postId;
                     prepareDynamicDates();
                     $(".timeago").timeago();
                     $("#numComnt-" + postId).html(parseInt($("#numComnt-" + postId).html()) + 1);
@@ -1489,6 +1511,7 @@ function loadPost(response, statusText, target) {
         }
         $('#commMorePostDiv').hide();
     }
+    $("#loadMoreImg").hide();
 }
 function deletePost(response, statusText, target) {
     if (!response.error) {
@@ -1533,12 +1556,12 @@ function loadComment(response, statusText, target) {
         var htmlstr = "", toggleId = "";
         $.each(response, function(i, responseItem) {
             htmlstr += '<div class="post-comment" id="comment-' + responseItem.id + '"><div class="post-thumb"><img onload="OnImageLoad(event);" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail50) + '"> </div><h4 class="name"><a href="user/' + responseItem.username + '">' + responseItem.firstname.concat(' ', responseItem.lastname) + '</a></h4><span class="post-time timeago" title="' + responseItem.time + '">' + responseItem.time + '</span><p>' + linkify(responseItem.comment);
-            if (target.uid === responseItem.sender_id) {
+            if (target.user === responseItem.sender_id) {
                 htmlstr += '<hr><span class="post-meta-delete" id="deleteComment-' + responseItem.id + "_" + target.post_id + '"><span class="icon-16-trash"></span>Delete</span>';
                 if (i > 0 && toggleId !== "") {
                     toggleId += ",";
                 }
-                if (target.uid === responseItem.sender_id) {
+                if (target.user === responseItem.sender_id) {
                     toggleId += "#deleteComment-" + responseItem.id + "_" + target.post_id;
                 }
             }
@@ -1914,7 +1937,7 @@ function showOption(obj) {
                 if ($("#" + obj.id).hasClass("Open")) {
                     if (!$("#" + obj.id).hasClass("loaded")) {
                         $("#" + obj.id).addClass("loaded");
-                        sendData("loadComment", {target: "#post-comments-" + postId, post_id: postId, loadImage: true});
+                        sendData("loadComment", {target: "#post-comments-" + postId, user: readCookie('user_auth'), post_id: postId, loadImage: true});
                     }
                 }
             },

@@ -27,6 +27,10 @@ if (isset($_COOKIE['user_auth'])) {
         <meta name="keywords" content="Community,Communities,Interest,Interests,Friend,Friends,Connect,Search,Discover,Discoveries,Gossout,Gossout.com,Zuma Communication Nigeria Limited,Soladnet Software,Soladoye Ola Abdulrasheed, Muhammad Kori,Ali Sani Mohammad,Lagos,Nigeria,Nigerian,Africa,Surulere,Pictures,Picture,Video,Videos,Blog,Blogs">
         <meta name="author" content="Soladnet Sofwares, Zuma Communication Nigeria Limited">
         <meta charset="UTF-8">
+        <link rel="stylesheet" media="screen" href="css/style.css">
+        <link rel="stylesheet" href="css/jackedup.css" type="text/css"/>
+        <link rel="stylesheet" href="css/hint.min.css">
+        
         <script src="scripts/jquery-1.9.1.min.js"></script>
         <link rel="shortcut icon" href="favicon.ico">
         <script src="scripts/humane.min.js"></script>
@@ -35,10 +39,6 @@ if (isset($_COOKIE['user_auth'])) {
         <script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
         <script src="scripts/test_helpers.js" type="text/javascript"></script>
-
-        <link rel="stylesheet" media="screen" href="css/style.css">
-        <link rel="stylesheet" href="css/jackedup.css" type="text/css"/>
-        <link rel="stylesheet" href="css/hint.min.css">
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" > 
         <script>
             $(function() {

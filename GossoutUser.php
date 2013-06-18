@@ -861,9 +861,9 @@ class GossoutUser {
             $user = new GossoutUser(0);
             //post notiif
             if ($checkTime) {//get posts for this user from the last updated time
-                $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') AND p.time>=(SELECT `lastupdate` FROM user_time_update WHERE `user_id`=$this->id) AND p.`deleteStatus`=0 order by p.id desc";
+                $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.username,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') AND p.time>=(SELECT `lastupdate` FROM user_time_update WHERE `user_id`=$this->id) AND p.`deleteStatus`=0 order by p.id desc";
             } else {//get posts irrespective of time!
-                $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') AND p.`deleteStatus`=0 order by p.id desc";
+                $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.username,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') AND p.`deleteStatus`=0 order by p.id desc";
             }
             $arrFetch['sql1'] = $sql1;
             if ($result = $mysql->query($sql1)) {
@@ -893,10 +893,10 @@ class GossoutUser {
             }
             //comment notif
             if ($checkTime) {//get comments for this user from the last updated time
-                $sql2 = "SELECT c.id,c.comment, c.post_id,c.sender_id,com.name,u.firstname,u.lastname,p.sender_id as post_sender_id, c.time From comments as c JOIN user_personal_info as u ON c.sender_id=u.id JOIN post as p ON c.post_id=p.id JOIN community as com ON p.community_id=com.id Where
+                $sql2 = "SELECT c.id,c.comment, c.post_id,c.sender_id,com.unique_name,com.name,u.username,u.firstname,u.lastname,p.sender_id as post_sender_id, c.time From comments as c JOIN user_personal_info as u ON c.sender_id=u.id JOIN post as p ON c.post_id=p.id JOIN community as com ON p.community_id=com.id Where
  c.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id)) AND c.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') UNION (SELECT c.id,c.comment, c.post_id,c.sender_id,com.name,u.firstname,u.lastname,p.sender_id as post_sender_id,c.time FROM comments as c JOIN post as p ON c.post_id=p.id JOIN user_personal_info as u ON c.sender_id=u.id JOIN community as com ON p.community_id=com.id WHERE p.sender_id=$this->id AND c.sender_id<>$this->id) AND c.time >= (SELECT `lastupdate` FROM user_time_update WHERE `user_id`=$this->id) order by c.id desc";
             } else {//get comments irrespective of time!
-                $sql2 = "Select c.id,c.comment, c.post_id,c.sender_id,com.name,u.firstname,u.lastname,p.sender_id as post_sender_id, c.time From comments as c JOIN user_personal_info as u ON c.sender_id=u.id JOIN post as p ON c.post_id=p.id JOIN community as com ON p.community_id=com.id Where
+                $sql2 = "Select c.id,c.comment, c.post_id,c.sender_id,com.unique_name,com.name,u.username,u.firstname,u.lastname,p.sender_id as post_sender_id, c.time From comments as c JOIN user_personal_info as u ON c.sender_id=u.id JOIN post as p ON c.post_id=p.id JOIN community as com ON p.community_id=com.id Where
  c.sender_id IN(select DISTINCT user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id)) AND p.sender_id = $this->id AND c.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') UNION SELECT c.id,c.comment, c.post_id,c.sender_id,com.name,u.firstname,u.lastname,p.sender_id as post_sender_id,c.time FROM comments as c JOIN post as p ON c.post_id=p.id JOIN user_personal_info as u ON c.sender_id=u.id JOIN community as com ON p.community_id=com.id WHERE p.sender_id=$this->id order by time desc";
             }
             $arrFetch['sql2'] = $sql2;
@@ -928,7 +928,7 @@ class GossoutUser {
                     $arrFetch['status'] = FALSE;
             }
             //wink notif
-            $sql3 = "SELECT t.`id`, t.`sender_id`,u.firstname,u.lastname, t.`type`, t.`time`, t.`status` FROM `tweakwink` as t JOIN user_personal_info as u ON t.sender_id=u.id  WHERE t.`receiver_id` =$this->id AND status='N' order by t.id desc";
+            $sql3 = "SELECT t.`id`, t.`sender_id`,u.username,u.firstname,u.lastname, t.`type`, t.`time`, t.`status` FROM `tweakwink` as t JOIN user_personal_info as u ON t.sender_id=u.id  WHERE t.`receiver_id` =$this->id AND status='N' order by t.id desc";
             $arrFetch['sql3'] = $sql3;
             if ($result = $mysql->query($sql3)) {
                 if ($result->num_rows > 0) {
@@ -960,7 +960,7 @@ class GossoutUser {
                     $arrFetch['status'] = FALSE;
             }
             //invitation notif
-            $sql4 = "SELECT u.id,u.firstname,u.lastname,c.id as comid, c.`name`,c.unique_name,ci.`time`,ci.status FROM comminvitation as ci JOIN user_personal_info as u ON ci.sender_id=u.id JOIN community as c ON ci.comid=c.id WHERE ci.receiver_id=$this->id AND ci.status=0 order by ci.id desc";
+            $sql4 = "SELECT u.id,u.username,u.firstname,u.lastname,c.id as comid, c.`name`,c.unique_name,ci.`time`,ci.status FROM comminvitation as ci JOIN user_personal_info as u ON ci.sender_id=u.id JOIN community as c ON ci.comid=c.id WHERE ci.receiver_id=$this->id AND ci.status=0 order by ci.id desc";
             $arrFetch['sql4'] = $sql4;
             if ($result = $mysql->query($sql4)) {
                 if ($result->num_rows > 0) {
@@ -991,7 +991,7 @@ class GossoutUser {
                     $arrFetch['status'] = FALSE;
             }
             //friends request notif
-            $sql5 = "SELECT uc.username1,uc.`time`,u.firstname,u.lastname FROM usercontacts as uc JOIN user_personal_info as u ON uc.username1=u.id WHERE username2=$this->id AND status='N' order by uc.id desc";
+            $sql5 = "SELECT uc.username1,uc.`time`,u.username,u.firstname,u.lastname FROM usercontacts as uc JOIN user_personal_info as u ON uc.username1=u.id WHERE username2=$this->id AND status='N' order by uc.id desc";
             $arrFetch['sql5'] = $sql5;
             if ($result = $mysql->query($sql5)) {
                 if ($result->num_rows > 0) {
@@ -1103,9 +1103,9 @@ class GossoutUser {
             }
             //community creation by friend
             if ($userTimeline) {
-                $sql2 = "SELECT c.`id`, c.`unique_name`,u.username,u.firstname,u.lastname, c.`name`, c.`category`, c.`type`, c.`description`,c.`thumbnail100`, c.`datecreated` as time, c.`creator_id` FROM `community` as c JOIN user_personal_info as u ON c.creator_id=u.id WHERE `creator_id` =$this->id";
+                $sql2 = "SELECT c.`id`, c.`unique_name`,u.username,u.firstname,u.lastname, c.`name`, c.`category`, c.`type`, c.`description`,c.pix,c.`thumbnail100`, c.`datecreated` as time, c.`creator_id` FROM `community` as c JOIN user_personal_info as u ON c.creator_id=u.id WHERE `creator_id` =$this->id";
             } else {
-                $sql2 = "SELECT c.`id`, c.`unique_name`,u.username,u.firstname,u.lastname, c.`name`, c.`category`, c.`type`, c.`description`,c.`thumbnail100`, c.`datecreated` as time, c.`creator_id` FROM `community` as c JOIN user_personal_info as u ON c.creator_id=u.id WHERE `creator_id` IN(Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y')";
+                $sql2 = "SELECT c.`id`, c.`unique_name`,u.username,u.firstname,u.lastname, c.`name`, c.`category`, c.`type`, c.`description`,c.pix,c.`thumbnail100`, c.`datecreated` as time, c.`creator_id` FROM `community` as c JOIN user_personal_info as u ON c.creator_id=u.id WHERE `creator_id` IN(Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y')";
             }
             if ($result = $mysql->query($sql2)) {
                 if ($result->num_rows > 0) {
@@ -1123,6 +1123,7 @@ class GossoutUser {
                         $com->setCommunityId($row['id']);
                         $isAmember = $com->isAmember($this->id);
                         $row['isAmember'] = $isAmember['status'];
+                        $row['creator_id'] = $this->encodeData($row['creator_id']);
                         $row['time'] = $this->convert_time_zone($row['time'], $this->tz);
                         $arrFetch['timeline'][] = $row;
                     }
@@ -1530,7 +1531,7 @@ class GossoutUser {
         } else {
             $encrypt = new Encryption();
             $user = new GossoutUser(0);
-            $sql = "SELECT t.`id`, t.`sender_id`,u.firstname,u.lastname, t.`type`, t.`time`, t.`status` FROM `tweakwink` as t JOIN user_personal_info as u ON t.sender_id=u.id  WHERE t.`receiver_id` =$this->id AND status='N' order by t.id desc Limit $this->start, $this->limit";
+            $sql = "SELECT t.`id`, t.`sender_id`,u.username,u.firstname,u.lastname, t.`type`, t.`time`, t.`status` FROM `tweakwink` as t JOIN user_personal_info as u ON t.sender_id=u.id  WHERE t.`receiver_id` =$this->id AND status='N' order by t.id desc Limit $this->start, $this->limit";
 
             if ($result = $mysql->query($sql)) {
                 $arrFetch['status'] = FALSE;
@@ -1575,7 +1576,7 @@ class GossoutUser {
         } else {
             $encrypt = new Encryption();
             $user = new GossoutUser(0);
-            $sql2 = "Select c.id,c.comment, c.post_id,c.sender_id,com.name,u.firstname,u.lastname,p.sender_id as post_sender_id, c.time From comments as c JOIN user_personal_info as u ON c.sender_id=u.id JOIN post as p ON c.post_id=p.id JOIN community as com ON p.community_id=com.id Where
+            $sql2 = "Select c.id,c.comment, c.post_id,c.sender_id,com.name,u.username,u.firstname,u.lastname,p.sender_id as post_sender_id, c.time From comments as c JOIN user_personal_info as u ON c.sender_id=u.id JOIN post as p ON c.post_id=p.id JOIN community as com ON p.community_id=com.id Where
  c.sender_id IN(select DISTINCT user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id)) AND p.sender_id = $this->id AND c.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') UNION SELECT c.id,c.comment, c.post_id,c.sender_id,com.name,u.firstname,u.lastname,p.sender_id as post_sender_id,c.time FROM comments as c JOIN post as p ON c.post_id=p.id JOIN user_personal_info as u ON c.sender_id=u.id JOIN community as com ON p.community_id=com.id WHERE p.sender_id=$this->id order by time desc Limit $this->start, $this->limit";
 
 //            $arrFetch['sql2'] = $sql2;
@@ -1616,7 +1617,7 @@ class GossoutUser {
         } else {
             $encrypt = new Encryption();
             $user = new GossoutUser(0);
-            $sql3 = "SELECT uc.username1,uc.`time`,u.firstname,u.lastname FROM usercontacts as uc JOIN user_personal_info as u ON uc.username1=u.id WHERE username2=$this->id AND status='N' order by uc.id desc LIMIT $this->start,$this->limit";
+            $sql3 = "SELECT uc.username1,uc.`time`,u.username,u.firstname,u.lastname FROM usercontacts as uc JOIN user_personal_info as u ON uc.username1=u.id WHERE username2=$this->id AND status='N' order by uc.id desc LIMIT $this->start,$this->limit";
             if ($result = $mysql->query($sql3)) {
                 if ($result->num_rows > 0) {
                     $user = new GossoutUser(0);
@@ -1656,7 +1657,7 @@ class GossoutUser {
         } else {
             $encrypt = new Encryption();
             $user = new GossoutUser(0);
-            $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') AND p.`deleteStatus`=0 order by p.id desc Limit $this->start, $this->limit";
+            $sql1 = "Select p.id,p.post, c.unique_name,p.sender_id,c.name,u.username,u.firstname,u.lastname, p.time From post as p JOIN user_personal_info as u ON p.sender_id=u.id JOIN community as c ON p.community_id=c.id Where p.sender_id IN(select user from community_subscribers where community_id IN (Select community_id from community_subscribers where user = $this->id AND leave_status=0)) AND p.sender_id IN (Select if(uc.username1=$this->id,uc.username2,uc.username1) as id From usercontacts as uc, user_personal_info Where ((username1 = user_personal_info.id AND username2 = $this->id) OR (username2 = user_personal_info.id AND username1 = $this->id)) AND status ='Y') AND p.`deleteStatus`=0 order by p.id desc Limit $this->start, $this->limit";
 
             $arrFetch['sql1'] = $sql1;
             if ($result = $mysql->query($sql1)) {

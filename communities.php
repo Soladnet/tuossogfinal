@@ -1,5 +1,4 @@
 <?php
-//session_start();
 if (isset($_COOKIE['user_auth'])) {
     include_once './encryptionClass.php';
     include_once './GossoutUser.php';
@@ -30,6 +29,9 @@ if (isset($_COOKIE['user_auth'])) {
         <title>Gossout - Communities</title>
         <meta http-equiv="Pragma" http-equiv="no-cache" />
         <meta http-equiv="Expires" content="-1" />
+        <meta name="description" content="" id="metaDescription">
+        <meta name="keywords" content="" id="metaKeywords">
+        <meta name="author" content="Soladnet Sofwares, Zuma Communication Nigeria Limited">
         <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
         <?php
         include ("head.php");
@@ -57,20 +59,18 @@ if (isset($_COOKIE['user_auth'])) {
         }
         ?>
         <script type="text/javascript">
-
+            var current;
             $(document).ready(function() {
- 
-<?php
-if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FALSE) {
-    ?>
-                    sendData("loadCommunity", {target: "#rightcolumn", loadImage: true, max: true, loadAside: true, comname: '<?php echo $_GET['param'] ?>', start: 0, limit: 10});
+                var currentLocation = window.location + "";
+                var lastChar = currentLocation.substring(currentLocation.length - 1);
+                if (lastChar === "/") {
+                    currentLocation = currentLocation.substring(0, currentLocation.length - 1);
+                }
+                current = currentLocation.split("/");
+                if (current[current.length - 1].toLowerCase() === "communities") {
+                    sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true, start: 0, limit: 10, first: true});
 
-    <?php
-} else {
-    ?>
-                    sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true, start: 0, limit: 10,first:true});
-                    
-                     $("#searchForm").validationEngine();
+                    $("#searchForm").validationEngine();
                     $("#searchForm").ajaxForm({
                         beforeSend: function() {
                             if (!($('#searchTerm').val().length > 2) && $('#searchTerm').val() !== "*") {
@@ -107,7 +107,7 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                             uid: readCookie('user_auth')
                         }
                     });
-                    $('#loadMoreComm').hide();
+                    $('#loadMoreComm,#loader1').hide();
                     $('#all').addClass('active');
                     $("#all").click(function() {
                         $('#my-communities-list').show();
@@ -131,16 +131,27 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                         $('#my-communities').addClass('active');
                     });
                     var start = 0, limit = 10;
-                    $('#loader1').hide();
+                    //                   
                     $('#loadMoreComm').click(function() {
                         start = parseInt($(this).attr('comm'));
                         $('#loader1').show();
                         sendData("loadCommunity", {target: ".community-box", loadImage: false, max: true, start: start, limit: limit, more: true});
                         return false;
                     });
-    <?php
-}
-?>
+                } else {
+                    //                var lastIndexOfSlash = currentLocation.lastIndexOf("/");
+//                if (current[current.length - 1].toLowerCase() !== "communities" && current[current.length - 2].toLowerCase() !== "communities") {
+//                    History.pushState({state: history.length + 1, rand: Math.random()}, current[current.length - 1], currentLocation.substring(0, lastIndexOfSlash + 1) + "communities/" + current[current.length - 1]);
+//                }
+                    if (current[current.length - 2].toLowerCase() === "communities") {
+                        sendData("loadCommunity", {target: "#rightcolumn", loadImage: true, max: true, loadAside: true, comname: current[current.length - 1], start: 0, limit: 10});
+                    } else if (current[current.length - 3].toLowerCase() === "communities") {
+                        // load Community members
+                    } else {
+                        sendData("loadCommunity", {target: "#rightcolumn", loadImage: true, max: true, loadAside: true, comname: current[current.length - 1], start: 0, limit: 10});
+                    }
+                }
+
                 var user = readCookie('user_auth');
                 if (user !== 0) {
                     sendData("loadNotificationCount", {title: document.title});
@@ -193,7 +204,7 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
                 </span>
 
                 <?php
-                if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FALSE) {
+                if (($_GET['page'] == "communities" && $_GET['param'] != "") || ($_GET['page'] != "communities" && $_GET['param'] == "")) {
                     include("sample-community-aside.php");
                 } else {
                     include("aside.php");
@@ -204,10 +215,10 @@ if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FAL
             include("footer.php");
             ?>
         </div>
-      
+
         <script>
-           
-              
+
+
 
         </script>
     </body>
