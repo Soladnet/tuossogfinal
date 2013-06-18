@@ -18,6 +18,9 @@ if (isset($_COOKIE['user_auth'])) {
 <!doctype html>
 <html>
     <head>
+        <?php
+        include './webbase.php';
+        ?>
         <title>404 Error</title>
         <meta name="description" content="Start or join existing communities/interests on Gossout and start sharing pictures and videos. People use Gossout search, Discover and connect with communities">
         <meta name="keywords" content="Community,Communities,Interest,Interests,Friend,Friends,Connect,Search,Discover,Discoveries,Gossout,Gossout.com,Zuma Communication Nigeria Limited,Soladnet Software,Soladoye Ola Abdulrasheed, Muhammad Kori,Ali Sani Mohammad,Lagos,Nigeria,Nigerian,Africa,Surulere,Pictures,Picture,Video,Videos,Blog,Blogs">
@@ -61,7 +64,7 @@ if (isset($_COOKIE['user_auth'])) {
             <div class="index-intro">
                 <form action="index-search-results.php" method="GET" id="searchForm" onsubmit="return validate();">
                     <div class="index-intro-1">
-                        <h1>Oops, we couldn't find the page you were looking for. Go to our <a href="home.php">homepage</a> or search for it below</h1>
+                        <h1>Oops, we couldn't find the page you were looking for. Go to our <a href="home">homepage</a> or search for it below</h1>
 
 
                         <input class="main-search" type="text" placeholder="..." name="g" autocomplete="off" id="searchField">

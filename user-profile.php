@@ -1,13 +1,11 @@
 <?php
 //session_start();
-include_once './encryptionClass.php';
 include_once './GossoutUser.php';
 include_once './Community.php';
-$encrypt = new Encryption();
 $user = new GossoutUser(0);
 $userCommunity = new Community();
 if (isset($_COOKIE['user_auth'])) {
-    $uid = $encrypt->safe_b64decode($_COOKIE['user_auth']);
+    $uid = $user->decodeData($_COOKIE['user_auth']);
     if (is_numeric($uid)) {
         $user = new GossoutUser($uid);
         $userProfile = $user->getProfile();
@@ -17,9 +15,12 @@ if (isset($_COOKIE['user_auth'])) {
         $user->setUserId(NULL);
         $user->setScreenName($_GET['param']);
         $id = $user->getId();
-        
         if (is_numeric($id)) {
             $user->getProfile();
+            if ($user->getId() != $uid) {
+                $isfriend = ($user->isAfriend($uid));
+                $isfriend['uid'] = $user->encodeData($user->getId());
+            }
         } else {
             header("HTTP/1.0 404 Not Found");
             exit;
@@ -84,6 +85,15 @@ if (isset($_GET['param']) && trim($_GET['param']) == "") {
     ?>
                     document.title = "<?php echo $user->getFullname() == "" ? "Gossout" : $user->getFullname() ?>";
     <?php
+}
+if (isset($isfriend)) {
+    if (!$isfriend['status']) {
+        ?>
+                        $("#unfriend-<?php echo $isfriend['uid'] ?>").click(function() {
+                            showOption(this);
+                        });
+        <?php
+    }
 }
 ?>
                 var user = readCookie("user_auth");
@@ -171,11 +181,11 @@ if (isset($_GET['param']) && trim($_GET['param']) == "") {
                     }
                 });
                 $('#loadMoreNotifDiv').hide();
-                $('#loadMoreNotifDiv').click(function(){
+                $('#loadMoreNotifDiv').click(function() {
 //                    alert('Ok man!');
-                       start = parseInt($('.loadMoreTimeLine').attr("timeLine"));
-                       $('#loadMoreImg').show();
-                    sendData("loadTimeline", {target: ".timeline-container", uid: "<?php echo $user->encodeData($user->getId()) ?>", t: true, loadImage: false,start:start,limit:10,loadMore:true});
+                    start = parseInt($('.loadMoreTimeLine').attr("timeLine"));
+                    $('#loadMoreImg').show();
+                    sendData("loadTimeline", {target: ".timeline-container", uid: "<?php echo $user->encodeData($user->getId()) ?>", t: true, loadImage: false, start: start, limit: 10, loadMore: true});
                 });
                 if (Modernizr.inlinesvg) {
                     $('#logo').html('<a href="index"><img src="images/gossout-logo-text-svg.png" alt="Gossout" /></a>');
@@ -196,11 +206,11 @@ if (isset($_GET['param']) && trim($_GET['param']) == "") {
 
             <div class="content">
                 <div class="posts">
-                    <h1><?php echo $user->getFullname() == "" ? "Timeline" : $user->getFullname() ?></h1>
+                    <div class="success"><strong><?php echo $user->getFullname() == "" ? "User Timeline" : $user->getFullname(); ?></strong><?php echo isset($isfriend) ? $isfriend['status'] ? "" : "[ <span id='unfriend-" . $isfriend['uid'] . "'><a id='unfriend-" . $isfriend['uid'] . "-text'>Send Friend Request</a></span> ]"  : "" ?></div>
                     <hr>
                     <?php
                     if (isset($_COOKIE['user_auth'])) {
-                        if ($_COOKIE['user_auth'] == $user->encodeData($user->getId())){
+                        if ($_COOKIE['user_auth'] == $user->encodeData($user->getId())) {
                             include("post-box.php");
                         }
                     }
@@ -217,10 +227,18 @@ if (isset($_GET['param']) && trim($_GET['param']) == "") {
             include("footer.php");
             ?>
         </div>
-        <script>
-            $(document).ready(function() {
-                processCom(<?php echo $comm['status'] ? json_encode($comm['community_list']) : "{}" ?>);
-            });
-        </script>
+        <?php
+        if (isset($_COOKIE['user_auth'])) {
+            if ($_COOKIE['user_auth'] == $user->encodeData($user->getId())) {
+                ?>
+                <script>
+                    $(document).ready(function() {
+                        processCom("<?php echo $comm['status'] ? json_encode($comm['community_list']) : "{}" ?>");
+                    });
+                </script>
+                <?php
+            }
+        }
+        ?>
     </body>
 </html>

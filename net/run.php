@@ -61,6 +61,12 @@ if (isset($_POST['option'])) {
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
+                        $pix = getProfilePix($row['id']);
+                        if ($pix['status']) {
+                            $row['photo'] = $pix['pix'];
+                        } else {
+                            $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
+                        }
                         $arr['lastTen'][] = $row;
                     }
                 }
@@ -87,6 +93,32 @@ function displayError($code, $meesage) {
         @mail("soladnet@gmail.com", "bad syntax from user " . $_SERVER['HTTP_REFERER'], json_encode($_POST));
     }
     echo json_encode($response_arr);
+}
+
+function getProfilePix($id) {
+    $response = array();
+    $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+    if ($mysql->connect_errno > 0) {
+        throw new Exception("Connection to server failed!");
+    } else {
+        $sql = "SELECT id,original,thumbnail45,thumbnail50,thumbnail75,thumbnail150,date_added FROM pictureuploads WHERE user_id=$id";
+        if ($result = $mysql->query($sql)) {
+            if ($result->num_rows > 0) {
+                $response['status'] = TRUE;
+                while ($row = $result->fetch_assoc()) {
+                    $response['pix'] = $row;
+                }
+            } else {
+                $response['status'] = FALSE;
+                $response['alt'] = "images/user-no-pic.png";
+            }
+            $result->free();
+        } else {
+            $response['status'] = FALSE;
+        }
+    }
+    $mysql->close();
+    return $response;
 }
 
 function clean($value) {
