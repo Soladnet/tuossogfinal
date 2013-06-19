@@ -6,8 +6,8 @@
 <script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
 <script src="scripts/jquery.sticky.js"></script>
 <script type="text/javascript" src="scripts/modernizr.custom.77319.js"></script>
-<meta name="description" content="Start or join existing communities/interests on Gossout and start sharing pictures and videos. People use Gossout search, Discover and connect with communities">
-<meta name="keywords" content="Community,Communities,Interest,Interests,Friend,Friends,Connect,Search,Discover,Discoveries,Gossout,Gossout.com,Zuma Communication Nigeria Limited,Soladnet Software,Soladoye Ola Abdulrasheed, Muhammad Kori,Ali Sani Mohammad,Lagos,Nigeria,Nigerian,Africa,Surulere,Pictures,Picture,Video,Videos,Blog,Blogs">
+<meta name="description" id="metaDescription" content="Start or join existing communities/interests on Gossout and start sharing pictures and videos. People use Gossout search, Discover and connect with communities">
+<meta name="keywords" id="metaKeywords" content="Community,Communities,Interest,Interests,Friend,Friends,Connect,Search,Discover,Discoveries,Gossout,Gossout.com,Zuma Communication Nigeria Limited,Soladnet Software,Soladoye Ola Abdulrasheed, Muhammad Kori,Ali Sani Mohammad,Lagos,Nigeria,Nigerian,Africa,Surulere,Pictures,Picture,Video,Videos,Blog,Blogs">
 <meta name="author" content="Soladnet Sofwares, Zuma Communication Nigeria Limited">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" > 
@@ -36,4 +36,4 @@
         $("#nav-user").sticky({topSpacing:-4});
     });
 </script>
-<script type="text/javascript" src="scripts/script.js"></script>
+<script type="text/javascript" src="scripts/script.js?v=1.8"></script>

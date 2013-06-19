@@ -1,12 +1,5 @@
 <?php
-$arr = array();
-$i = 0;
-while ($i < 15) {
-    $arr[] = rand(0, 15);
-    $i++;
-}
-sort($arr);
-echo $arr[count($arr) - 1];
+
 //echo "2013-05-17 21:03:36">"2013-05-17 22:03:05";
 //session_destroy();
 //print_r($_SESSION);

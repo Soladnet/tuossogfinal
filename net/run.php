@@ -57,7 +57,7 @@ if (isset($_POST['option'])) {
                     $arr['regToday'] = $row1['counts'];
                 }
             }
-            $sql = "SELECT * FROM `user_personal_info` order by id desc LIMIT 0,100";
+            $sql = "SELECT u.*,l.activated FROM `user_personal_info` as u JOIN user_login_details as l ON u.id=l.id order by id desc LIMIT 0,100";
             if ($result = $mysql->query($sql)) {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {

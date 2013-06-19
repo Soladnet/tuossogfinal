@@ -105,7 +105,7 @@ if (isset($_COOKIE['user_auth'])) {
                             if (responseText.time) {
                                 var htmlstr = "";
                                 $.each(responseText.id, function(i, id) {
-                                    htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' + '<img src="' + responseText.photo + '">' + '</div><p><a>You</a> posted to <a href="' + community[hiddenCom[i]].unique_name + '">' + community[hiddenCom[i]].name + '</a></p>' + '<p class="timeline-time timeago" title="' + responseText.time + '">' + responseText.time + '</p><p>' + nl2br(linkify(post)) + '</p>';
+                                    htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' + '<img onload="OnImageLoad(event);" src="' + responseText.photo + '">' + '</div><p><a>You</a> posted to <a href="' + community[hiddenCom[i]].unique_name + '">' + community[hiddenCom[i]].name + '</a></p>' + '<p class="timeline-time timeago" title="' + responseText.time + '">' + responseText.time + '</p><p>' + nl2br(linkify(post)) + '</p>';
                                     if (responseText.post_photo) {
                                         htmlstr += '<p class="timeline-photo-upload">';
                                         $.each(responseText.post_photo, function(k, photo) {

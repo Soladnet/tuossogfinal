@@ -59,6 +59,24 @@ class GossoutUser {
         }
     }
 
+    public function isAvalidUser() {
+        $response['status'] = FALSE;
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            if (!empty($this->id)) {
+                $sql = "SELECT * FROM `user_personal_info` WHERE username = '$this->screenName' OR id=$this->id";
+                if ($result = $mysql->query($sql)) {
+                    if ($result->num_rows > 0) {
+                        $response['status'] = TRUE;
+                    }
+                }
+            }
+        }
+        return $response;
+    }
+
     public function getToken() {
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
         $response = "";
@@ -215,7 +233,11 @@ class GossoutUser {
 
     public function setUserId($newUid) {
         if (is_null($newUid)) {
-            unset($this->id);
+            unset($this->id, $this->fname, $this->lname, $this->fullname, $this->location, $this->gender, $this->url, $this->tel, $this->email, $this->dob, $this->pix, $this->tz);
+            $this->screenName = "";
+            $this->pix = array();
+            $this->start = 0;
+            $this->limit = 5;
         } else {
             $this->id = $newUid;
         }

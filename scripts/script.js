@@ -758,7 +758,7 @@ function loadGossbag(response, statusText, target) {
                 $('#all-notification-icon').addClass('noResult');
                 $('#loadMoreNotifDiv').hide();
             } else {
-                $(target.target).html('<div class="individual-notification"><div class="notification-text"><p>Gossbag Empty</p></div><div class="clear"></div><hr><div class="clear"></div></div>');
+                $(target.target).html('<div class="individual-notification"><div class="notification-text"><p>You don\'t have any notifications yet</p></div><div class="clear"></div><hr><div class="clear"></div></div>');
             }
         }
     }
@@ -841,7 +841,7 @@ function inviteFriends(response, statusText, target) {
             htmlstr += '<option value="' + response.id + '">' + response.firstname.concat(' ', response.lastname) + '</option>';
         });
         if (htmlstr !== "") {
-            var str = '<select data-placeholder="enter contact" class="chzn-select" multiple style="width:350px;" name="user[]" id="user_callup"><option value=""></option>' + htmlstr + '</select><li><input id="sendBtn" type="submit" class="button submit" name="param" value="Send Invitation" /><span id="messageStatus"></span></li>';
+            var str = '<select data-placeholder="Select friend(s)" class="chzn-select" multiple style="width:350px;" name="user[]" id="user_callup"><option value=""></option>' + htmlstr + '</select><li><input id="sendBtn" type="submit" class="button submit" name="param" value="Send Invitation" /><span id="messageStatus"></span></li>';
             $(target.target).html(str);
             $(".chzn-select").chosen();
         } else {
@@ -939,7 +939,7 @@ function loadNavMessages(response, statusText, target) {
                             '<p class="name">' + response.firstname.concat(' ', response.lastname) + '</p><p><!--<span class="icon-16-reply">--></span>' + response.message.substring(0, 30) + (response.message.lenght > 29 ? "..." : "") + '</p>' +
                             '</div><div class="clear"></div><hr><a class="notification-actions" href="messages/' + response.username + '">View</a><div class="clear"></div></div>';
                 } else {
-                    htmlstr += '<div class="individual-notification"><p><span class="float-right"></span></p><div class="notification-text"><p>No messages found!.</p></div><div class="clear"></div><hr></div>';
+                    htmlstr += '<div class="individual-notification"><p><span class="float-right"></span></p><div class="notification-text"><p>You don\'t have any messages yet.</p></div><div class="clear"></div><hr></div>';
                 }
             } else {
                 if (!response.code) {
@@ -1191,9 +1191,6 @@ function loadCommunity(response, statusText, target) {
                                     percent.html(percentVal);
                                 }
                                 $("#postBtn").prop('disabled', true);
-//                            var postIdPos = (jqForm.attr('id')).lastIndexOf("-") + 1;
-//                            var postId = ((jqForm.attr('id')).substring(postIdPos));
-//                            var msg = $('#post' + comid).val();
                             },
                             uploadProgress: function(event, position, total, percentComplete) {
                                 var percentVal = percentComplete + '%';
@@ -1202,7 +1199,7 @@ function loadCommunity(response, statusText, target) {
                             },
                             success: function(responseText, statusText, xhr, $form) {
                                 var percentVal = '100%';
-                                bar.width(percentVal)
+                                bar.width(percentVal);
                                 percent.html(percentVal);
                                 if (responseText.id !== 0) {
                                     var msg = $('#post' + comid).val();
@@ -1212,7 +1209,7 @@ function loadCommunity(response, statusText, target) {
                                             str += '<a class="fancybox" rel="gallery' + responseText.id + '"  href="' + photo.original + '" rel="group"><img src="' + photo.thumbnail + '"></a>';
                                         });
                                     }
-                                    str += '<hr><h3 class="name">' + responseText.name +
+                                    str += '<hr><h3 class="name"><img onload="OnImageLoad(event);" class="post-profile-pic" src="' + (responseText.photo) + '"><a href="user/">' + responseText.name +'</a>'+
                                             '<div class="float-right"><span class="post-time"><span class="icon-16-comment"></span><span id="numComnt-' + responseText.id + '">0</span> </span>' +
 //                    '<span class="post-time"><span class="icon-16-share"></span>24</span>' +
                                             '<span class="post-time"><span class="icon-16-clock"></span><span class="timeago" title="' + responseText.time + '">' + responseText.time + '</span></span>' +
@@ -1634,7 +1631,7 @@ function loadFriends(response, statusText, target) {
 //        if(target.friendPage)
 //            alert(target.friendPage);
         if (target.target === "#toUserInput") {
-            var str = '<select data-placeholder="enter contact" class="chzn-select" multiple style="width:350px;" name="user[]" id="user_callup"><option value=""></option>' + htmlstr + '</select>';
+            var str = '<select data-placeholder="Select friend(s)" class="chzn-select" multiple style="width:350px;" name="user[]" id="user_callup"><option value=""></option>' + htmlstr + '</select>';
             $(target.target).html(str);
             if (target.inviteMemBtn) {
                 $(".chzn-select").chosen();

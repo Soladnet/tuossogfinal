@@ -18,7 +18,7 @@ if (isset($_COOKIE['user_auth'])) {
 <!doctype html>
 <html lang="en">
     <head>
-        <title>Gossout - Term of Service</title>
+        <title>Gossout - We care About you and your community!</title>
         <script src="scripts/jquery-1.9.1.min.js"></script>
         <link rel="shortcut icon" href="favicon.ico">
         <link rel="stylesheet" media="screen" href="css/style.css">

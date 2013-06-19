@@ -63,7 +63,7 @@ if (isset($user)) {
                         <?php
                     }
                     ?>
-                    <span><span class="icon-16-dot"></span><a id="show-suggested-community">Suggest Communities</a></span>
+                    <span><span class="icon-16-dot"></span><a id="show-suggested-community">Suggested Communities</a></span>
                 </span>
             </p>
         </div>
@@ -93,7 +93,7 @@ if (isset($user)) {
                     <?php
                 }
                 ?>
-                <span><span class="icon-16-dot"></span><a id="show-suggested-friends">Suggest Friends</a></span>
+                <span><span class="icon-16-dot"></span><a id="show-suggested-friends">Suggested Friends</a></span>
 
             </span>
             </p>

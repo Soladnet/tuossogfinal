@@ -741,7 +741,7 @@ if (isset($_POST['param'])) {
             }
             $user->setLimit($limit);
             $user->setStart($start);
-            $result = $user->searchPeople(clean($_POST['g']));
+            $result = $user->searchPeople(clean(trim($_POST['g'])));
             if ($result['status']) {
                 echo json_encode($result['people']);
             } else {

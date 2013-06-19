@@ -13,9 +13,16 @@ if (isset($_COOKIE['user_auth'])) {
     }
     if (isset($_GET['param']) && trim($_GET['param']) != "") {
         $user->setUserId(NULL);
-        $user->setScreenName($_GET['param']);
-        $id = $user->getId();
-        if (is_numeric($id)) {
+        if(is_numeric($_GET['param'])){
+            $user->setUserId($_GET['param']);
+            $id = $user->getId();
+        }else{
+            $user->setScreenName($_GET['param']);
+            $id = $user->getId();
+        }
+        $isValid = $user->isAvalidUser();
+        
+        if (is_numeric($id) && $isValid['status']) {
             $user->getProfile();
             if ($user->getId() != $uid) {
                 $isfriend = ($user->isAfriend($uid));

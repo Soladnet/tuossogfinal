@@ -5,7 +5,7 @@
         include_once './webbase.php';
         ?>
         <title>Gossout - Signup 1/3</title>
-        <meta name="description" content="Start or join existing communities/interests on Gossout and start sharing pictures and videos. People use Gossout search, Discover and connect with communities">
+        <meta name="description" content="Registrtion is free! Register on gossout today and join more than 200 million of users shring their interest">
         <meta name="keywords" content="Community,Communities,Interest,Interests,Friend,Friends,Connect,Search,Discover,Discoveries,Gossout,Gossout.com,Zuma Communication Nigeria Limited,Soladnet Software,Soladoye Ola Abdulrasheed, Muhammad Kori,Ali Sani Mohammad,Lagos,Nigeria,Nigerian,Africa,Surulere,Pictures,Picture,Video,Videos,Blog,Blogs">
         <meta name="author" content="Soladnet Sofwares, Zuma Communication Nigeria Limited">
         <meta charset="UTF-8">

@@ -29,9 +29,6 @@ if (isset($_COOKIE['user_auth'])) {
         <title>Gossout - Communities</title>
         <meta http-equiv="Pragma" http-equiv="no-cache" />
         <meta http-equiv="Expires" content="-1" />
-        <meta name="description" content="" id="metaDescription">
-        <meta name="keywords" content="" id="metaKeywords">
-        <meta name="author" content="Soladnet Sofwares, Zuma Communication Nigeria Limited">
         <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
         <?php
         include ("head.php");

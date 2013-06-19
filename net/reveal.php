@@ -37,10 +37,10 @@
                             }
                             $("#result").html(html + "</table>");
                         } else if ($("#option").val() === "regStat") {
-                            html += "<p><strong>Regiter Today:</strong>"+responseText.regToday+"</p><p><strong>Total Regiter:</strong>"+responseText.totalReg+"</p><p>Last Ten Members</p><table class='table'><tr><td>ID</td><td>pix</td><td>Username</td><td>Firstname</td><td>Lastname</td><td>Email</td><td>Gender</td><td>Date of Birth</td><td>Date Joined</td></tr>";
+                            html += "<p><strong>Regiter Today:</strong>"+responseText.regToday+"</p><p><strong>Total Regiter:</strong>"+responseText.totalReg+"</p><p>Last Ten Members</p><table class='table'><tr><td>ID</td><td>pix</td><td>Username</td><td>Firstname</td><td>Lastname</td><td>Email</td><td>Gender</td><td>Date of Birth</td><td>Date Joined</td><td>Activated</td></tr>";
                             if (!responseText.error) {
                                 $.each(responseText.lastTen, function(i, response) {
-                                    html += "<tr><td>" + response.id + "</td><td><img src='http://www.gossout.com/" + (response.photo.nophoto?response.photo.alt:response.photo.thumbnail150) + "'/></td><td>" + response.username + "</td><td>" + response.firstname + "</td><td>" + response.lastname + "</td><td>" + response.email + "</td><td>" + response.gender + "</td><td>" + response.dob + "</td><td>" + response.dateJoined + "</td></tr>";
+                                    html += "<tr><td>" + response.id + "</td><td><img src='http://www.gossout.com/" + (response.photo.nophoto?response.photo.alt:response.photo.thumbnail150) + "'/></td><td>" + response.username + "</td><td>" + response.firstname + "</td><td>" + response.lastname + "</td><td>" + response.email + "</td><td>" + response.gender + "</td><td>" + response.dob + "</td><td>" + response.dateJoined + "</td><td>" + response.activated + "</td></tr>";
                                 });
                             } else {
                                 $.pnotify({
