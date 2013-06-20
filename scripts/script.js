@@ -1412,14 +1412,6 @@ function loadCommunity(response, statusText, target) {
                     '</div><div class="community-text"><div class="community-name">' +
                     '<a href="' + response.unique_name + '">' + (response.verified === "1" ? '<img src="images/gossout-verified.png" class="verified-community" title="Verified Community">' : "") + response.name + '</a> </div><hr><div class="details">' + (response.description.length > 100 ? br2nl(response.description).substring(0, 100) + "..." : br2nl(response.description)) +
                     '</div><div class="members">' + response.type + '</div><div class="members">' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</div><div class="members">' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</div></div><div class="clear"></div></div>';
-                //                    if (commCount < 10) {
-                //                        $('#loadMoreComm').hide();
-                //                        if (target.more) {
-                //                            humane.log("Oops! You've got it all!", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
-                //                        }
-                //                    } else {
-                //                        $('#loadMoreComm').show();
-                //                    }
                 }
             });
             //             htmlstr +='<p><a href="" frnd="10" class="loadMoreFrnd" id="loadMoreFrnd">Load more > ></a>';
