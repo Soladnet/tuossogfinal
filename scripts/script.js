@@ -481,7 +481,7 @@ function loadWink(response, statusText, target) {
         $.each(response.bag, function(i, response) {
             htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-eye"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                     '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
-                    '<h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                    '<h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
                     '<div class="all-notifications-message">Winked you</div></div><hr><p>' +
                     '<a class="all-notifications-actions winkIgnore" id="winkIgnore-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
                     '<a class="all-notifications-actions wink-text" id="wink-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a>' +
@@ -523,7 +523,7 @@ function loadGossPost(response, statusText, target) {
             htmlstr += '<div class="individual-notification-box">' +
                     '<p><span class="icon-16-pencil"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                     '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                    '<div class="all-notification-text"><h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                    '<div class="all-notification-text"><h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
                     '<div class="all-notifications-comment">posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '" in <a href="' + response.unique_name + '">' + response.name + '</a></div></div><hr><p>' +
                     '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
         });
@@ -559,7 +559,7 @@ function loadGossComment(response, statusText, target) {
             htmlstr += '<div class="individual-notification-box">' +
                     '<p><span class="icon-16-comment"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                     '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                    '<div class="all-notification-text"><h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                    '<div class="all-notification-text"><h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
                     '<div class="all-notifications-message">Commented on ' + (response.isMyPost ? "on your post" : "a post") + ' in ' + response.name + '</div>' +
                     '<div class="all-notifications-comment">"' + (response.comment.length > 50 ? response.comment.substring(0, 50) + "..." : response.comment) + '"</div></div><hr><p>' +
                     '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
@@ -595,7 +595,7 @@ function loadGossFrq(response, statusText, target) {
         $.each(response.bag, function(i, response) {
             htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-user-add"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                     '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
-                    '<h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                    '<h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
                     '<div class="all-notifications-message">Wants To Add You</div></div><hr><p>' +
                     '<a class="all-notifications-actions frqIgnore" id="frqIgnore-text-n-' + response.username1 + '"><span class="icon-16-cross"></span>Ignore</a>' +
                     '<a class="all-notifications-actions accept-frq" id="accept-frq-text-n-' + response.username1 + '"><span class="icon-16-checkmark"></span>Accept</a>' +
@@ -640,7 +640,7 @@ function loadGossbag(response, statusText, target) {
                 if (target.target === "#individual-notification-box-a") {
                     htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-user-add"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
-                            '<h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                            '<h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
                             '<div class="all-notifications-message">Wants To Add You</div></div><hr><p>' +
                             '<a class="all-notifications-actions frqIgnore" id="frqIgnore-text-n-' + response.username1 + '"><span class="icon-16-cross"></span>Ignore</a>' +
                             '<a class="all-notifications-actions accept-frq" id="accept-frq-text-n-' + response.username1 + '"><span class="icon-16-checkmark"></span>Accept</a>' +
@@ -651,7 +651,7 @@ function loadGossbag(response, statusText, target) {
                     htmlstr += '<div class="individual-notification"><p><span class="icon-16-user-add"></span>' +
                             '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="notification-text"> <p class="name"><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></p>' +
+                            '<div class="notification-text"> <p class="name"><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></p>' +
                             '<p>wants to add you as friend</p></div><div class="clear"></div><hr>' +
                             '<span id="frqOption-' + response.id + '"><a class="notification-actions frqIgnore" id="frqIgnore-text-' + response.username1 + '">Ignore</a>' +
                             '<a class="notification-actions accept-frq" id="accept-frq-text-' + response.username1 + '">Accept</a></span>' +
@@ -664,7 +664,7 @@ function loadGossbag(response, statusText, target) {
                 if (target.target === "#individual-notification-box-a") {
                     htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-eye"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
-                            '<h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                            '<h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
                             '<div class="all-notifications-message">Winked you</div></div><hr><p>' +
                             '<a class="all-notifications-actions winkIgnore" id="winkIgnore-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
                             '<a class="all-notifications-actions wink-text" id="wink-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a>' +
@@ -674,7 +674,7 @@ function loadGossbag(response, statusText, target) {
                     htmlstr += '<div class="individual-notification"><p><span class="icon-16-eye"></span>' +
                             '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="notification-text"> <p class="name"><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></p>' +
+                            '<div class="notification-text"> <p class="name"><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></p>' +
                             '<p>winked you</p></div><div class="clear"></div><hr>' +
                             '<span id="winkOption-' + response.id + '"><a class="notification-actions winkIgnore" id="winkIgnore-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
                             '<a class="notification-actions wink-text" id="wink-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a></span>' +
@@ -686,14 +686,14 @@ function loadGossbag(response, statusText, target) {
                     htmlstr += '<div class="individual-notification-box">' +
                             '<p><span class="icon-16-comment"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="all-notification-text"><h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
-                            '<div class="all-notifications-message">Commented on ' + (response.isMyPost ? "on your post" : "a post") + ' in <a href="'+response.unique_name+'">' + response.name + '</a></div>' +
+                            '<div class="all-notification-text"><h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                            '<div class="all-notifications-message">Commented on ' + (response.isMyPost ? "on your post" : "a post") + ' in <a href="' + response.unique_name + '">' + response.name + '</a></div>' +
                             '<div class="all-notifications-comment">"' + (response.comment.length > 50 ? response.comment.substring(0, 50) + "..." : response.comment) + '"</div></div><hr><p>' +
                             '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
                 } else {
                     htmlstr += '<div class="individual-notification"><p><span class="icon-16-comment"></span><span class="float-right timeago" title="' + response.time + '">' + response.time + '</span></p>' +
                             '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="notification-text">' +
-                            '<p class="name"><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></p><p>commented on ' + (response.isMyPost ? "on your post" : "a post") + ' in <a href="'+response.unique_name+'">' + response.name + '</a></p>' +
+                            '<p class="name"><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></p><p>commented on ' + (response.isMyPost ? "on your post" : "a post") + ' in <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
                             '<p>"' + (response.comment.length > 31 ? response.comment.substring(0, 31) + "..." : response.comment) + '"</p></div><div class="clear"></div><hr>' +
                             '<!--<a class="notification-actions" title="' + response.name + '">View</a>--><div class="clear"></div></div>';
                 }
@@ -702,13 +702,13 @@ function loadGossbag(response, statusText, target) {
                     htmlstr += '<div class="individual-notification-box">' +
                             '<p><span class="icon-16-pencil"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="all-notification-text"><h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                            '<div class="all-notification-text"><h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
                             '<div class="all-notifications-comment">posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '" in <a href="' + response.unique_name + '">' + response.name + '</a></div></div><hr><p>' +
                             '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
                 } else {
                     htmlstr += '<div class="individual-notification viewed-notification"><p><span class="icon-16-pencil"></span>' +
                             '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="notification-text"> <p class="name"><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></p>' +
+                            '<div class="notification-text"> <p class="name"><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></p>' +
                             '<p>posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '"</p><p>in <a href="' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><!--<a class="notification-actions">View</a>-->' +
                             '<div class="clear"></div></div>';
                 }
@@ -716,7 +716,7 @@ function loadGossbag(response, statusText, target) {
                 if (target.target === "#individual-notification-box-a") {
                     htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-earth"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
                             '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
-                            '<h3><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                            '<h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
                             '<div class="all-notifications-message">invites you to join <a href="' + response.unique_name + '">' + response.name + '</a></div></div><hr><p id="invitationtarget">' +
                             '<a class="all-notifications-actions invitationIgnore" id="invitationIgnore-text-' + response.comid + '"><span class="icon-16-cross"></span>Ignore</a>' +
                             '<a class="all-notifications-actions invitation-text" id="invitation-text-' + response.comid + '"><span class="icon-16-earth"></span>Join</a>' +
@@ -725,7 +725,7 @@ function loadGossbag(response, statusText, target) {
                 } else {
                     htmlstr += '<div class="individual-notification viewed-notification"><p><span class="icon-16-earth"></span>' +
                             '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="notification-text"> <p class="name"><a href="user/'+response.username+'">' + response.firstname.concat(' ', response.lastname) + '</a></p><p>invites you to join</p>' +
+                            '<div class="notification-text"> <p class="name"><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></p><p>invites you to join</p>' +
                             '<p><a href="' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><span id="invitationtarget"><a class="notification-actions invitationIgnore" id="invitationIgnore-text-n-' + response.comid + '">Ignore</a>' +
                             '<a class="notification-actions invitation-text" id="invitation-text-n-' + response.comid + '">Join</a></span><div class="clear"></div></div>';
                     accept_frq_text += accept_frq_text === "" ? ".invitationIgnore,.invitation-text" : ",.invitationIgnore,.invitation-text";
@@ -1010,20 +1010,26 @@ function loadCommunityMembers(response, statusText, target) {
                     '<div class= "friends-thumbnails"><img onload="OnImageLoad(event);" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail150) + '"></div>' +
                     '<div style="display:none"><div id="' + response.username + '"><div class="aside-wrapper">' +
                     '<div class="profile-pic"><img class="holdam" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail150) + '"></div><table><tr><td></td><td>' +
-                    '<h3>' + response.firstname.concat(" ", response.lastname) + '</h3></td></tr><tr><td><span class="icon-16-map"></span></td><td class="profile-meta">' + (response.location === "" ? "Not Set" : response.location) + '</td></tr>' +
+                    '<h3><a href="user/' + response.username + '" onclick="location = \'user/' + response.username + '\'">' + response.firstname.concat(" ", response.lastname) + '</a></h3></td></tr><tr><td><span class="icon-16-map"></span></td><td class="profile-meta">' + (response.location === "" ? "Not Set" : response.location) + '</td></tr>' +
                     '<tr><td><span class="icon-16-' + (response.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta">' + (response.gender === "M" ? "Male" : "Female") + '</td></tr>' +
-//                    '<tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a href="">See Profile</a> </td></tr>' +
-                    '</table><div class="clear"></div>';
-            if (response.isAfriend === true) {
-                htmlstr += '<div class="profile-meta-functions button"><a href="messages/' + response.username + '"><span class="icon-16-mail"></span> Send Message</a></div>';
+                    '<tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a href="user/' + response.username + '" onclick="location = \'user/' + response.username + '\'">See Profile</a></td></tr>' +
+                    '</table><div class="clear"></div><div class="profile-summary profile-summary-width"><div class="profile-summary-wrapper">' +
+                    '<a href="user/' + response.username + '" onclick="location = \'user/' + response.username + '\'"><p class="number">' + response.ministat.pc + ' </p> <p class="type">Posts</p></a></div>' +
+                    '<div class="profile-summary-wrapper"><a href="communities"><p class="number">' + response.ministat.cc + ' </p> <p class="type">Communities</p></a></div>' +
+                    '<div class="profile-summary-wrapper"><a href="friends"><p class="number">' + response.ministat.fc + ' </p> <p class="type">Friends</p></a></div>' +
+                    '<div class="clear"></div></div><div class="clear"></div>';
+            if (response.isAfriend !== true && response.isAfriend !== "me") {
+                htmlstr += '<div class="profile-meta-functions button" id="unfriend-' + response.id + '"><span class="icon-16-checkmark"></span><span id="unfriend-' + response.id + '-text">Send Friend Request</span></div>';
             }
             if (response.isAfriend !== "me") {
-                htmlstr += '<div class="profile-meta-functions button" id="unfriend-' + response.id + '"><span class="icon-16-checkmark"></span><span id="unfriend-' + response.id + '-text">Send Friend Request</span></div>' +
-                        '<div class="profile-meta-functions button" id="wink-' + response.id + '"><span class="icon-16-eye"></span> Wink</div>';
+                htmlstr += '<div class="profile-meta-functions button" id="wink-' + response.id + '"><span class="icon-16-eye"></span> Wink</div>';
                 if (wink !== "")
                     wink += ",";
                 wink += "#wink-" + response.id;
                 wink += ",#unfriend-" + response.id;
+            }
+            if (response.isAfriend === true) {
+                htmlstr += '<div class="profile-meta-functions button"><a href="messages/' + response.username + '"><span class="icon-16-mail"></span> Send Message</a></div>';
             }
             htmlstr += '<div class="clear"></div></div></div></div></a>';
 
@@ -1042,11 +1048,12 @@ function loadCommunityMembers(response, statusText, target) {
         $(wink).click(function() {
             showOption(this);
         });
+    } else {
+        $(target.target).html("0 Member");
     }
 }
 function loadCommunity(response, statusText, target) {
     if (!response.error) {
-
         var comid = "", htmlstr = "", isAmember;
         if (target.loadAside) {
             if (target.uid === 0) {
@@ -1054,7 +1061,7 @@ function loadCommunity(response, statusText, target) {
             }
             $.each(response, function(i, response) {
                 //load community details on aside column
-                $("#commTitle").html("<a href='" + target.comname + "'>" + response.name + "</a>");
+                $("#commTitle").html("<a href='" + target.comname + "'>" + (response.verified === "1" ? '<img src="images/gossout-verified.png" class="verified-community" <img src="images/gossout-verified.png" class="verified-community" title="Verified Community">' : "") + response.name + "</a>");
                 $("#commDesc").html(response.description.length > 250 ? (nl2br(linkify(response.description.substring(0, 250)))) + "<span style='display:none' id='comdisplayMoreDesc'>" + (nl2br(linkify(response.description.substring(250)))) + "</span>" + " <a id='commViewMoreDesc'>view more...</a>" : (nl2br(linkify(response.description))));
                 if (response.description) {
                     $("#metaDescription").attr("content", response.description.substring(0, 160));
@@ -1209,7 +1216,7 @@ function loadCommunity(response, statusText, target) {
                                             str += '<a class="fancybox" rel="gallery' + responseText.id + '"  href="' + photo.original + '" rel="group"><img src="' + photo.thumbnail + '"></a>';
                                         });
                                     }
-                                    str += '<hr><h3 class="name"><img onload="OnImageLoad(event);" class="post-profile-pic" src="' + (responseText.photo) + '"><a href="user/">' + responseText.name +'</a>'+
+                                    str += '<hr><h3 class="name"><img onload="OnImageLoad(event);" class="post-profile-pic" src="' + (responseText.photo) + '"><a href="user/">' + responseText.name + '</a>' +
                                             '<div class="float-right"><span class="post-time"><span class="icon-16-comment"></span><span id="numComnt-' + responseText.id + '">0</span> </span>' +
 //                    '<span class="post-time"><span class="icon-16-share"></span>24</span>' +
                                             '<span class="post-time"><span class="icon-16-clock"></span><span class="timeago" title="' + responseText.time + '">' + responseText.time + '</span></span>' +
@@ -1277,8 +1284,7 @@ function loadCommunity(response, statusText, target) {
             } else {
                 $(target.target).html('<div class="posts"></div>');
             }
-        }
-        else {
+        } else {
             var countResponse = response.length;
             $.each(response, function(i, response) {
                 if (target.target === "#aside-community-list") {
@@ -1287,23 +1293,19 @@ function loadCommunity(response, statusText, target) {
                     htmlstr += '<div class="community-box-wrapper"><div class="community-image">' +
                             '<img src="' + response.thumbnail100 + '">' +
                             '</div><div class="community-text"><div class="community-name">' +
-                            '<a href="' + response.unique_name + '">' + response.name + '</a> </div><hr><div class="details">' + (response.description.length > 100 ? br2nl(response.description).substring(0, 100) + "..." : br2nl(response.description)) +
+                            '<a href="' + response.unique_name + '">' + (response.verified === "1" ? '<img src="images/gossout-verified.png" class="verified-community" title="Verified Community">' : "") + response.name + '</a> </div><hr><div class="details">' + (response.description.length > 100 ? br2nl(response.description).substring(0, 100) + "..." : br2nl(response.description)) +
                             '</div><div class="members">' + response.type + '</div><div class="members">' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</div><div class="members">' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</div></div><div class="clear"></div></div>';
+                    if (countResponse < 10) {
+                        $('#loadMoreComm').hide();
+                        if (target.more) {
+                            humane.log("Oops! You've got it all!", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                        }
+                    } else {
+                        $('#loadMoreComm').show();
+                    }
                 }
             });
 //             htmlstr +='<p><a href="" frnd="10" class="loadMoreFrnd" id="loadMoreFrnd">Load more > ></a>';
-            if (countResponse < 10 && target.more) {
-                $('#loadMoreComm').hide();
-                humane.log("Oops! You've got it all!", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
-            } else {
-                $('#loadMoreComm').show();
-            }
-
-            if (countResponse < 10)
-                if (target.first)
-                    $('#loadMoreComm').hide();
-
-//                $('#loadMoreComm').hide();
             if (target.more) {
                 if (htmlstr !== "")
                     $('.community-box').append(htmlstr);
@@ -1327,6 +1329,7 @@ function loadCommunity(response, statusText, target) {
                     $("#joinleave").hide();
                     $("#loadCommore").hide();
                     $(target.target).html('<div class="communities-list"><h1 id="pageTitle">Communities</h1><hr/><div id="creatComDiv"><h3>Would you like to create one? It\'s very easy!<br><div class="button"><a href="create-community">New Community</a></div></h3><div class="community-box"></div></div></div>');
+                    $("#searchForm").hide();
                     sendData("loadSuggestCommunity", {target: ".community-box", uid: target.uid, loadImage: true, max: true});
                 } else {
                     if (!target.more)
@@ -1367,7 +1370,7 @@ function loadSuggestCommunity(response, statusText, target) {
                 htmlstr += '<div class="community-box-wrapper">';
                 htmlstr += '<div class="community-image"><img src="' + response.pix + '"></div>';
                 htmlstr += '<div class="community-text"><div class="community-name">' +
-                        '<a href="' + response.unique_name + '">' + response.name + '</a> </div><hr><p class="community-privacy"><div class="details">' + (response.description.length > 100 ? br2nl(response.description).substring(0, 100) + "..." : br2nl(response.description)) +
+                        '<a href="' + response.unique_name + '">' + (response.verified === "1" ? '<img src="images/gossout-verified.png" class="verified-community" title="Verified Community">' : "") + response.name + '</a> </div><hr><p class="community-privacy"><div class="details">' + (response.description.length > 100 ? br2nl(response.description).substring(0, 100) + "..." : br2nl(response.description)) +
                         '</div><div class="members">' + response.type + '</div><div class="members">' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</div><div class="members">' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</div></div><div class="clear"></div></div>';
             } else {
                 if (i > 0) {
@@ -1588,10 +1591,15 @@ function loadFriends(response, statusText, target) {
                             '<div class="friend-name">' + responseItem.firstname.concat(" ", responseItem.lastname) + '</div>' +
                             '<div class="friend-location">' + responseItem.location + '</div></div>' +
                             '<div style="display:none"><div id="' + responseItem.username + '"><div class="aside-wrapper"><div class="profile-pic"><img class="holdam" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail150) + '"></div>' +
-                            '<table><tr><td></td><td><h3>' + responseItem.firstname.concat(" ", responseItem.lastname) + '</h3></td></tr>' +
+                            '<table><tr><td></td><td><h3><a href="user/' + responseItem.username + '" onclick="location = \'user/' + responseItem.username + '\'">' + responseItem.firstname.concat(" ", responseItem.lastname) + '</a></h3></td></tr>' +
                             '<tr><td><span class="icon-16-map"></span></td><td class="profile-meta"> ' + responseItem.location + '</td></tr>' +
                             '<tr><td><span class="icon-16-' + (responseItem.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta">' + (responseItem.gender === "M" ? "Male" : "Female") + '</td></tr>' +
-                            '</table><div class="clear"></div>' +
+                            '<tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a href="user/' + responseItem.username + '" onclick="location = \'user/' + responseItem.username + '\'">See Profile</a> </td></tr>' +
+                            '</table><div class="clear"></div><div class="profile-summary profile-summary-width"><div class="profile-summary-wrapper">' +
+                            '<a href="user/' + responseItem.username + '" onclick="location = \'user/' + responseItem.username + '\'"><p class="number">' + responseItem.ministat.pc + ' </p> <p class="type">Posts</p></a></div>' +
+                            '<div class="profile-summary-wrapper"><a href="communities"><p class="number">' + responseItem.ministat.cc + ' </p> <p class="type">Communities</p></a></div>' +
+                            '<div class="profile-summary-wrapper"><a href="friends"><p class="number">' + responseItem.ministat.fc + ' </p> <p class="type">Friends</p></a></div>' +
+                            '<div class="clear"></div></div><div class="clear"></div>' +
                             '<div class="profile-meta-functions button" id="wink-f-' + responseItem.id + '"><span class="icon-16-eye"></span> Wink</div>' +
                             '<div class="profile-meta-functions button"><a href="messages/' + responseItem.username + '"><span class="icon-16-mail"></span> Send Message</a></div>' +
                             '<div class="profile-meta-functions button" id="unfriend-f-' + responseItem.id + '"><span class="icon-16-checkmark"></span> <span id="unfriend-f-' + responseItem.id + '-text">Unfriend</a></div><span id="loadImage-' + response.id + '"></span>' +
@@ -1605,11 +1613,11 @@ function loadFriends(response, statusText, target) {
                         '<div class= "friends-thumbnails"><img onload="OnImageLoad(event);" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail150) + '"></div>' +
                         '<div style="display:none"><div id="' + responseItem.username + '"><div class="aside-wrapper">' +
                         '<div class="profile-pic"><img  src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail150) + '"></div><table><tr><td></td><td>' +
-                        '<h3>' + responseItem.firstname.concat(" ", responseItem.lastname) + '</h3></td></tr><tr><td><span class="icon-16-map"></span></td><td class="profile-meta">' + responseItem.location + '</td></tr>' +
+                        '<h3><a href="user/' + responseItem.username + '" onclick="location = \'user/' + responseItem.username + '\'">' + responseItem.firstname.concat(" ", responseItem.lastname) + '</a></h3></td></tr><tr><td><span class="icon-16-map"></span></td><td class="profile-meta">' + responseItem.location + '</td></tr>' +
                         '<tr><td><span class="icon-16-' + (responseItem.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta">' + (responseItem.gender === "M" ? "Male" : "Female") + '</td></tr>' +
-                        '<tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a href="">See Profile</a> </td></tr></table>' +
+                        '<tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a href="user/' + responseItem.username + '" onclick="location = \'user/' + responseItem.username + '\'">See Profile</a> </td></tr></table>' +
                         '<div class="clear"></div><div class="profile-summary profile-summary-width"><div class="profile-summary-wrapper">' +
-                        '<a href=""><p class="number">' + responseItem.ministat.pc + ' </p> <p class="type">Posts</p></a></div>' +
+                        '<a href="user/' + responseItem.username + '" onclick="location = \'user/' + responseItem.username + '\'"><p class="number">' + responseItem.ministat.pc + ' </p> <p class="type">Posts</p></a></div>' +
                         '<div class="profile-summary-wrapper"><a href="communities"><p class="number">' + responseItem.ministat.cc + ' </p> <p class="type">Communities</p></a></div>' +
                         '<div class="profile-summary-wrapper"><a href="friends"><p class="number">' + responseItem.ministat.fc + ' </p> <p class="type">Friends</p></a></div>' +
                         '<div class="clear"></div></div>' +
@@ -1711,10 +1719,10 @@ function loadSuggestFriends(response, statusText, target) {
                 htmlstr += '<div class="profile-pic"><img class="holdam" src = "' + response.photo.alt + '" ></div>';
             }
 //
-            htmlstr += '<div class="clear"></div><table><tr><td></td><td><h3>' + response.firstname.concat(" ", response.lastname) + '</h3></td></tr>' +
+            htmlstr += '<div class="clear"></div><table><tr><td></td><td><h3><a href="user/' + response.username + '" onclick="location = \'user/' + response.username + '\'">' + response.firstname.concat(" ", response.lastname) + '</a></h3></td></tr>' +
                     '<tr><td><span class="icon-16-map"></span></td><td class="profile-meta"> ' + (response.location !== "" ? response.location : "Location not set") + '</td></tr>' +
                     '<tr><td><span class="icon-16-' + (response.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta"> ' + (response.gender === "M" ? "Male" : "Female") + '</td></tr>' +
-//                    '<tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a href="#">See Profile</a> </td></tr>' +
+                    '<tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a href="user/' + response.username + '" onclick="location = \'user/' + response.username + '\'">See Profile</a> </td></tr>' +
                     '</table><div class="profile-summary profile-summary-width"><div class="profile-summary-wrapper">' +
                     '<a href=""><p class="number">' + response.ministat.pc + ' </p> <p class="type">Posts</p></a></div>' +
                     '<div class="profile-summary-wrapper"><a href="communities"><p class="number">' + response.ministat.cc + ' </p> <p class="type">Communities</p></a></div>' +

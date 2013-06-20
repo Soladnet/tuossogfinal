@@ -1513,7 +1513,7 @@ class GossoutUser {
                     $merg.=$arr[$i];
                 }
                 $arr = array($arr[0], $merg);
-                $searchCombination = "((`firstname` LIKE '%$arr[0]%' OR `firstname` LIKE '%$arr[1]%') AND (`lastname` LIKE '%$arr[1]%' OR `lastname` LIKE '%$arr[0]%'))";
+                $searchCombination = "((`firstname` LIKE '%$arr[0]%' AND `firstname` LIKE '%$arr[1]%') OR (`lastname` LIKE '%$arr[1]%' AND `lastname` LIKE '%$arr[0]%'))";
             }
             $sql = "SELECT id,username,firstname,lastname,location,gender,`dateJoined` FROM `user_personal_info` WHERE $searchCombination LIMIT $this->start,$this->limit";
             if ($result = $mysql->query($sql)) {

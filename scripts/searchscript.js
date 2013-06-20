@@ -126,7 +126,7 @@ function loadCommunityResult(response, statusText, target) {
         $.each(response, function(i, response) {
             if (response.unique_name) {
                 htmlstr += '<div class="index-search-result">' +
-                        '<h3><a href="' + response.unique_name + '"><img class="post-profile-pic" src="' + response.thumbnail150 + '">' + response.name + '</a></h3>' +
+                        '<h3><a href="' + response.unique_name + '"><img class="post-profile-pic" src="' + response.thumbnail150 + '">' + response.name +(response.verified === "1" ? ' <img src="images/gossout-verified.png" class="verified-community" style="border:none;margin:0px;" title="Verified Community">' : "")+ '</a></h3>' +
                         '<hr><p>' + (response.description.length > 250 ? (linkify(response.description.substring(0, 250))) + "..." : response.description) + '</p><hr>' +
                         '<a><span class="icon-16-dot"></span>' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</a>' +
                         '<a><span class="icon-16-dot"></span>' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</a>' +

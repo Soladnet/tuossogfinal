@@ -1,5 +1,5 @@
 <?php
-
+//echo $_SERVER['HTTP_USER_AGENT'];
 include_once './LoginClass.php';
 $confirm = new Login();
 if (isset($_GET['page'])) {

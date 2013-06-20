@@ -65,7 +65,7 @@ if (isset($_COOKIE['user_auth'])) {
                 }
                 current = currentLocation.split("/");
                 if (current[current.length - 1].toLowerCase() === "communities") {
-                    sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true, start: 0, limit: 10, first: true});
+                    sendData("loadCommunity", {target: ".community-box", loadImage: true, max: true, start: 0, limit: 10});
 
                     $("#searchForm").validationEngine();
                     $("#searchForm").ajaxForm({
