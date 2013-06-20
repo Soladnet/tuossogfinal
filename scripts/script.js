@@ -48,7 +48,7 @@ function sendData(callback, target) {
             }
         };
 
-//                
+    //                
     } else if (callback === "loadCommunityMembers") {
         option = {
             beforeSend: function() {
@@ -128,7 +128,7 @@ function sendData(callback, target) {
         option = {
             beforeSend: function() {
                 showuidfeedback(target);
-//                alert('loadWink');
+            //                alert('loadWink');
             },
             success: function(response, statusText, xhr) {
                 loadGossComment(response, statusText, target);
@@ -137,7 +137,7 @@ function sendData(callback, target) {
                 param: "loadGossComment",
                 start: target.start,
                 limit: target.limit,
-//                update: true
+            //                update: true
             }
         };
     }
@@ -145,7 +145,7 @@ function sendData(callback, target) {
         option = {
             beforeSend: function() {
                 showuidfeedback(target);
-//                alert('loadWink');
+            //                alert('loadWink');
             },
             success: function(response, statusText, xhr) {
                 loadGossFrq(response, statusText, target);
@@ -154,14 +154,14 @@ function sendData(callback, target) {
                 param: "loadGossFrq",
                 start: target.start,
                 limit: target.limit,
-//                update: true
+            //                update: true
             }
         };
     } else if (callback === "loadGossFrq") {
         option = {
             beforeSend: function() {
                 showuidfeedback(target);
-//                alert('loadWink');
+            //                alert('loadWink');
             },
             success: function(response, statusText, xhr) {
                 loadGossFrq(response, statusText, target);
@@ -170,14 +170,14 @@ function sendData(callback, target) {
                 param: "loadGossFrq",
                 start: target.start,
                 limit: target.limit,
-//                update: true
+            //                update: true
             }
         };
     } else if (callback === "loadGossPost") {
         option = {
             beforeSend: function() {
                 showuidfeedback(target);
-//                alert('loadWink');
+            //                alert('loadWink');
             },
             success: function(response, statusText, xhr) {
                 loadGossPost(response, statusText, target);
@@ -186,7 +186,7 @@ function sendData(callback, target) {
                 param: "loadGossPost",
                 start: target.start,
                 limit: target.limit,
-//                update: true
+            //                update: true
             }
         };
     } else if (callback === "loadNotificationCount") {
@@ -259,7 +259,7 @@ function sendData(callback, target) {
                 uid: target.uid
             }
         };
-//        }
+    //        }
 
     } else if (callback === "inviteFriends") {
         option = {
@@ -346,7 +346,7 @@ function sendData(callback, target) {
     } else if (callback === "leaveJoinCommunity") {
         option = {
             beforeSend: function() {
-//                showuidfeedback(target);
+            //                showuidfeedback(target);
             },
             success: function(response, statusText, xhr) {
                 leaveJoinCommunity(response, statusText, target);
@@ -359,7 +359,7 @@ function sendData(callback, target) {
     } else if (callback === "logError") {
         option = {
             data: {
-//                    target.jqXHR
+                //                    target.jqXHR
                 param: target.param,
                 statusCode: target.jqXHR.status,
                 statusText: target.jqXHR.statusText,
@@ -386,9 +386,9 @@ function loadTimeline(response, statusText, target) {
         $.each(response, function(i, response) {
             if (response.type === "post") {
                 htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
-                        '<img onload="OnImageLoad(event);" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                        '</div><p><a href="user/' + response.username + '">' + (response.sender_id === readCookie("user_auth") ? "You" : response.firstname.concat(' ', response.lastname)) + '</a> posted to <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
-                        '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p>';
+                '<img onload="OnImageLoad(event);" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
+                '</div><p><a href="user/' + response.username + '">' + (response.sender_id === readCookie("user_auth") ? "You" : response.firstname.concat(' ', response.lastname)) + '</a> posted to <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
+                '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p>';
                 if (response.post_photo) {
                     htmlstr += '<p class="timeline-photo-upload">';
                     $.each(response.post_photo, function(k, photo) {
@@ -398,12 +398,12 @@ function loadTimeline(response, statusText, target) {
                 }
                 if (response.post) {
                     htmlstr += '<p>' + (response.post.length > 200 ? response.post.substring(0, 200) + '<span style="display:none" id="continuereading-' + response.id + '">' + response.post.substring(200) + '</span> <a id="continue-' + response.id + '">continue reading...</a>' : response.post) + '</p>' +
-                            '<!--<p class="post-meta"><span id="post-new-comment-show-' + response.id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' +
-                            '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share(20)</a></span></p>--><div class="clear"></div></div>';
+                    '<!--<p class="post-meta"><span id="post-new-comment-show-' + response.id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' +
+                    '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share(20)</a></span></p>--><div class="clear"></div></div>';
                 } else {
                     htmlstr += '<p></p>' +
-                            '<!--<p class="post-meta"><span id="post-new-comment-show-' + response.id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' +
-                            '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share(20)</a></span></p>--><div class="clear"></div></div>';
+                    '<!--<p class="post-meta"><span id="post-new-comment-show-' + response.id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' +
+                    '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share(20)</a></span></p>--><div class="clear"></div></div>';
                 }
                 if (response.post)
                     if (response.post.length > 200) {
@@ -414,14 +414,14 @@ function loadTimeline(response, statusText, target) {
                     }
             } else if (response.type === "comcrea") {
                 htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
-                        '<img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"></div>' +
-                        '<p><a href="user/' + response.username + '">' + (response.creator_id === readCookie("user_auth") ? "You" : response.firstname.concat(' ', response.lastname)) + '</a> created a new <a href="' + response.unique_name + '">Community</a></p>' +
-                        '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p><div class="community-meta">' +
-                        '<a class="fancybox" rel="gallery' + response.id + '"  href="' + response.pix + '" rel="group"><img src="' + response.thumbnail100 + '"></a>' +
-                        '<h3><a href="' + response.unique_name + '">' + response.name + '</a></h3>' +
-                        '<p>' + response.description + '</p>' +
-                        (response.isAmember ? "" : '<p><a class="joinCom" id="joinCom-' + response.id + '">Join</a></p>') +
-                        '</div><div class="clear"></div></div>';
+                '<img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"></div>' +
+                '<p><a href="user/' + response.username + '">' + (response.creator_id === readCookie("user_auth") ? "You" : response.firstname.concat(' ', response.lastname)) + '</a> created a new <a href="' + response.unique_name + '">Community</a></p>' +
+                '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p><div class="community-meta">' +
+                '<a class="fancybox" rel="gallery' + response.id + '"  href="' + response.pix + '" rel="group"><img src="' + response.thumbnail100 + '"></a>' +
+                '<h3><a href="' + response.unique_name + '">' + response.name + '</a></h3>' +
+                '<p>' + response.description + '</p>' +
+                (response.isAmember ? "" : '<p><a class="joinCom" id="joinCom-' + response.id + '">Join</a></p>') +
+                '</div><div class="clear"></div></div>';
                 if (!response.isAmember) {
                     if (toggleId !== "") {
                         toggleId += ",";
@@ -444,7 +444,11 @@ function loadTimeline(response, statusText, target) {
                 $(target.target).append(htmlstr);
                 if (TimeLineCount < 10) {
                     $('#loadMoreImg,#loadMoreNotifDiv').hide();
-                    humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                    humane.log("Opps! you've got it all!", {
+                        timeout: 3000, 
+                        clickToClose: true, 
+                        addnCls: 'humane-jackedup-success'
+                    });
 
                 }
                 else {
@@ -455,13 +459,20 @@ function loadTimeline(response, statusText, target) {
                 }
             } else {
 
-                humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                humane.log("Opps! you've got it all!", {
+                    timeout: 3000, 
+                    clickToClose: true, 
+                    addnCls: 'humane-jackedup-success'
+                });
                 $('#loadMoreImg,#loadMoreNotifDiv').hide();
             }
         }
-        else {
+        else { 
+            if(TimeLineCount >= 20)
+                $('#loadMoreNotifDiv').show();
             $(target.target).html(htmlstr);
-            $('#loadMoreNotifDiv').show();
+            
+           
         }
         prepareDynamicDates();
         $(".timeago").timeago();
@@ -480,12 +491,12 @@ function loadWink(response, statusText, target) {
     if (!response.error) {
         $.each(response.bag, function(i, response) {
             htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-eye"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-                    '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
-                    '<h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
-                    '<div class="all-notifications-message">Winked you</div></div><hr><p>' +
-                    '<a class="all-notifications-actions winkIgnore" id="winkIgnore-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
-                    '<a class="all-notifications-actions wink-text" id="wink-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a>' +
-                    '</p></div>';
+            '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
+            '<h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+            '<div class="all-notifications-message">Winked you</div></div><hr><p>' +
+            '<a class="all-notifications-actions winkIgnore" id="winkIgnore-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
+            '<a class="all-notifications-actions wink-text" id="wink-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a>' +
+            '</p></div>';
             accept_frq_text += accept_frq_text === "" ? ".winkIgnore,.wink-text" : ",.winkIgnore,.wink-text";
         });
         if (target.status === "append") {
@@ -502,7 +513,11 @@ function loadWink(response, statusText, target) {
         $(".timeago").timeago();
     } else {
         if (target.status === "append") {
-            humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            humane.log("Opps! you've got it all!", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-success'
+            });
             $("#loadMoreImg").hide();
             $('#loadMoreNotifDiv').hide();
             $('#wink-notification-icon').addClass('noResult');
@@ -516,16 +531,16 @@ function loadWink(response, statusText, target) {
     }
 }
 function loadGossPost(response, statusText, target) {
-//     $.each(response.bag, function(i, response){alert(response.firstname)});
+    //     $.each(response.bag, function(i, response){alert(response.firstname)});
     var htmlstr = "", htmlFirst = "", accept_frq_text = "";
     if (!response.error) {
         $.each(response.bag, function(i, response) {
             htmlstr += '<div class="individual-notification-box">' +
-                    '<p><span class="icon-16-pencil"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-                    '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                    '<div class="all-notification-text"><h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
-                    '<div class="all-notifications-comment">posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '" in <a href="' + response.unique_name + '">' + response.name + '</a></div></div><hr><p>' +
-                    '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
+            '<p><span class="icon-16-pencil"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
+            '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
+            '<div class="all-notification-text"><h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+            '<div class="all-notifications-comment">posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '" in <a href="' + response.unique_name + '">' + response.name + '</a></div></div><hr><p>' +
+            '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
         });
         if (target.status === "append") {
             $(target.target).append(htmlstr);
@@ -538,7 +553,11 @@ function loadGossPost(response, statusText, target) {
         $(".timeago").timeago();
     } else {
         if (target.status === "append") {
-            humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            humane.log("Opps! you've got it all!", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-success'
+            });
             $("#loadMoreImg").hide();
             $('#loadMoreNotifDiv').hide();
             $('#post-notification-icon').addClass('noResult');
@@ -551,18 +570,18 @@ function loadGossPost(response, statusText, target) {
 }
 
 function loadGossComment(response, statusText, target) {
-//     $.each(response.bag, function(i, response){alert(response.firstname)});
+    //     $.each(response.bag, function(i, response){alert(response.firstname)});
     var htmlstr = "", htmlFirst = "", accept_frq_text = "";
-//      alert('htmlstr');
+    //      alert('htmlstr');
     if (!response.error) {
         $.each(response.bag, function(i, response) {
             htmlstr += '<div class="individual-notification-box">' +
-                    '<p><span class="icon-16-comment"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-                    '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                    '<div class="all-notification-text"><h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
-                    '<div class="all-notifications-message">Commented on ' + (response.isMyPost ? "on your post" : "a post") + ' in ' + response.name + '</div>' +
-                    '<div class="all-notifications-comment">"' + (response.comment.length > 50 ? response.comment.substring(0, 50) + "..." : response.comment) + '"</div></div><hr><p>' +
-                    '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
+            '<p><span class="icon-16-comment"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
+            '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
+            '<div class="all-notification-text"><h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+            '<div class="all-notifications-message">Commented on ' + (response.isMyPost ? "on your post" : "a post") + ' in ' + response.name + '</div>' +
+            '<div class="all-notifications-comment">"' + (response.comment.length > 50 ? response.comment.substring(0, 50) + "..." : response.comment) + '"</div></div><hr><p>' +
+            '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
         });
         if (target.status === "append") {
             $(target.target).append(htmlstr);
@@ -575,7 +594,11 @@ function loadGossComment(response, statusText, target) {
         $(".timeago").timeago();
     } else {
         if (target.status === "append") {
-            humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            humane.log("Opps! you've got it all!", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-success'
+            });
             $("#loadMoreImg").hide();
             $('#loadMoreNotifDiv').hide();
             $('#comment-notification-icon').addClass('noResult');
@@ -588,18 +611,18 @@ function loadGossComment(response, statusText, target) {
 }
 
 function loadGossFrq(response, statusText, target) {
-//     $.each(response.bag, function(i, response){alert(response.firstname)});
+    //     $.each(response.bag, function(i, response){alert(response.firstname)});
     var htmlstr = "", htmlFirst = "", accept_frq_text = "";
-//      alert('htmlstr');
+    //      alert('htmlstr');
     if (!response.error) {
         $.each(response.bag, function(i, response) {
             htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-user-add"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-                    '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
-                    '<h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
-                    '<div class="all-notifications-message">Wants To Add You</div></div><hr><p>' +
-                    '<a class="all-notifications-actions frqIgnore" id="frqIgnore-text-n-' + response.username1 + '"><span class="icon-16-cross"></span>Ignore</a>' +
-                    '<a class="all-notifications-actions accept-frq" id="accept-frq-text-n-' + response.username1 + '"><span class="icon-16-checkmark"></span>Accept</a>' +
-                    '</p></div>';
+            '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
+            '<h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+            '<div class="all-notifications-message">Wants To Add You</div></div><hr><p>' +
+            '<a class="all-notifications-actions frqIgnore" id="frqIgnore-text-n-' + response.username1 + '"><span class="icon-16-cross"></span>Ignore</a>' +
+            '<a class="all-notifications-actions accept-frq" id="accept-frq-text-n-' + response.username1 + '"><span class="icon-16-checkmark"></span>Accept</a>' +
+            '</p></div>';
             accept_frq_text += ".accept-frq";
             accept_frq_text += ",.frqIgnore";
         });
@@ -617,7 +640,11 @@ function loadGossFrq(response, statusText, target) {
         $(".timeago").timeago();
     } else {
         if (target.status === "append") {
-            humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            humane.log("Opps! you've got it all!", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-success'
+            });
             $("#loadMoreImg").hide();
             $('#loadMoreNotifDiv').hide();
             $('#frq-notification-icon').addClass('noResult');
@@ -639,23 +666,23 @@ function loadGossbag(response, statusText, target) {
             if (response.type === "frq") {
                 if (target.target === "#individual-notification-box-a") {
                     htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-user-add"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-                            '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
-                            '<h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
-                            '<div class="all-notifications-message">Wants To Add You</div></div><hr><p>' +
-                            '<a class="all-notifications-actions frqIgnore" id="frqIgnore-text-n-' + response.username1 + '"><span class="icon-16-cross"></span>Ignore</a>' +
-                            '<a class="all-notifications-actions accept-frq" id="accept-frq-text-n-' + response.username1 + '"><span class="icon-16-checkmark"></span>Accept</a>' +
-                            '</p></div>';
+                    '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
+                    '<h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                    '<div class="all-notifications-message">Wants To Add You</div></div><hr><p>' +
+                    '<a class="all-notifications-actions frqIgnore" id="frqIgnore-text-n-' + response.username1 + '"><span class="icon-16-cross"></span>Ignore</a>' +
+                    '<a class="all-notifications-actions accept-frq" id="accept-frq-text-n-' + response.username1 + '"><span class="icon-16-checkmark"></span>Accept</a>' +
+                    '</p></div>';
                     accept_frq_text += ".accept-frq";
                     accept_frq_text += ",.frqIgnore";
                 } else {
                     htmlstr += '<div class="individual-notification"><p><span class="icon-16-user-add"></span>' +
-                            '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-                            '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="notification-text"> <p class="name"><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></p>' +
-                            '<p>wants to add you as friend</p></div><div class="clear"></div><hr>' +
-                            '<span id="frqOption-' + response.id + '"><a class="notification-actions frqIgnore" id="frqIgnore-text-' + response.username1 + '">Ignore</a>' +
-                            '<a class="notification-actions accept-frq" id="accept-frq-text-' + response.username1 + '">Accept</a></span>' +
-                            '<div class="clear"></div></div>';
+                    '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
+                    '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
+                    '<div class="notification-text"> <p class="name"><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></p>' +
+                    '<p>wants to add you as friend</p></div><div class="clear"></div><hr>' +
+                    '<span id="frqOption-' + response.id + '"><a class="notification-actions frqIgnore" id="frqIgnore-text-' + response.username1 + '">Ignore</a>' +
+                    '<a class="notification-actions accept-frq" id="accept-frq-text-' + response.username1 + '">Accept</a></span>' +
+                    '<div class="clear"></div></div>';
                     accept_frq_text += ".accept-frq";
                     accept_frq_text += ",.frqIgnore";
                 }
@@ -663,71 +690,71 @@ function loadGossbag(response, statusText, target) {
             } else if (response.type === "TW") {
                 if (target.target === "#individual-notification-box-a") {
                     htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-eye"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-                            '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
-                            '<h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
-                            '<div class="all-notifications-message">Winked you</div></div><hr><p>' +
-                            '<a class="all-notifications-actions winkIgnore" id="winkIgnore-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
-                            '<a class="all-notifications-actions wink-text" id="wink-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a>' +
-                            '</p></div>';
+                    '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
+                    '<h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                    '<div class="all-notifications-message">Winked you</div></div><hr><p>' +
+                    '<a class="all-notifications-actions winkIgnore" id="winkIgnore-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
+                    '<a class="all-notifications-actions wink-text" id="wink-text-n-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a>' +
+                    '</p></div>';
                     accept_frq_text += accept_frq_text === "" ? ".winkIgnore,.wink-text" : ",.winkIgnore,.wink-text";
                 } else {
                     htmlstr += '<div class="individual-notification"><p><span class="icon-16-eye"></span>' +
-                            '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-                            '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="notification-text"> <p class="name"><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></p>' +
-                            '<p>winked you</p></div><div class="clear"></div><hr>' +
-                            '<span id="winkOption-' + response.id + '"><a class="notification-actions winkIgnore" id="winkIgnore-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
-                            '<a class="notification-actions wink-text" id="wink-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a></span>' +
-                            '<div class="clear"></div></div>';
+                    '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
+                    '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
+                    '<div class="notification-text"> <p class="name"><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></p>' +
+                    '<p>winked you</p></div><div class="clear"></div><hr>' +
+                    '<span id="winkOption-' + response.id + '"><a class="notification-actions winkIgnore" id="winkIgnore-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
+                    '<a class="notification-actions wink-text" id="wink-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a></span>' +
+                    '<div class="clear"></div></div>';
                     accept_frq_text += accept_frq_text === "" ? ".winkIgnore,.wink-text" : ",.winkIgnore,.wink-text";
                 }
             } else if (response.type === "comment") {
                 if (target.target === "#individual-notification-box-a") {
                     htmlstr += '<div class="individual-notification-box">' +
-                            '<p><span class="icon-16-comment"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-                            '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="all-notification-text"><h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
-                            '<div class="all-notifications-message">Commented on ' + (response.isMyPost ? "on your post" : "a post") + ' in <a href="' + response.unique_name + '">' + response.name + '</a></div>' +
-                            '<div class="all-notifications-comment">"' + (response.comment.length > 50 ? response.comment.substring(0, 50) + "..." : response.comment) + '"</div></div><hr><p>' +
-                            '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
+                    '<p><span class="icon-16-comment"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
+                    '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
+                    '<div class="all-notification-text"><h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                    '<div class="all-notifications-message">Commented on ' + (response.isMyPost ? "on your post" : "a post") + ' in <a href="' + response.unique_name + '">' + response.name + '</a></div>' +
+                    '<div class="all-notifications-comment">"' + (response.comment.length > 50 ? response.comment.substring(0, 50) + "..." : response.comment) + '"</div></div><hr><p>' +
+                    '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
                 } else {
                     htmlstr += '<div class="individual-notification"><p><span class="icon-16-comment"></span><span class="float-right timeago" title="' + response.time + '">' + response.time + '</span></p>' +
-                            '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="notification-text">' +
-                            '<p class="name"><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></p><p>commented on ' + (response.isMyPost ? "on your post" : "a post") + ' in <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
-                            '<p>"' + (response.comment.length > 31 ? response.comment.substring(0, 31) + "..." : response.comment) + '"</p></div><div class="clear"></div><hr>' +
-                            '<!--<a class="notification-actions" title="' + response.name + '">View</a>--><div class="clear"></div></div>';
+                    '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="notification-text">' +
+                    '<p class="name"><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></p><p>commented on ' + (response.isMyPost ? "on your post" : "a post") + ' in <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
+                    '<p>"' + (response.comment.length > 31 ? response.comment.substring(0, 31) + "..." : response.comment) + '"</p></div><div class="clear"></div><hr>' +
+                    '<!--<a class="notification-actions" title="' + response.name + '">View</a>--><div class="clear"></div></div>';
                 }
             } else if (response.type === "post") {
                 if (target.target === "#individual-notification-box-a") {
                     htmlstr += '<div class="individual-notification-box">' +
-                            '<p><span class="icon-16-pencil"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-                            '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="all-notification-text"><h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
-                            '<div class="all-notifications-comment">posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '" in <a href="' + response.unique_name + '">' + response.name + '</a></div></div><hr><p>' +
-                            '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
+                    '<p><span class="icon-16-pencil"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
+                    '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
+                    '<div class="all-notification-text"><h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                    '<div class="all-notifications-comment">posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '" in <a href="' + response.unique_name + '">' + response.name + '</a></div></div><hr><p>' +
+                    '<!--<a class="all-notifications-actions"><span class="icon-16-dot"></span>View</a>--></p></div>';
                 } else {
                     htmlstr += '<div class="individual-notification viewed-notification"><p><span class="icon-16-pencil"></span>' +
-                            '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="notification-text"> <p class="name"><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></p>' +
-                            '<p>posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '"</p><p>in <a href="' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><!--<a class="notification-actions">View</a>-->' +
-                            '<div class="clear"></div></div>';
+                    '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
+                    '<div class="notification-text"> <p class="name"><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></p>' +
+                    '<p>posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '"</p><p>in <a href="' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><!--<a class="notification-actions">View</a>-->' +
+                    '<div class="clear"></div></div>';
                 }
             } else if (response.type === "IV") {
                 if (target.target === "#individual-notification-box-a") {
                     htmlstr += '<div class="individual-notification-box"><p><span class="icon-16-earth"></span><span class="all-notifications-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-                            '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
-                            '<h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
-                            '<div class="all-notifications-message">invites you to join <a href="' + response.unique_name + '">' + response.name + '</a></div></div><hr><p id="invitationtarget">' +
-                            '<a class="all-notifications-actions invitationIgnore" id="invitationIgnore-text-' + response.comid + '"><span class="icon-16-cross"></span>Ignore</a>' +
-                            '<a class="all-notifications-actions invitation-text" id="invitation-text-' + response.comid + '"><span class="icon-16-earth"></span>Join</a>' +
-                            '</p></div>';
+                    '<img class= "all-notification-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-notification-text">' +
+                    '<h3><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></h3>' +
+                    '<div class="all-notifications-message">invites you to join <a href="' + response.unique_name + '">' + response.name + '</a></div></div><hr><p id="invitationtarget">' +
+                    '<a class="all-notifications-actions invitationIgnore" id="invitationIgnore-text-' + response.comid + '"><span class="icon-16-cross"></span>Ignore</a>' +
+                    '<a class="all-notifications-actions invitation-text" id="invitation-text-' + response.comid + '"><span class="icon-16-earth"></span>Join</a>' +
+                    '</p></div>';
                     accept_frq_text += accept_frq_text === "" ? ".invitationIgnore,.invitation-text" : ",.invitationIgnore,.invitation-text";
                 } else {
                     htmlstr += '<div class="individual-notification viewed-notification"><p><span class="icon-16-earth"></span>' +
-                            '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                            '<div class="notification-text"> <p class="name"><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></p><p>invites you to join</p>' +
-                            '<p><a href="' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><span id="invitationtarget"><a class="notification-actions invitationIgnore" id="invitationIgnore-text-n-' + response.comid + '">Ignore</a>' +
-                            '<a class="notification-actions invitation-text" id="invitation-text-n-' + response.comid + '">Join</a></span><div class="clear"></div></div>';
+                    '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
+                    '<div class="notification-text"> <p class="name"><a href="user/' + response.username + '">' + response.firstname.concat(' ', response.lastname) + '</a></p><p>invites you to join</p>' +
+                    '<p><a href="' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><span id="invitationtarget"><a class="notification-actions invitationIgnore" id="invitationIgnore-text-n-' + response.comid + '">Ignore</a>' +
+                    '<a class="notification-actions invitation-text" id="invitation-text-n-' + response.comid + '">Join</a></span><div class="clear"></div></div>';
                     accept_frq_text += accept_frq_text === "" ? ".invitationIgnore,.invitation-text" : ",.invitationIgnore,.invitation-text";
                 }
             }
@@ -753,7 +780,11 @@ function loadGossbag(response, statusText, target) {
     } else {
         if (response.error) {
             if (target.status === "append") {
-                humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                humane.log("Opps! you've got it all!", {
+                    timeout: 3000, 
+                    clickToClose: true, 
+                    addnCls: 'humane-jackedup-success'
+                });
                 $("#loadMoreImg").hide();
                 $('#all-notification-icon').addClass('noResult');
                 $('#loadMoreNotifDiv').hide();
@@ -770,61 +801,61 @@ function loadNewGossbag(response, statusText, target) {
     if (!response.error) {
         var url = document.URL.split("/"), accept_frq_text = "", toggleId = "";
         var isHome = $.inArray("home", url);
-//        alert(url);
+        //        alert(url);
         response.reverse();
-//        $.each(response, function(i, response) {
-//            if (response.type === "TW") {
-//                var html = '<div class="individual-notification"><p><span class="icon-16-eye"></span>' +
-//                        '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-//                        '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-//                        '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + '</p>' +
-//                        '<p>winked you</p></div><div class="clear"></div><hr>' +
-//                        '<span id="winkOption-' + response.id + '"><a class="notification-actions" id="winkIgnore-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
-//                        '<a class="notification-actions" id="wink-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a></span>' +
-//                        '<div class="clear"></div></div>';
-//                if (target.status === "prepend") {
-//                    $(target.target).prepend(html).fadeIn("slow");
-//                } else {
-//                    $(target.target).html(html).fadeIn("slow");;
-//                }
-//
-//                accept_frq_text += accept_frq_text === "" ? "#winkIgnore-text-" + response.id + '-' + response.sender_id + ",#wink-text-" + response.id + '-' + response.sender_id : ",#winkIgnore-text-" + response.id + '-' + response.sender_id + ",#wink-text-" + response.id + '-' + response.sender_id;
-//            } else if (response.type === "post") {
-//                var html = '<div class="individual-notification viewed-notification"><p><span class="icon-16-pencil"></span>' +
-//                        '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-//                        '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + ' </p>' +
-//                        '<p>posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '"</p><p>in <a href="' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><!--<a class="notification-actions'+response.id+'">View</a>-->' +
-//                        '<div class="clear"></div></div>';
-//                if (target.status === "prepend") {
-//                    $(target.target).prepend(html).fadeIn("slow");
-//                } else {
-//                    $(target.target).html(html).fadeIn("slow");
-//                }
-//                if (isHome > 0) {
-//                    var htmlstr = '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
-//                            '<img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail45) + '">' +
-//                            '</div><p><a>' + response.firstname.concat(' ', response.lastname) + '</a> posted to <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
-//                            '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p>';
-//                    if (response.post_photo) {
-//                        htmlstr += '<p class="timeline-photo-upload">';
-//                        $.each(response.post_photo, function(k, photo) {
-//                            htmlstr += '<a class="fancybox" rel="gallery' + response.id + '"  href="' + photo.original + '" rel="group"><img src="' + photo.thumbnail + '"></a>';
-//                        });
-//                        htmlstr += '</p><div class="clear"></div>';
-//                    }
-//                    htmlstr += '<p>' + (response.post.length > 200 ? response.post.substring(0, 200) + '<span style="display:none" id="continuereading-' + response.id + '">' + response.post.substring(200) + '</span> <a id="continue-' + response.id + '">continue reading...</a>' : response.post) + '</p>' +
-//                            '<!--<p class="post-meta"><span id="post-new-comment-show-' + response.id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' +
-//                            '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share(20)</a></span></p>--><div class="clear"></div></div>';
-//                    if (response.post.length > 200) {
-//                        if (toggleId !== "") {
-//                            toggleId += ",";
-//                        }
-//                        toggleId += "#continue-" + response.id;
-//                    }
-//                    $(".timeline-container").prepend(htmlstr).fadeIn("slow");
-//                }
-//            }
-//        });
+        //        $.each(response, function(i, response) {
+        //            if (response.type === "TW") {
+        //                var html = '<div class="individual-notification"><p><span class="icon-16-eye"></span>' +
+        //                        '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
+        //                        '<img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
+        //                        '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + '</p>' +
+        //                        '<p>winked you</p></div><div class="clear"></div><hr>' +
+        //                        '<span id="winkOption-' + response.id + '"><a class="notification-actions" id="winkIgnore-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-cross"></span>Ignore</a>' +
+        //                        '<a class="notification-actions" id="wink-text-' + response.id + '-' + response.sender_id + '"><span class="icon-16-eye"></span>Wink back</a></span>' +
+        //                        '<div class="clear"></div></div>';
+        //                if (target.status === "prepend") {
+        //                    $(target.target).prepend(html).fadeIn("slow");
+        //                } else {
+        //                    $(target.target).html(html).fadeIn("slow");;
+        //                }
+        //
+        //                accept_frq_text += accept_frq_text === "" ? "#winkIgnore-text-" + response.id + '-' + response.sender_id + ",#wink-text-" + response.id + '-' + response.sender_id : ",#winkIgnore-text-" + response.id + '-' + response.sender_id + ",#wink-text-" + response.id + '-' + response.sender_id;
+        //            } else if (response.type === "post") {
+        //                var html = '<div class="individual-notification viewed-notification"><p><span class="icon-16-pencil"></span>' +
+        //                        '<span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span></p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
+        //                        '<div class="notification-text"> <p class="name">' + response.firstname.concat(' ', response.lastname) + ' </p>' +
+        //                        '<p>posts "' + (response.post.length > 50 ? response.post.substring(0, 50) + "..." : response.post) + '"</p><p>in <a href="' + response.unique_name + '">' + response.name + '</a></p></div><div class="clear"></div><hr><!--<a class="notification-actions'+response.id+'">View</a>-->' +
+        //                        '<div class="clear"></div></div>';
+        //                if (target.status === "prepend") {
+        //                    $(target.target).prepend(html).fadeIn("slow");
+        //                } else {
+        //                    $(target.target).html(html).fadeIn("slow");
+        //                }
+        //                if (isHome > 0) {
+        //                    var htmlstr = '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
+        //                            '<img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail45) + '">' +
+        //                            '</div><p><a>' + response.firstname.concat(' ', response.lastname) + '</a> posted to <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
+        //                            '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p>';
+        //                    if (response.post_photo) {
+        //                        htmlstr += '<p class="timeline-photo-upload">';
+        //                        $.each(response.post_photo, function(k, photo) {
+        //                            htmlstr += '<a class="fancybox" rel="gallery' + response.id + '"  href="' + photo.original + '" rel="group"><img src="' + photo.thumbnail + '"></a>';
+        //                        });
+        //                        htmlstr += '</p><div class="clear"></div>';
+        //                    }
+        //                    htmlstr += '<p>' + (response.post.length > 200 ? response.post.substring(0, 200) + '<span style="display:none" id="continuereading-' + response.id + '">' + response.post.substring(200) + '</span> <a id="continue-' + response.id + '">continue reading...</a>' : response.post) + '</p>' +
+        //                            '<!--<p class="post-meta"><span id="post-new-comment-show-' + response.id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' +
+        //                            '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share(20)</a></span></p>--><div class="clear"></div></div>';
+        //                    if (response.post.length > 200) {
+        //                        if (toggleId !== "") {
+        //                            toggleId += ",";
+        //                        }
+        //                        toggleId += "#continue-" + response.id;
+        //                    }
+        //                    $(".timeline-container").prepend(htmlstr).fadeIn("slow");
+        //                }
+        //            }
+        //        });
         if (accept_frq_text !== "") {
             $(accept_frq_text).click(function() {
                 showOption(this);
@@ -856,45 +887,85 @@ function acceptDeclineComInvitation(response, statusText, target) {
         var str = "";
         if (response.status === true) {
             str = "Your request was successful!";
-            humane.log(str, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            humane.log(str, {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-success'
+            });
         } else {
             if (target.response === true) {
                 str = "Your accept request was not successful!";
-                humane.log(str, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                humane.log(str, {
+                    timeout: 3000, 
+                    clickToClose: true, 
+                    addnCls: 'humane-jackedup-error'
+                });
             } else {
                 str = "Your ignore request was not successful!";
-                humane.log(str, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                humane.log(str, {
+                    timeout: 3000, 
+                    clickToClose: true, 
+                    addnCls: 'humane-jackedup-error'
+                });
             }
         }
         $(target.target).html(str);
     } else {
-        humane.log(response.error.message, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+        humane.log(response.error.message, {
+            timeout: 3000, 
+            clickToClose: true, 
+            addnCls: 'humane-jackedup-error'
+        });
     }
 }
 function sendFriendRequest(response, statusText, target) {
     if (!response.error) {
         if (target.param === "Unfriend") {
             $("#aside-friend-" + target.user).hide();
-            humane.log("Unfriend action successful!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            humane.log("Unfriend action successful!", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-success'
+            });
         } else if (target.param === "Send Friend Request") {
             $("#aside-sugfriend-" + target.user).hide();
             $("#unfriend-" + target.user).removeClass("loaded");
             $("#unfriend-" + target.user + "-text").html("Cancel Request");
-            humane.log("Friend request action successful!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            humane.log("Friend request action successful!", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-success'
+            });
         } else if (target.param === "Cancel Request") {
             $("#unfriend-" + target.user).removeClass("loaded");
             $("#unfriend-" + target.user + "-text").html("Send Friend Request");
-            humane.log("Friend request canceled successful!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            humane.log("Friend request canceled successful!", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-success'
+            });
         } else if (target.param === "Accept Request") {
             $(target.target).removeClass("clicked");
             $(target.target).html("Unfriend");
-            humane.log("Friend request accepted successful!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            humane.log("Friend request accepted successful!", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-success'
+            });
         } else if (target.param === "wink") {
             $(target.target).removeClass("loaded");
-            humane.log("Wink successful", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            humane.log("Wink successful", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-success'
+            });
         } else if (target.param === "ignoreWink") {
             $(target.target).removeClass("loaded");
-            humane.log("Wink ignored successful", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            humane.log("Wink ignored successful", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-success'
+            });
         }
     }
 }
@@ -907,26 +978,26 @@ function loadNavMessages(response, statusText, target) {
         element.parentNode.removeChild(element);
         converPhoto = response.photo;
         $("#msgHeader").html('<div class="compose-box"><form method="POST" action="tuossog-api-json.php" id="conForm"><textarea required placeholder="Compose a message" name="message" id="msg"></textarea>' +
-                '<input type="submit" class="submit button float-right" name="param" value="Send Message">' +
-                '<!--<button class="button float-right hint hint--left" data-hint ="Upload Image"><span class="icon-16-camera"></span></button>-->' +
-                '<script>$("#conForm").ajaxForm({beforeSubmit: function() {},success: function(responseText, statusText, xhr, $form) {' +
-                '$(\'' + target.target + '\').html(\'<div class="individual-message-box"><p><span class="all-messages-time timeago" title="\' + responseText.m_t + \'"> \' + responseText.m_t + \' </span></p><img class= "all-messages-image" src="\' + (responseText.photo.nophoto ? responseText.photo.alt : responseText.photo.thumbnail50)+\'"><div class="all-messages-text"><a href=""><h3>\' + responseText.sender_name + \' </h3></a><div class="all-messages-message"><span class="icon-16-reply"></span> <p>\' + nl2br(htmlencode($("#msg").val())) + \'</p><!--<br><span class="post-meta-delete"><span class="icon-16-trash"></span><span>Delete</span></span>--></div></div></div>\'+$(\'' + target.target + '\').html());$("#msg").val("");prepareDynamicDates();$(".timeago").timeago();},' +
-                'complete: function(response, statusText, xhr, $form) {if (response.error) {$("#messageStatus").html(response.error.message);} else {$("#messageStatus").html("");}},data: {uid: "' + readCookie("user_auth") + '",user:"' + target.cw + '"}});</script>' +
-                '</form><div class="clear"></div></div><div class="float-right"><span class="icon-16-arrow-left"></span><a href="messages" class="back">Back to messages</a></div>');
+            '<input type="submit" class="submit button float-right" name="param" value="Send Message">' +
+            '<!--<button class="button float-right hint hint--left" data-hint ="Upload Image"><span class="icon-16-camera"></span></button>-->' +
+            '<script>$("#conForm").ajaxForm({beforeSubmit: function() {},success: function(responseText, statusText, xhr, $form) {' +
+            '$(\'' + target.target + '\').html(\'<div class="individual-message-box"><p><span class="all-messages-time timeago" title="\' + responseText.m_t + \'"> \' + responseText.m_t + \' </span></p><img class= "all-messages-image" src="\' + (responseText.photo.nophoto ? responseText.photo.alt : responseText.photo.thumbnail50)+\'"><div class="all-messages-text"><a href=""><h3>\' + responseText.sender_name + \' </h3></a><div class="all-messages-message"><span class="icon-16-reply"></span> <p>\' + nl2br(htmlencode($("#msg").val())) + \'</p><!--<br><span class="post-meta-delete"><span class="icon-16-trash"></span><span>Delete</span></span>--></div></div></div>\'+$(\'' + target.target + '\').html());$("#msg").val("");prepareDynamicDates();$(".timeago").timeago();},' +
+            'complete: function(response, statusText, xhr, $form) {if (response.error) {$("#messageStatus").html(response.error.message);} else {$("#messageStatus").html("");}},data: {uid: "' + readCookie("user_auth") + '",user:"' + target.cw + '"}});</script>' +
+            '</form><div class="clear"></div></div><div class="float-right"><span class="icon-16-arrow-left"></span><a href="messages" class="back">Back to messages</a></div>');
         if (response.conversation) {
             $.each(response.conversation, function(i, response) {
-//               alert(converPhoto?converPhoto.nophoto:"B");
-//                if (target.uid === response.sender_id) {
+                //               alert(converPhoto?converPhoto.nophoto:"B");
+                //                if (target.uid === response.sender_id) {
                 htmlstr += '<div class="individual-message-box"><p><span class="all-messages-time timeago" title="' + response.time + '"> ' + response.time + ' </span>' +
-                        '</p><img class= "all-messages-image" src="' + (converPhoto.nophoto ? converPhoto.alt : (response.s_username === target.cw ? converPhoto[response.s_username].thumbnail50 : converPhoto[response.s_username].thumbnail50)) + '"><div class="all-messages-text">' +
-                        '<a href=""><h3>' + (response.s_username === target.cw ? response.s_firstname.concat(' ', response.s_lastname) : response.s_firstname.concat(' ', response.s_lastname)) + ' </h3></a>' +
-                        '<div class="all-messages-message">' + (target.uid === response.sender_id ? '<span class="icon-16-reply"></span>' : '') + ' <p>' + response.message + '</p><!--<br><span class="post-meta-delete"><span class="icon-16-trash"></span><span>Delete</span></span>--></div></div></div>';
-//                } else {
-//                    htmlstr += '<div class="individual-message-box"><p><span class="all-messages-time timeago" title="' + response.time + '"> ' + response.time + ' </span>' +
-//                            '</p><img class= "all-messages-image" src="' + (converPhoto.nophoto ? converPhoto.alt : (response.s_username === target.cw ? converPhoto[response.s_username].thumbnail : converPhoto[response.s_username].thumbnail)) + '"><div class="all-messages-text">' +
-//                            '<a href=""><h3>' + (response.s_username === target.cw ? response.s_firstname.concat(' ', response.s_lastname) : response.s_firstname.concat(' ', response.s_lastname)) + ' </h3></a>' +
-//                            '<div class="all-messages-message"><p>' + response.message + '</p></div></div></div>';
-//                }
+                '</p><img class= "all-messages-image" src="' + (converPhoto.nophoto ? converPhoto.alt : (response.s_username === target.cw ? converPhoto[response.s_username].thumbnail50 : converPhoto[response.s_username].thumbnail50)) + '"><div class="all-messages-text">' +
+                '<a href=""><h3>' + (response.s_username === target.cw ? response.s_firstname.concat(' ', response.s_lastname) : response.s_firstname.concat(' ', response.s_lastname)) + ' </h3></a>' +
+                '<div class="all-messages-message">' + (target.uid === response.sender_id ? '<span class="icon-16-reply"></span>' : '') + ' <p>' + response.message + '</p><!--<br><span class="post-meta-delete"><span class="icon-16-trash"></span><span>Delete</span></span>--></div></div></div>';
+            //                } else {
+            //                    htmlstr += '<div class="individual-message-box"><p><span class="all-messages-time timeago" title="' + response.time + '"> ' + response.time + ' </span>' +
+            //                            '</p><img class= "all-messages-image" src="' + (converPhoto.nophoto ? converPhoto.alt : (response.s_username === target.cw ? converPhoto[response.s_username].thumbnail : converPhoto[response.s_username].thumbnail)) + '"><div class="all-messages-text">' +
+            //                            '<a href=""><h3>' + (response.s_username === target.cw ? response.s_firstname.concat(' ', response.s_lastname) : response.s_firstname.concat(' ', response.s_lastname)) + ' </h3></a>' +
+            //                            '<div class="all-messages-message"><p>' + response.message + '</p></div></div></div>';
+            //                }
 
             });
         }
@@ -935,20 +1006,20 @@ function loadNavMessages(response, statusText, target) {
             if (target.target === "#message-individual-notification") {
                 if (!response.code) {
                     htmlstr += '<div class="individual-notification' + ((response.status === "R") ? " viewed-notification" : "") + '"><p><span class="float-right timeago" title="' + response.time + '"> ' + response.time + ' </span><div class="clear"></div>' +
-                            '</p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="notification-text">' +
-                            '<p class="name">' + response.firstname.concat(' ', response.lastname) + '</p><p><!--<span class="icon-16-reply">--></span>' + response.message.substring(0, 30) + (response.message.lenght > 29 ? "..." : "") + '</p>' +
-                            '</div><div class="clear"></div><hr><a class="notification-actions" href="messages/' + response.username + '">View</a><div class="clear"></div></div>';
+                    '</p><img class= "notification-icon" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="notification-text">' +
+                    '<p class="name">' + response.firstname.concat(' ', response.lastname) + '</p><p><!--<span class="icon-16-reply">--></span>' + response.message.substring(0, 30) + (response.message.lenght > 29 ? "..." : "") + '</p>' +
+                    '</div><div class="clear"></div><hr><a class="notification-actions" href="messages/' + response.username + '">View</a><div class="clear"></div></div>';
                 } else {
                     htmlstr += '<div class="individual-notification"><p><span class="float-right"></span></p><div class="notification-text"><p>You don\'t have any messages yet.</p></div><div class="clear"></div><hr></div>';
                 }
             } else {
                 if (!response.code) {
                     htmlstr += '<div class="individual-message-box"><p><span class="all-messages-time timeago" title="' + response.time + '"> ' + response.time + ' </span></p>' +
-                            '<img class= "all-messages-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-messages-text">' +
-                            '<a href=""><h3>' + response.firstname.concat(' ', response.lastname) + '</h3></a>' +
-                            '<div class="all-messages-message">' + response.message.substring(0, 250) + (response.message.lenght > 249 ? "..." : "") + '</div></div><hr><p>' +
-                            '<!--<a class="all-messages-actions"><span class="icon-16-cross"></span>Delete</a>-->' +
-                            '<a href="messages/' + response.username + '" class="all-messages-actions"><span class="icon-16-reply"></span>Reply</a></p></div>';
+                    '<img class= "all-messages-image" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"><div class="all-messages-text">' +
+                    '<a href=""><h3>' + response.firstname.concat(' ', response.lastname) + '</h3></a>' +
+                    '<div class="all-messages-message">' + response.message.substring(0, 250) + (response.message.lenght > 249 ? "..." : "") + '</div></div><hr><p>' +
+                    '<!--<a class="all-messages-actions"><span class="icon-16-cross"></span>Delete</a>-->' +
+                    '<a href="messages/' + response.username + '" class="all-messages-actions"><span class="icon-16-reply"></span>Reply</a></p></div>';
                 } else {
                     htmlstr += '<div class="individual-message-box"><div class="all-messages-text"><h3>No messages</h3></div></div>';
                 }
@@ -956,14 +1027,21 @@ function loadNavMessages(response, statusText, target) {
             }
         });
     }
-//alert(htmlstr);
+    //alert(htmlstr);
     $(target.target).html(htmlstr);
     prepareDynamicDates();
     $(".timeago").timeago();
 }
 function htmlencode(str) {
     return str.replace(/[&<>"']/g, function($0) {
-        return "&" + {"&": "amp", "<": "lt", ">": "gt", '"': "quot", "'": "#39"}[$0] + ";";
+        return "&" + {
+            "&": "amp", 
+            "<": "lt", 
+            ">": "gt", 
+            '"': "quot", 
+            "'": "#39"
+        }
+        [$0] + ";";
     });
 }
 function loadNotificationCount(response, statusText, target) {
@@ -971,9 +1049,15 @@ function loadNotificationCount(response, statusText, target) {
         var content = $("#gossbag-individual-notification").html();
         if (content !== "") {
             if (content === '<div class="individual-notification"><div class="notification-text"><p>Gossbag Empty</p></div><div class="clear"></div><hr><div class="clear"></div></div>') {
-                sendData("loadNewGossbag", {target: "#gossbag-individual-notification", status: "replace"});
+                sendData("loadNewGossbag", {
+                    target: "#gossbag-individual-notification", 
+                    status: "replace"
+                });
             } else if (content !== "<center><img src='images/loading.gif' style='border:none' /></center>") {
-                sendData("loadNewGossbag", {target: "#gossbag-individual-notification", status: "prepend"});
+                sendData("loadNewGossbag", {
+                    target: "#gossbag-individual-notification", 
+                    status: "prepend"
+                });
             }
         }
         $("#gb-number").html(response.gb);
@@ -984,9 +1068,17 @@ function loadNotificationCount(response, statusText, target) {
         var content = $("#message-individual-notification").html();
         if (content !== "") {
             if (content === '<div class="individual-message-box"><div class="all-messages-text"><h3>No messages</h3></div></div>') {
-                sendData("loadNewMessage", {target: "#message-individual-notification", status: "replace", mt: readCookie("m_t")});
+                sendData("loadNewMessage", {
+                    target: "#message-individual-notification", 
+                    status: "replace", 
+                    mt: readCookie("m_t")
+                    });
             } else if (content !== "<center><img src='images/loading.gif' style='border:none' /></center>") {
-                sendData("loadNewMessage", {target: "#message-individual-notification", status: "prepend", mt: readCookie("m_t")});
+                sendData("loadNewMessage", {
+                    target: "#message-individual-notification", 
+                    status: "prepend", 
+                    mt: readCookie("m_t")
+                    });
             }
         }
         $("#msg-number").html(response.msg);
@@ -1007,17 +1099,17 @@ function loadCommunityMembers(response, statusText, target) {
     if (!response.error) {
         $.each(response, function(i, response) {
             htmlstr += '<a class= "fancyboxMem" id="inline" href="#' + response.username + '">' +
-                    '<div class= "friends-thumbnails"><img onload="OnImageLoad(event);" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail150) + '"></div>' +
-                    '<div style="display:none"><div id="' + response.username + '"><div class="aside-wrapper">' +
-                    '<div class="profile-pic"><img class="holdam" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail150) + '"></div><table><tr><td></td><td>' +
-                    '<h3><a href="user/' + response.username + '" onclick="location = \'user/' + response.username + '\'">' + response.firstname.concat(" ", response.lastname) + '</a></h3></td></tr><tr><td><span class="icon-16-map"></span></td><td class="profile-meta">' + (response.location === "" ? "Not Set" : response.location) + '</td></tr>' +
-                    '<tr><td><span class="icon-16-' + (response.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta">' + (response.gender === "M" ? "Male" : "Female") + '</td></tr>' +
-                    '<tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a href="user/' + response.username + '" onclick="location = \'user/' + response.username + '\'">See Profile</a></td></tr>' +
-                    '</table><div class="clear"></div><div class="profile-summary profile-summary-width"><div class="profile-summary-wrapper">' +
-                    '<a href="user/' + response.username + '" onclick="location = \'user/' + response.username + '\'"><p class="number">' + response.ministat.pc + ' </p> <p class="type">Posts</p></a></div>' +
-                    '<div class="profile-summary-wrapper"><a href="communities"><p class="number">' + response.ministat.cc + ' </p> <p class="type">Communities</p></a></div>' +
-                    '<div class="profile-summary-wrapper"><a href="friends"><p class="number">' + response.ministat.fc + ' </p> <p class="type">Friends</p></a></div>' +
-                    '<div class="clear"></div></div><div class="clear"></div>';
+            '<div class= "friends-thumbnails"><img onload="OnImageLoad(event);" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail150) + '"></div>' +
+            '<div style="display:none"><div id="' + response.username + '"><div class="aside-wrapper">' +
+            '<div class="profile-pic"><img class="holdam" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail150) + '"></div><table><tr><td></td><td>' +
+            '<h3><a href="user/' + response.username + '" onclick="location = \'user/' + response.username + '\'">' + response.firstname.concat(" ", response.lastname) + '</a></h3></td></tr><tr><td><span class="icon-16-map"></span></td><td class="profile-meta">' + (response.location === "" ? "Not Set" : response.location) + '</td></tr>' +
+            '<tr><td><span class="icon-16-' + (response.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta">' + (response.gender === "M" ? "Male" : "Female") + '</td></tr>' +
+            '<tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a href="user/' + response.username + '" onclick="location = \'user/' + response.username + '\'">See Profile</a></td></tr>' +
+            '</table><div class="clear"></div><div class="profile-summary profile-summary-width"><div class="profile-summary-wrapper">' +
+            '<a href="user/' + response.username + '" onclick="location = \'user/' + response.username + '\'"><p class="number">' + response.ministat.pc + ' </p> <p class="type">Posts</p></a></div>' +
+            '<div class="profile-summary-wrapper"><a href="communities"><p class="number">' + response.ministat.cc + ' </p> <p class="type">Communities</p></a></div>' +
+            '<div class="profile-summary-wrapper"><a href="friends"><p class="number">' + response.ministat.fc + ' </p> <p class="type">Friends</p></a></div>' +
+            '<div class="clear"></div></div><div class="clear"></div>';
             if (response.isAfriend !== true && response.isAfriend !== "me") {
                 htmlstr += '<div class="profile-meta-functions button" id="unfriend-' + response.id + '"><span class="icon-16-checkmark"></span><span id="unfriend-' + response.id + '-text">Send Friend Request</span></div>';
             }
@@ -1059,6 +1151,7 @@ function loadCommunity(response, statusText, target) {
             if (target.uid === 0) {
                 $("#joinleave").remove();
             }
+            //          commCount = response.length;
             $.each(response, function(i, response) {
                 //load community details on aside column
                 $("#commTitle").html("<a href='" + target.comname + "'>" + (response.verified === "1" ? '<img src="images/gossout-verified.png" class="verified-community" <img src="images/gossout-verified.png" class="verified-community" title="Verified Community">' : "") + response.name + "</a>");
@@ -1082,24 +1175,24 @@ function loadCommunity(response, statusText, target) {
                 if (response.isAmember === "true" && !target.settings) {//prepare setting option for member of this community
                     if (response.creator_id === readCookie('user_auth')) {
                         $("#otherCommOption").html('<div class=" button profile-button" id="loadCommore">More<span class="icon-16-arrow-down"></span>' +
-                                '<div class="more-container" id="pop-up-community-more"><div class="more"><ul>' +
-                                '<li id="inviteMemBtn"><a class="displayX" href="#inviteDisplay"><span class="icon-16-user-add"></span> Invite Members<div style="display:none">' +
-                                '<div id="inviteDisplay" class="registration" style="width: 800"><h3>Invite Friends</h3><hr/>' +
-                                '<form id="inviteForm" method="POST" action="tuossog-api-json.php"><ul>' +
-                                '<li><span id="toUserInput"></span></li>' +
-                                '</ul></form></div></div></a></li>' +
-//                                '<li><a href=""><span class="icon-16-star"></span> Favourite</a></li>' +
-//                                '<li><a href=""><span class="icon-16-star-empty"></span> Un-Favourite</a></li>' +
-                                '<hr>' +
-//                                '<li><a href=""><span class="icon-16-sound-off"></span> Mute</a></li>' +
-                                '<li><a href="community-settings/' + target.comname + '"><span class="icon-16-cog"></span> Settings</a></li>' +
-                                '</ul></div></div></div>');
+                            '<div class="more-container" id="pop-up-community-more"><div class="more"><ul>' +
+                            '<li id="inviteMemBtn"><a class="displayX" href="#inviteDisplay"><span class="icon-16-user-add"></span> Invite Members<div style="display:none">' +
+                            '<div id="inviteDisplay" class="registration" style="width: 800"><h3>Invite Friends</h3><hr/>' +
+                            '<form id="inviteForm" method="POST" action="tuossog-api-json.php"><ul>' +
+                            '<li><span id="toUserInput"></span></li>' +
+                            '</ul></form></div></div></a></li>' +
+                            //                                '<li><a href=""><span class="icon-16-star"></span> Favourite</a></li>' +
+                            //                                '<li><a href=""><span class="icon-16-star-empty"></span> Un-Favourite</a></li>' +
+                            '<hr>' +
+                            //                                '<li><a href=""><span class="icon-16-sound-off"></span> Mute</a></li>' +
+                            '<li><a href="community-settings/' + target.comname + '"><span class="icon-16-cog"></span> Settings</a></li>' +
+                            '</ul></div></div></div>');
                     } else {
                         $("#otherCommOption").html('<a class=" button profile-button displayX" id="inviteMemBtn"  href="#inviteDisplay"><span class="icon-16-user-add"></span> Invite Friends</a>' +
-                                '<div style="display:none"><div id="inviteDisplay" class="registration" style="width: 800"><h3>Invite Friends</h3><hr/>' +
-                                '<form id="inviteForm" method="POST" action="tuossog-api-json.php"><ul>' +
-                                '<li><span id="toUserInput"></span></li>' +
-                                '</ul></form></div></div>');
+                            '<div style="display:none"><div id="inviteDisplay" class="registration" style="width: 800"><h3>Invite Friends</h3><hr/>' +
+                            '<form id="inviteForm" method="POST" action="tuossog-api-json.php"><ul>' +
+                            '<li><span id="toUserInput"></span></li>' +
+                            '</ul></form></div></div>');
                     }
                     $(".displayX").fancybox({
                         openEffect: 'none',
@@ -1113,7 +1206,11 @@ function loadCommunity(response, statusText, target) {
                         beforeSubmit: function() {
                             var value = $("#user_callup").val();
                             if (value === null) {
-                                humane.log("Select at least a friend first", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                                humane.log("Select at least a friend first", {
+                                    timeout: 20000, 
+                                    clickToClose: true, 
+                                    addnCls: 'humane-jackedup-error'
+                                });
                                 return false;
                             } else {
                                 return true;
@@ -1123,12 +1220,24 @@ function loadCommunity(response, statusText, target) {
                             if (!responseText.error) {
                                 if (responseText.status === true) {
                                     $.fancybox.close();
-                                    humane.log("Your invitation was sent successfully", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                                    humane.log("Your invitation was sent successfully", {
+                                        timeout: 20000, 
+                                        clickToClose: true, 
+                                        addnCls: 'humane-jackedup-success'
+                                    });
                                 } else {
-                                    humane.log("Your invitation was not sent successfully due to invalid friend", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                                    humane.log("Your invitation was not sent successfully due to invalid friend", {
+                                        timeout: 20000, 
+                                        clickToClose: true, 
+                                        addnCls: 'humane-jackedup-error'
+                                    });
                                 }
                             } else {
-                                humane.log(responseText.error.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+                                humane.log(responseText.error.message, {
+                                    timeout: 20000, 
+                                    clickToClose: true, 
+                                    addnCls: 'humane-jackedup-error'
+                                });
                             }
                         },
                         complete: function(response, statusText, xhr, $form) {
@@ -1154,15 +1263,15 @@ function loadCommunity(response, statusText, target) {
                 if (response.isAmember === "true") {
                     isAmember = "true";
                     htmlstr += '<div class="posts"><h1>' + response.name + '</h1><div class="post-box">' +
-                            '<form method="POST" action="tuossog-api-json.php" id="com-' + response.id + '" enctype="multipart/form-data">' +
-                            '<textarea required placeholder="Post to ' + response.name + '" name="post" id="post' + response.id + '"></textarea>' +
-                            '<input type="submit" class="submit button float-right" value="Post" id="postBtn">' +
-                            '<input type="file" onchange="$(\'#filesSelected\').html(this.files.length + (this.files.length > 1 ? \' files selected\' : \' file selected\'))" name="photo[]" multiple style="position: absolute;left: -9999px;" id="uploadInput"/>' +
-                            '<input type="hidden" name="comid[]" value="' + comid + '"/>' +
-                            '<div class="button hint hint--left  float-right" data-hint="Upload image" id="uploadImagePost"><span class="icon-16-camera"></span></div>' +
-                            '<div class="progress" style="display:none"><div class="bar"></div ><div class="percent">0%</div></div><div id="filesSelected" class="float-right" style="font-size: 12px; color: #99c53d"></div>' +
-                            '</form>' +
-                            '<div class="clear"></div></div><span id="loadPost"></span>\n\
+                    '<form method="POST" action="tuossog-api-json.php" id="com-' + response.id + '" enctype="multipart/form-data">' +
+                    '<textarea required placeholder="Post to ' + response.name + '" name="post" id="post' + response.id + '"></textarea>' +
+                    '<input type="submit" class="submit button float-right" value="Post" id="postBtn">' +
+                    '<input type="file" onchange="$(\'#filesSelected\').html(this.files.length + (this.files.length > 1 ? \' files selected\' : \' file selected\'))" name="photo[]" multiple style="position: absolute;left: -9999px;" id="uploadInput"/>' +
+                    '<input type="hidden" name="comid[]" value="' + comid + '"/>' +
+                    '<div class="button hint hint--left  float-right" data-hint="Upload image" id="uploadImagePost"><span class="icon-16-camera"></span></div>' +
+                    '<div class="progress" style="display:none"><div class="bar"></div ><div class="percent">0%</div></div><div id="filesSelected" class="float-right" style="font-size: 12px; color: #99c53d"></div>' +
+                    '</form>' +
+                    '<div class="clear"></div></div><span id="loadPost"></span>\n\
                             <hr/><div class="button" style="float:left;display:none;" id ="commMorePostDiv"><a commPost="20"  class="commMorePost" id="commMorePost">Load more > ></a></div><div id="loadMoreImg" style="display:none;"> &nbsp;<img src="images/loading.gif"/>\n\
                                 </div></div>';
                 } else {
@@ -1172,12 +1281,20 @@ function loadCommunity(response, statusText, target) {
 
             });
 
-//            var append = false;
+            //            var append = false;
             if (htmlstr !== "") {
                 $(target.target).html(htmlstr);
 
 
-                sendData("loadPost", {target: "#loadPost", uid: readCookie("user_auth"), comid: comid, start: 0, limit: 20, loadImage: true, loadAside: true});
+                sendData("loadPost", {
+                    target: "#loadPost", 
+                    uid: readCookie("user_auth"), 
+                    comid: comid, 
+                    start: 0, 
+                    limit: 20, 
+                    loadImage: true, 
+                    loadAside: true
+                });
                 if (isAmember === "true") {
                     $("#uploadImagePost,#loadCommore,#inviteMemBtn,#commViewMoreDesc").click(function() {
                         if (this.id === "uploadImagePost") {
@@ -1217,17 +1334,17 @@ function loadCommunity(response, statusText, target) {
                                         });
                                     }
                                     str += '<hr><h3 class="name"><img onload="OnImageLoad(event);" class="post-profile-pic" src="' + (responseText.photo) + '"><a href="user/">' + responseText.name + '</a>' +
-                                            '<div class="float-right"><span class="post-time"><span class="icon-16-comment"></span><span id="numComnt-' + responseText.id + '">0</span> </span>' +
-//                    '<span class="post-time"><span class="icon-16-share"></span>24</span>' +
-                                            '<span class="post-time"><span class="icon-16-clock"></span><span class="timeago" title="' + responseText.time + '">' + responseText.time + '</span></span>' +
-                                            '</div></h3></div><hr><div class="post-meta">' +
-                                            '<span id="post-new-comment-show-' + responseText.id + '" class=""><span class="icon-16-comment"></span>Comment </span>' +
-//                    '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share</a></span>' +
-//                    '<span class="post-meta-delete"><span class="icon-16-trash"></span>Delete</span>'+
-                                            '<div class="post-comments" id="post-comments-' + responseText.id + '">' +
-                                            '</div><div class="post-new-comment" id="post-new-comment-' + responseText.id + '">' +
-                                            '<form method="POST" autocomplete="off" action="tuossog-api-json.php?pid=' + responseText.id + '" id="post-new-comment-form-' + responseText.id + '"><!--<img class="post-thumb" src="images/snip.jpg">--><span><input type="text" class="comment-field" required placeholder="Add comment..." name="comment" id="input-' + responseText.id + '"/></span>' +
-                                            '<input type="submit" class="submit" value="Comment"><div class="clear"></div></form></div></div></div>';
+                                    '<div class="float-right"><span class="post-time"><span class="icon-16-comment"></span><span id="numComnt-' + responseText.id + '">0</span> </span>' +
+                                    //                    '<span class="post-time"><span class="icon-16-share"></span>24</span>' +
+                                    '<span class="post-time"><span class="icon-16-clock"></span><span class="timeago" title="' + responseText.time + '">' + responseText.time + '</span></span>' +
+                                    '</div></h3></div><hr><div class="post-meta">' +
+                                    '<span id="post-new-comment-show-' + responseText.id + '" class=""><span class="icon-16-comment"></span>Comment </span>' +
+                                    //                    '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share</a></span>' +
+                                    //                    '<span class="post-meta-delete"><span class="icon-16-trash"></span>Delete</span>'+
+                                    '<div class="post-comments" id="post-comments-' + responseText.id + '">' +
+                                    '</div><div class="post-new-comment" id="post-new-comment-' + responseText.id + '">' +
+                                    '<form method="POST" autocomplete="off" action="tuossog-api-json.php?pid=' + responseText.id + '" id="post-new-comment-form-' + responseText.id + '"><!--<img class="post-thumb" src="images/snip.jpg">--><span><input type="text" class="comment-field" required placeholder="Add comment..." name="comment" id="input-' + responseText.id + '"/></span>' +
+                                    '<input type="submit" class="submit" value="Comment"><div class="clear"></div></form></div></div></div>';
                                     $("#loadPost").prepend(str);
                                     $("#post_count").html(parseInt($("#post_count").html()) + 1);
                                     $("#noPost-text").hide();
@@ -1244,7 +1361,7 @@ function loadCommunity(response, statusText, target) {
                                             var postId = (($form.attr('id')).substring(postIdPos));
                                             if (responseText.id !== 0) {
                                                 var msg = $("#input-" + postId).val();
-//                    $("#post-comments-" + postId).html($("#post-comments-" + postId).html() + '<div class="post-comment"><img class = "post-thumb" src = "' + (responseText.photo.nophoto ? responseText.photo.alt : responseText.photo.thumbnail) + '"><h4 class = "name"> ' + responseText.name + ' </h4><span class = "post-time timeago" title="' + responseText.time + '"> ' + responseText.time + ' </span><p><pre>' + (htmlencode(msg)) + '</pre></p><div class = "clear"></div></div>');
+                                                //                    $("#post-comments-" + postId).html($("#post-comments-" + postId).html() + '<div class="post-comment"><img class = "post-thumb" src = "' + (responseText.photo.nophoto ? responseText.photo.alt : responseText.photo.thumbnail) + '"><h4 class = "name"> ' + responseText.name + ' </h4><span class = "post-time timeago" title="' + responseText.time + '"> ' + responseText.time + ' </span><p><pre>' + (htmlencode(msg)) + '</pre></p><div class = "clear"></div></div>');
                                                 $("#post-comments-" + postId).html($("#post-comments-" + postId).html() + '<div class="post-comment"><img class="post-thumb" src="' + (responseText.photo.nophoto ? responseText.photo.alt : responseText.photo.thumbnail50) + '"><h4 class="name">' + responseText.name + '</h4><span class="post-time timeago" title="' + responseText.time + '">' + responseText.time + '</span><p>' + nl2br(htmlencode(msg)) + '</p><div class="clear"></div></div>');
                                                 prepareDynamicDates();
                                                 $(".timeago").timeago();
@@ -1285,37 +1402,43 @@ function loadCommunity(response, statusText, target) {
                 $(target.target).html('<div class="posts"></div>');
             }
         } else {
-            var countResponse = response.length;
+            var commCount = response.length;
             $.each(response, function(i, response) {
                 if (target.target === "#aside-community-list") {
                     htmlstr += '<div class="community-listing"><span><a href="' + response.unique_name + '">' + response.name + '</a></span></div><hr>';
                 } else if (target.target === ".community-box") {
                     htmlstr += '<div class="community-box-wrapper"><div class="community-image">' +
-                            '<img src="' + response.thumbnail100 + '">' +
-                            '</div><div class="community-text"><div class="community-name">' +
-                            '<a href="' + response.unique_name + '">' + (response.verified === "1" ? '<img src="images/gossout-verified.png" class="verified-community" title="Verified Community">' : "") + response.name + '</a> </div><hr><div class="details">' + (response.description.length > 100 ? br2nl(response.description).substring(0, 100) + "..." : br2nl(response.description)) +
-                            '</div><div class="members">' + response.type + '</div><div class="members">' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</div><div class="members">' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</div></div><div class="clear"></div></div>';
-                    if (countResponse < 10) {
-                        $('#loadMoreComm').hide();
-                        if (target.more) {
-                            humane.log("Oops! You've got it all!", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
-                        }
-                    } else {
-                        $('#loadMoreComm').show();
-                    }
+                    '<img src="' + response.thumbnail100 + '">' +
+                    '</div><div class="community-text"><div class="community-name">' +
+                    '<a href="' + response.unique_name + '">' + (response.verified === "1" ? '<img src="images/gossout-verified.png" class="verified-community" title="Verified Community">' : "") + response.name + '</a> </div><hr><div class="details">' + (response.description.length > 100 ? br2nl(response.description).substring(0, 100) + "..." : br2nl(response.description)) +
+                    '</div><div class="members">' + response.type + '</div><div class="members">' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</div><div class="members">' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</div></div><div class="clear"></div></div>';
+                //                    if (commCount < 10) {
+                //                        $('#loadMoreComm').hide();
+                //                        if (target.more) {
+                //                            humane.log("Oops! You've got it all!", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                //                        }
+                //                    } else {
+                //                        $('#loadMoreComm').show();
+                //                    }
                 }
             });
-//             htmlstr +='<p><a href="" frnd="10" class="loadMoreFrnd" id="loadMoreFrnd">Load more > ></a>';
+            //             htmlstr +='<p><a href="" frnd="10" class="loadMoreFrnd" id="loadMoreFrnd">Load more > ></a>';
             if (target.more) {
                 if (htmlstr !== "")
                     $('.community-box').append(htmlstr);
-                $('#loadMoreComm').attr('comm', parseInt($('#loadMoreComm').attr('comm')) + 10);
+                if(commCount < 10)
+                    $('#loadMoreComm').hide();
+                else{
+                    $('#loadMoreComm').attr('comm', parseInt($('#loadMoreComm').attr('comm')) + 10);
+                }
                 $('#loader1').hide();
             }
-            else
+            else{
             if (htmlstr !== "")
                 $(target.target).html(htmlstr);
-
+            if(commCount >= 10)
+                    $('#loadMoreComm').show();
+            }
         }
 
     } else {
@@ -1330,12 +1453,21 @@ function loadCommunity(response, statusText, target) {
                     $("#loadCommore").hide();
                     $(target.target).html('<div class="communities-list"><h1 id="pageTitle">Communities</h1><hr/><div id="creatComDiv"><h3>Would you like to create one? It\'s very easy!<br><div class="button"><a href="create-community">New Community</a></div></h3><div class="community-box"></div></div></div>');
                     $("#searchForm").hide();
-                    sendData("loadSuggestCommunity", {target: ".community-box", uid: target.uid, loadImage: true, max: true});
+                    sendData("loadSuggestCommunity", {
+                        target: ".community-box", 
+                        uid: target.uid, 
+                        loadImage: true, 
+                        max: true
+                    });
                 } else {
                     if (!target.more)
                         sendData("loadSuggestCommunity", target);
                     else {
-                        humane.log("Oops! You've got it all!", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                        humane.log("Oops! You've got it all!", {
+                            timeout: 20000, 
+                            clickToClose: true, 
+                            addnCls: 'humane-jackedup-success'
+                        });
                         $('#loadMoreComm').hide();
                     }
                 }
@@ -1352,14 +1484,26 @@ function loadCommunity(response, statusText, target) {
 function leaveJoinCommunity(response, statusText, target) {
     if (!response.error) {
         if (target.param === "Join") {
-            humane.log("You have successfully joined this community", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            humane.log("You have successfully joined this community", {
+                timeout: 20000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-success'
+            });
             location.reload();
         } else {
-            humane.log("You have successfully left this community", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            humane.log("You have successfully left this community", {
+                timeout: 20000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-success'
+            });
             location.reload();
         }
     } else {
-        humane.log(response.error.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+        humane.log(response.error.message, {
+            timeout: 20000, 
+            clickToClose: true, 
+            addnCls: 'humane-jackedup-error'
+        });
     }
 }
 function loadSuggestCommunity(response, statusText, target) {
@@ -1370,8 +1514,8 @@ function loadSuggestCommunity(response, statusText, target) {
                 htmlstr += '<div class="community-box-wrapper">';
                 htmlstr += '<div class="community-image"><img src="' + response.pix + '"></div>';
                 htmlstr += '<div class="community-text"><div class="community-name">' +
-                        '<a href="' + response.unique_name + '">' + (response.verified === "1" ? '<img src="images/gossout-verified.png" class="verified-community" title="Verified Community">' : "") + response.name + '</a> </div><hr><p class="community-privacy"><div class="details">' + (response.description.length > 100 ? br2nl(response.description).substring(0, 100) + "..." : br2nl(response.description)) +
-                        '</div><div class="members">' + response.type + '</div><div class="members">' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</div><div class="members">' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</div></div><div class="clear"></div></div>';
+                '<a href="' + response.unique_name + '">' + (response.verified === "1" ? '<img src="images/gossout-verified.png" class="verified-community" title="Verified Community">' : "") + response.name + '</a> </div><hr><p class="community-privacy"><div class="details">' + (response.description.length > 100 ? br2nl(response.description).substring(0, 100) + "..." : br2nl(response.description)) +
+                '</div><div class="members">' + response.type + '</div><div class="members">' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</div><div class="members">' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</div></div><div class="clear"></div></div>';
             } else {
                 if (i > 0) {
                     htmlstr += '<hr>';
@@ -1388,11 +1532,19 @@ function loadSuggestCommunity(response, statusText, target) {
             if (!target.more)
                 $(target.target).html("<p>Opps! We cannot suggest community to you at the moment. <a href='create-community'>Start your own community</a>.</p>");
             else {
-                humane.log("Oops! You've got it all!", {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                humane.log("Oops! You've got it all!", {
+                    timeout: 20000, 
+                    clickToClose: true, 
+                    addnCls: 'humane-jackedup-success'
+                });
             }
         } else {
             $("#pageTitle").html("Communities");
-            humane.log(response.error.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+            humane.log(response.error.message, {
+                timeout: 20000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-error'
+            });
         }
     }
 }
@@ -1413,12 +1565,12 @@ function loadPost(response, statusText, target) {
                 });
             }
             htmlstr += '<hr><h3 class="name"><img onload="OnImageLoad(event);" class="post-profile-pic" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail45) + '"><a href="user/' + responseItem.username + '">' + responseItem.firstname.concat(' ', responseItem.lastname) + '</a>' +
-                    '<div class="float-right"><span class="post-time"><span class="icon-16-comment"></span><span id="numComnt-' + responseItem.id + '">' + responseItem.numComnt + '</span> </span>' +
-//                    '<span class="post-time"><span class="icon-16-share"></span>24</span>' +
-                    '<span class="post-time"><span class="icon-16-clock"></span><span class="timeago" title="' + responseItem.time + '">' + responseItem.time + '</span></span>' +
-                    '</div></h3></div><hr><div class="post-meta">' +
-                    '<span id="post-new-comment-show-' + responseItem.id + '" class=""><span class="icon-16-comment"></span>Comment </span>';
-//                    '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share</a></span>' +
+            '<div class="float-right"><span class="post-time"><span class="icon-16-comment"></span><span id="numComnt-' + responseItem.id + '">' + responseItem.numComnt + '</span> </span>' +
+            //                    '<span class="post-time"><span class="icon-16-share"></span>24</span>' +
+            '<span class="post-time"><span class="icon-16-clock"></span><span class="timeago" title="' + responseItem.time + '">' + responseItem.time + '</span></span>' +
+            '</div></h3></div><hr><div class="post-meta">' +
+            '<span id="post-new-comment-show-' + responseItem.id + '" class=""><span class="icon-16-comment"></span>Comment </span>';
+            //                    '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share</a></span>' +
             if (target.uid === 0) {
                 htmlstr += '<span class="post-meta-gossout"><span class="icon-16-dot"></span><a href="login">Login</a> or <a href="signup-personal">sign-up</a> to add posts or comments</span>';
             }
@@ -1426,10 +1578,10 @@ function loadPost(response, statusText, target) {
                 htmlstr += '<span class="post-meta-delete" id="deletePost-' + responseItem.id + '"><span class="icon-16-trash"></span>Delete</span>';
             }
             htmlstr += '<div class="post-comments" id="post-comments-' + responseItem.id + '">' +
-                    '</div><div class="post-new-comment" id="post-new-comment-' + responseItem.id + '">';
+            '</div><div class="post-new-comment" id="post-new-comment-' + responseItem.id + '">';
             if (target.uid !== 0) {
                 htmlstr += '<form method="POST" autocomplete="off" action="tuossog-api-json.php?pid=' + responseItem.id + '" id="post-new-comment-form-' + responseItem.id + '"><!--<img class="post-thumb" src="images/snip.jpg">--><span><input type="text" class="comment-field" required placeholder="Add comment..." name="comment" id="input-' + responseItem.id + '"/></span>' +
-                        '<input type="submit" class="submit" value="Comment"><div class="clear"></div></form>';
+                '<input type="submit" class="submit" value="Comment"><div class="clear"></div></form>';
             }
 
             htmlstr += '</div></div></div>';
@@ -1451,7 +1603,11 @@ function loadPost(response, statusText, target) {
             $(target.target).append(htmlstr);
             if (count < 10) {
                 $('#commMorePostDiv').hide();
-                humane.log("Oops! You've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                humane.log("Oops! You've got it all!", {
+                    timeout: 3000, 
+                    clickToClose: true, 
+                    addnCls: 'humane-jackedup-success'
+                });
             }
         } else {
             $(target.target).html(htmlstr);
@@ -1462,12 +1618,23 @@ function loadPost(response, statusText, target) {
                 $('#commMorePostDiv').click(function() {
                     var start = parseInt($('#commMorePost').attr('commpost'));
                     $("#loadMoreImg").show();
-                    sendData("loadPost", {target: "#loadPost", uid: readCookie("user_auth"), comid: target.comid, start: start, limit: 10, loadImage: false, append: true});
+                    sendData("loadPost", {
+                        target: "#loadPost", 
+                        uid: readCookie("user_auth"), 
+                        comid: target.comid, 
+                        start: start, 
+                        limit: 10, 
+                        loadImage: false, 
+                        append: true
+                    });
                     $('#commMorePost').attr('commpost', parseInt($('#commMorePost').attr('commpost')) + 10);
                 });
             }
         }
-        $(".fancybox").fancybox({openEffect: "none", closeEffect: "none"});
+        $(".fancybox").fancybox({
+            openEffect: "none", 
+            closeEffect: "none"
+        });
         prepareDynamicDates();
         $(".timeago").timeago();
         $(formBox).ajaxForm({
@@ -1505,7 +1672,11 @@ function loadPost(response, statusText, target) {
         });
     } else {
         if (target.append) {
-            humane.log("Oops! You've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            humane.log("Oops! You've got it all!", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-success'
+            });
         } else {
             $(target.target).html('<div class="post" id="noPost-text"><div class="post-content"><p>No Post Found.</p></div></div>');
         }
@@ -1517,7 +1688,11 @@ function deletePost(response, statusText, target) {
     if (!response.error) {
         if (response.status) {
             $(target.target).hide();
-            humane.log("Post deleted!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            humane.log("Post deleted!", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-success'
+            });
             if (parseInt($.trim($("#post_count").html()))) {
                 if (parseInt($.trim($("#post_count").html())) > 0) {
                     $("#post_count").html(parseInt($.trim($("#post_count").html())) - 1)
@@ -1525,10 +1700,18 @@ function deletePost(response, statusText, target) {
             }
         } else {
             $("#deletePost-" + target.post_id).removeClass("clicked");
-            humane.log("Post was not deleted...try again later", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+            humane.log("Post was not deleted...try again later", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-error'
+            });
         }
     } else {
-        humane.log(response.error.message, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+        humane.log(response.error.message, {
+            timeout: 3000, 
+            clickToClose: true, 
+            addnCls: 'humane-jackedup-error'
+        });
         $("#deletePost-" + target.post_id).removeClass("clicked");
     }
 }
@@ -1536,7 +1719,11 @@ function deleteComment(response, statusText, target) {
     if (!response.error) {
         if (response.status) {
             $(target.target).hide();
-            humane.log("Comment deleted!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+            humane.log("Comment deleted!", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-success'
+            });
             if (parseInt($.trim($("#numComnt-" + target.postId).html()))) {
                 if (parseInt($.trim($("#numComnt-" + target.postId).html())) > 0) {
                     $("#numComnt-" + target.postId).html(parseInt($.trim($("#numComnt-" + target.postId).html())) - 1)
@@ -1544,10 +1731,18 @@ function deleteComment(response, statusText, target) {
             }
         } else {
             $("#deleteComment-" + target.post_id).removeClass("clicked");
-            humane.log("Comment was not deleted...try again later", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+            humane.log("Comment was not deleted...try again later", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-error'
+            });
         }
     } else {
-        humane.log(response.error.message, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+        humane.log(response.error.message, {
+            timeout: 3000, 
+            clickToClose: true, 
+            addnCls: 'humane-jackedup-error'
+        });
         $("#deleteComment-" + target.post_id).removeClass("clicked");
     }
 }
@@ -1581,50 +1776,50 @@ function loadComment(response, statusText, target) {
 }
 function loadFriends(response, statusText, target) {
     if (!response.error) {
-        var htmlstr = "", unfriend = "", friendsPage = "", responseCount;
-        responseCount = response.length;
+        var htmlstr = "", unfriend = "", friendsPage = "", frndCount;
+        frndCount = response.length;
         $.each(response, function(i, responseItem) {
             if (target.target === "#aside-friends-list") {
                 if (target.friendPage) {
                     friendsPage += '<div class="individual-friend-box"><a class= "fancyboxAlert" id="inline" href="#' + responseItem.username + '">' +
-                            '<div class="friend-image"><img onload="OnImageLoad(event);"  src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail50) + '"></div><div class="friend-text">' +
-                            '<div class="friend-name">' + responseItem.firstname.concat(" ", responseItem.lastname) + '</div>' +
-                            '<div class="friend-location">' + responseItem.location + '</div></div>' +
-                            '<div style="display:none"><div id="' + responseItem.username + '"><div class="aside-wrapper"><div class="profile-pic"><img class="holdam" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail150) + '"></div>' +
-                            '<table><tr><td></td><td><h3><a href="user/' + responseItem.username + '" onclick="location = \'user/' + responseItem.username + '\'">' + responseItem.firstname.concat(" ", responseItem.lastname) + '</a></h3></td></tr>' +
-                            '<tr><td><span class="icon-16-map"></span></td><td class="profile-meta"> ' + responseItem.location + '</td></tr>' +
-                            '<tr><td><span class="icon-16-' + (responseItem.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta">' + (responseItem.gender === "M" ? "Male" : "Female") + '</td></tr>' +
-                            '<tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a href="user/' + responseItem.username + '" onclick="location = \'user/' + responseItem.username + '\'">See Profile</a> </td></tr>' +
-                            '</table><div class="clear"></div><div class="profile-summary profile-summary-width"><div class="profile-summary-wrapper">' +
-                            '<a href="user/' + responseItem.username + '" onclick="location = \'user/' + responseItem.username + '\'"><p class="number">' + responseItem.ministat.pc + ' </p> <p class="type">Posts</p></a></div>' +
-                            '<div class="profile-summary-wrapper"><a href="communities"><p class="number">' + responseItem.ministat.cc + ' </p> <p class="type">Communities</p></a></div>' +
-                            '<div class="profile-summary-wrapper"><a href="friends"><p class="number">' + responseItem.ministat.fc + ' </p> <p class="type">Friends</p></a></div>' +
-                            '<div class="clear"></div></div><div class="clear"></div>' +
-                            '<div class="profile-meta-functions button" id="wink-f-' + responseItem.id + '"><span class="icon-16-eye"></span> Wink</div>' +
-                            '<div class="profile-meta-functions button"><a href="messages/' + responseItem.username + '"><span class="icon-16-mail"></span> Send Message</a></div>' +
-                            '<div class="profile-meta-functions button" id="unfriend-f-' + responseItem.id + '"><span class="icon-16-checkmark"></span> <span id="unfriend-f-' + responseItem.id + '-text">Unfriend</a></div><span id="loadImage-' + response.id + '"></span>' +
-                            '<div class="clear"></div></div></div></div></a></div>';
+                    '<div class="friend-image"><img onload="OnImageLoad(event);"  src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail50) + '"></div><div class="friend-text">' +
+                    '<div class="friend-name">' + responseItem.firstname.concat(" ", responseItem.lastname) + '</div>' +
+                    '<div class="friend-location">' + responseItem.location + '</div></div>' +
+                    '<div style="display:none"><div id="' + responseItem.username + '"><div class="aside-wrapper"><div class="profile-pic"><img class="holdam" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail150) + '"></div>' +
+                    '<table><tr><td></td><td><h3><a href="user/' + responseItem.username + '" onclick="location = \'user/' + responseItem.username + '\'">' + responseItem.firstname.concat(" ", responseItem.lastname) + '</a></h3></td></tr>' +
+                    '<tr><td><span class="icon-16-map"></span></td><td class="profile-meta"> ' + responseItem.location + '</td></tr>' +
+                    '<tr><td><span class="icon-16-' + (responseItem.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta">' + (responseItem.gender === "M" ? "Male" : "Female") + '</td></tr>' +
+                    '<tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a href="user/' + responseItem.username + '" onclick="location = \'user/' + responseItem.username + '\'">See Profile</a> </td></tr>' +
+                    '</table><div class="clear"></div><div class="profile-summary profile-summary-width"><div class="profile-summary-wrapper">' +
+                    '<a href="user/' + responseItem.username + '" onclick="location = \'user/' + responseItem.username + '\'"><p class="number">' + responseItem.ministat.pc + ' </p> <p class="type">Posts</p></a></div>' +
+                    '<div class="profile-summary-wrapper"><a href="communities"><p class="number">' + responseItem.ministat.cc + ' </p> <p class="type">Communities</p></a></div>' +
+                    '<div class="profile-summary-wrapper"><a href="friends"><p class="number">' + responseItem.ministat.fc + ' </p> <p class="type">Friends</p></a></div>' +
+                    '<div class="clear"></div></div><div class="clear"></div>' +
+                    '<div class="profile-meta-functions button" id="wink-f-' + responseItem.id + '"><span class="icon-16-eye"></span> Wink</div>' +
+                    '<div class="profile-meta-functions button"><a href="messages/' + responseItem.username + '"><span class="icon-16-mail"></span> Send Message</a></div>' +
+                    '<div class="profile-meta-functions button" id="unfriend-f-' + responseItem.id + '"><span class="icon-16-checkmark"></span> <span id="unfriend-f-' + responseItem.id + '-text">Unfriend</a></div><span id="loadImage-' + response.id + '"></span>' +
+                    '<div class="clear"></div></div></div></div></a></div>';
                     unfriend += "#unfriend-f-" + responseItem.id;
                     unfriend += ",#wink-f-" + responseItem.id;
 
                 }
-//            if(!target.individualFriend)
+                //            if(!target.individualFriend)
                 htmlstr += '<a class= "fancyboxAlert" id="aside-friend-' + responseItem.id + '" href="#' + responseItem.username + '">' +
-                        '<div class= "friends-thumbnails"><img onload="OnImageLoad(event);" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail150) + '"></div>' +
-                        '<div style="display:none"><div id="' + responseItem.username + '"><div class="aside-wrapper">' +
-                        '<div class="profile-pic"><img  src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail150) + '"></div><table><tr><td></td><td>' +
-                        '<h3><a href="user/' + responseItem.username + '" onclick="location = \'user/' + responseItem.username + '\'">' + responseItem.firstname.concat(" ", responseItem.lastname) + '</a></h3></td></tr><tr><td><span class="icon-16-map"></span></td><td class="profile-meta">' + responseItem.location + '</td></tr>' +
-                        '<tr><td><span class="icon-16-' + (responseItem.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta">' + (responseItem.gender === "M" ? "Male" : "Female") + '</td></tr>' +
-                        '<tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a href="user/' + responseItem.username + '" onclick="location = \'user/' + responseItem.username + '\'">See Profile</a> </td></tr></table>' +
-                        '<div class="clear"></div><div class="profile-summary profile-summary-width"><div class="profile-summary-wrapper">' +
-                        '<a href="user/' + responseItem.username + '" onclick="location = \'user/' + responseItem.username + '\'"><p class="number">' + responseItem.ministat.pc + ' </p> <p class="type">Posts</p></a></div>' +
-                        '<div class="profile-summary-wrapper"><a href="communities"><p class="number">' + responseItem.ministat.cc + ' </p> <p class="type">Communities</p></a></div>' +
-                        '<div class="profile-summary-wrapper"><a href="friends"><p class="number">' + responseItem.ministat.fc + ' </p> <p class="type">Friends</p></a></div>' +
-                        '<div class="clear"></div></div>' +
-                        '<div class="clear"></div><div class="profile-meta-functions button" id="wink-' + responseItem.id + '"><span class="icon-16-eye"></span> Wink</div>' +
-                        '<div class="profile-meta-functions button"><a href="messages/' + responseItem.username + '"><span class="icon-16-mail"></span> Send Message</a></div>' +
-                        '<div class="profile-meta-functions button" id="unfriend-' + responseItem.id + '"><span class="icon-16-cross"></span> <span id="unfriend-' + responseItem.id + '-text">Unfriend</span></div><span id="loadImage-' + response.id + '"></span>' +
-                        '<div class="clear"></div></div></div></div></a>';
+                '<div class= "friends-thumbnails"><img onload="OnImageLoad(event);" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail150) + '"></div>' +
+                '<div style="display:none"><div id="' + responseItem.username + '"><div class="aside-wrapper">' +
+                '<div class="profile-pic"><img  src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail150) + '"></div><table><tr><td></td><td>' +
+                '<h3><a href="user/' + responseItem.username + '" onclick="location = \'user/' + responseItem.username + '\'">' + responseItem.firstname.concat(" ", responseItem.lastname) + '</a></h3></td></tr><tr><td><span class="icon-16-map"></span></td><td class="profile-meta">' + responseItem.location + '</td></tr>' +
+                '<tr><td><span class="icon-16-' + (responseItem.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta">' + (responseItem.gender === "M" ? "Male" : "Female") + '</td></tr>' +
+                '<tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a href="user/' + responseItem.username + '" onclick="location = \'user/' + responseItem.username + '\'">See Profile</a> </td></tr></table>' +
+                '<div class="clear"></div><div class="profile-summary profile-summary-width"><div class="profile-summary-wrapper">' +
+                '<a href="user/' + responseItem.username + '" onclick="location = \'user/' + responseItem.username + '\'"><p class="number">' + responseItem.ministat.pc + ' </p> <p class="type">Posts</p></a></div>' +
+                '<div class="profile-summary-wrapper"><a href="communities"><p class="number">' + responseItem.ministat.cc + ' </p> <p class="type">Communities</p></a></div>' +
+                '<div class="profile-summary-wrapper"><a href="friends"><p class="number">' + responseItem.ministat.fc + ' </p> <p class="type">Friends</p></a></div>' +
+                '<div class="clear"></div></div>' +
+                '<div class="clear"></div><div class="profile-meta-functions button" id="wink-' + responseItem.id + '"><span class="icon-16-eye"></span> Wink</div>' +
+                '<div class="profile-meta-functions button"><a href="messages/' + responseItem.username + '"><span class="icon-16-mail"></span> Send Message</a></div>' +
+                '<div class="profile-meta-functions button" id="unfriend-' + responseItem.id + '"><span class="icon-16-cross"></span> <span id="unfriend-' + responseItem.id + '-text">Unfriend</span></div><span id="loadImage-' + response.id + '"></span>' +
+                '<div class="clear"></div></div></div></div></a>';
                 if (i > 0 || unfriend !== "") {
                     unfriend += ",";
                 }
@@ -1636,15 +1831,17 @@ function loadFriends(response, statusText, target) {
                 }
             }
         });
-//        if(target.friendPage)
-//            alert(target.friendPage);
+        //        if(target.friendPage)
+        //            alert(target.friendPage);
         if (target.target === "#toUserInput") {
             var str = '<select data-placeholder="Select friend(s)" class="chzn-select" multiple style="width:350px;" name="user[]" id="user_callup"><option value=""></option>' + htmlstr + '</select>';
             $(target.target).html(str);
             if (target.inviteMemBtn) {
                 $(".chzn-select").chosen();
             } else {
-                $(".chzn-select").chosen({max_selected_options: 1});
+                $(".chzn-select").chosen({
+                    max_selected_options: 1
+                });
             }
         } else {
             if (!target.individualFriend)
@@ -1658,11 +1855,21 @@ function loadFriends(response, statusText, target) {
             if (target.friendPage) {
                 if (friendsPage !== "") {
                     if (target.individualFriend) {
-                        $(target.friendPage).append(friendsPage);
-                        $('#loadMoreFrnd').attr('frnd', parseInt($('#loadMoreFrnd').attr('frnd')) + 10);
+                        if(frndCount < 10){
+                            $(target.friendPage).append(friendsPage);
+                            $('#loadMoreFrnd').attr('frnd',parseInt($('#loadMoreFrnd').attr('frnd'))+10);
+                            $('#loadMoreFrndDiv,#loader1').hide();
+                        }else{
+                            $(target.friendPage).append(friendsPage);
+                            ('#loadMoreFrndDiv').show();
+                            $('#loader1').hide();
+                            $('#loadMoreFrnd').attr('frnd',parseInt($('#loadMoreFrnd').attr('frnd'))+10);
+                        }
                     }
-                    else
+                    else{
                         $(target.friendPage).html(friendsPage);
+                        $('#loadMoreFrndDiv').hide();
+                    }
                 } else {
 
                 }
@@ -1685,13 +1892,22 @@ function loadFriends(response, statusText, target) {
                 if (!target.individualFriend) {
                     $(target.target).html("No Friends found!");
                 } else {
-                    humane.log("Opps! you've got it all!", {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-success'});
+                    $('#loader1').hide();
+                    humane.log("Opps! you've got it all!", {
+                        timeout: 3000, 
+                        clickToClose: true, 
+                        addnCls: 'humane-jackedup-success'
+                    });
                     $('#loadMoreFrndDiv').hide();
                 }
             }
         } else {
             $("#pageTitle").html("Communities");
-            humane.log(response.error.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+            humane.log(response.error.message, {
+                timeout: 20000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-error'
+            });
 
         }
     }
@@ -1711,25 +1927,25 @@ function loadSuggestFriends(response, statusText, target) {
                 htmlstr += '<img onload="OnImageLoad(event);" src = "' + response.photo.alt + '" >';
             }
             htmlstr += '</div><div class="friend-text"><div class="friend-name">' + response.firstname.concat(" ", response.lastname) + '</div>' +
-                    '<div class="friend-location">' + response.location + '</div></div>';
+            '<div class="friend-location">' + response.location + '</div></div>';
             htmlstr += '<div style="display:none"><div id="' + response.username + '"><div class="aside-wrapper">';
             if (response.photo.id) {
                 htmlstr += '<div class="profile-pic"><img class="holdam" src = "' + (response.photo.thumbnail150 === "" ? response.photo.original : response.photo.thumbnail150) + '"></div>';
             } else {
                 htmlstr += '<div class="profile-pic"><img class="holdam" src = "' + response.photo.alt + '" ></div>';
             }
-//
+            //
             htmlstr += '<div class="clear"></div><table><tr><td></td><td><h3><a href="user/' + response.username + '" onclick="location = \'user/' + response.username + '\'">' + response.firstname.concat(" ", response.lastname) + '</a></h3></td></tr>' +
-                    '<tr><td><span class="icon-16-map"></span></td><td class="profile-meta"> ' + (response.location !== "" ? response.location : "Location not set") + '</td></tr>' +
-                    '<tr><td><span class="icon-16-' + (response.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta"> ' + (response.gender === "M" ? "Male" : "Female") + '</td></tr>' +
-                    '<tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a href="user/' + response.username + '" onclick="location = \'user/' + response.username + '\'">See Profile</a> </td></tr>' +
-                    '</table><div class="profile-summary profile-summary-width"><div class="profile-summary-wrapper">' +
-                    '<a href=""><p class="number">' + response.ministat.pc + ' </p> <p class="type">Posts</p></a></div>' +
-                    '<div class="profile-summary-wrapper"><a href="communities"><p class="number">' + response.ministat.cc + ' </p> <p class="type">Communities</p></a></div>' +
-                    '<div class="profile-summary-wrapper"><a href="friends"><p class="number">' + response.ministat.fc + ' </p> <p class="type">Friends</p></a></div>' +
-                    '<div class="clear"></div></div>' +
-                    '<button class="profile-meta-functions button" id="unfriend-' + response.id + '"><span class="icon-16-user-add"></span> <span id="unfriend-' + response.id + '-text">Send Friend Request</span></button><span id="loadImage-' + response.id + '"></span>' +
-                    '<div class="clear"></div></div></div></div>';
+            '<tr><td><span class="icon-16-map"></span></td><td class="profile-meta"> ' + (response.location !== "" ? response.location : "Location not set") + '</td></tr>' +
+            '<tr><td><span class="icon-16-' + (response.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta"> ' + (response.gender === "M" ? "Male" : "Female") + '</td></tr>' +
+            '<tr><td><span class="icon-16-dot"></span></td><td class="profile-meta"><a href="user/' + response.username + '" onclick="location = \'user/' + response.username + '\'">See Profile</a> </td></tr>' +
+            '</table><div class="profile-summary profile-summary-width"><div class="profile-summary-wrapper">' +
+            '<a href=""><p class="number">' + response.ministat.pc + ' </p> <p class="type">Posts</p></a></div>' +
+            '<div class="profile-summary-wrapper"><a href="communities"><p class="number">' + response.ministat.cc + ' </p> <p class="type">Communities</p></a></div>' +
+            '<div class="profile-summary-wrapper"><a href="friends"><p class="number">' + response.ministat.fc + ' </p> <p class="type">Friends</p></a></div>' +
+            '<div class="clear"></div></div>' +
+            '<button class="profile-meta-functions button" id="unfriend-' + response.id + '"><span class="icon-16-user-add"></span> <span id="unfriend-' + response.id + '-text">Send Friend Request</span></button><span id="loadImage-' + response.id + '"></span>' +
+            '<div class="clear"></div></div></div></div>';
             htmlstr += '</a></div>';
             if (i > 0) {
                 unfriend += ",";
@@ -1750,7 +1966,11 @@ function loadSuggestFriends(response, statusText, target) {
             $(target.target).html("<p>Opps! We cannot suggest friends to you at the moment. <a href='communities'>Join a community</a> to increase your chances.</p>");
         } else {
             $("#pageTitle").html("Communities");
-            humane.log(response.error.message, {timeout: 20000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+            humane.log(response.error.message, {
+                timeout: 20000, 
+                clickToClose: true, 
+                addnCls: 'humane-jackedup-error'
+            });
         }
     }
 }
@@ -1761,10 +1981,14 @@ function manageError(jqXHR, textStatus, errorThrown) {
     } else if (textStatus === "parsererror") {
         msg = "Opps! something critical just happened...Our team will fix this soon ";
     } else if (jqXHR.statusCode === 502) {
-//        msg = "Proxy server received an invalid response...try again reload this page to fix this";
+    //        msg = "Proxy server received an invalid response...try again reload this page to fix this";
     }
     if (msg !== "")
-        humane.log(msg, {timeout: 3000, clickToClose: true, addnCls: 'humane-jackedup-error'});
+        humane.log(msg, {
+            timeout: 3000, 
+            clickToClose: true, 
+            addnCls: 'humane-jackedup-error'
+        });
     option = {
         param: "logError",
         jqXHR: jqXHR,
@@ -1791,7 +2015,10 @@ function showOption(obj) {
         option = {
             complete: function() {
                 if (!$(this).hasClass("loadedContent")) {
-                    sendData("loadSuggestFriends", {target: "#aside-suggest-friends", loadImage: true});
+                    sendData("loadSuggestFriends", {
+                        target: "#aside-suggest-friends", 
+                        loadImage: true
+                    });
                     $(this).addClass("loadedContent");
                 }
             }
@@ -1808,7 +2035,11 @@ function showOption(obj) {
         option = {
             complete: function() {
                 if (!$(this).hasClass("loadedContent")) {
-                    sendData("loadSuggestCommunity", {target: "#aside-suggest-community", loadImage: true, aside: true});
+                    sendData("loadSuggestCommunity", {
+                        target: "#aside-suggest-community", 
+                        loadImage: true, 
+                        aside: true
+                    });
                     $(this).addClass("loadedContent");
                 }
             }
@@ -1823,7 +2054,10 @@ function showOption(obj) {
                 if ($("#" + obj.id).hasClass("Open")) {
                     if (!$("#" + obj.id).hasClass("loaded")) {
                         $("#" + obj.id).addClass("loaded");
-                        sendData("loadGossbag", {target: "#gossbag-individual-notification", loadImage: true});
+                        sendData("loadGossbag", {
+                            target: "#gossbag-individual-notification", 
+                            loadImage: true
+                        });
                     }
                 }
             },
@@ -1844,7 +2078,10 @@ function showOption(obj) {
                 if ($("#" + obj.id).hasClass("Open")) {
                     if (!$("#" + obj.id).hasClass("loaded")) {
                         $("#" + obj.id).addClass("loaded");
-                        sendData("loadNavMessages", {target: "#message-individual-notification", loadImage: true});
+                        sendData("loadNavMessages", {
+                            target: "#message-individual-notification", 
+                            loadImage: true
+                        });
                     }
                 }
             },
@@ -1895,7 +2132,10 @@ function showOption(obj) {
         if ($("#" + obj.id).hasClass("Open")) {
             if (!$("#" + obj.id).hasClass("loaded")) {
                 $("#" + obj.id).addClass("loaded");
-                sendData("loadFriends", {target: "#toUserInput", loadImage: true});
+                sendData("loadFriends", {
+                    target: "#toUserInput", 
+                    loadImage: true
+                });
             }
         }
     } else if (obj.id === "loadCommore") {
@@ -1942,7 +2182,12 @@ function showOption(obj) {
                 if ($("#" + obj.id).hasClass("Open")) {
                     if (!$("#" + obj.id).hasClass("loaded")) {
                         $("#" + obj.id).addClass("loaded");
-                        sendData("loadComment", {target: "#post-comments-" + postId, user: readCookie('user_auth'), post_id: postId, loadImage: true});
+                        sendData("loadComment", {
+                            target: "#post-comments-" + postId, 
+                            user: readCookie('user_auth'), 
+                            post_id: postId, 
+                            loadImage: true
+                        });
                     }
                 }
             },
@@ -1962,12 +2207,23 @@ function showOption(obj) {
             $("#" + obj.id).addClass("clicked");
             if ((obj.id).indexOf("deleteComment-") >= 0) {
                 postId = ((obj.id).substring(postIdPos)).split("_");
-                sendData("deleteComment", {target: "#comment-" + postId[0], cid: postId[0], postId: postId[1]});
+                sendData("deleteComment", {
+                    target: "#comment-" + postId[0], 
+                    cid: postId[0], 
+                    postId: postId[1]
+                    });
             } else if ((obj.id).indexOf("deletePost-") >= 0) {
-                sendData("deletePost", {target: "#post-" + postId, post_id: postId});
+                sendData("deletePost", {
+                    target: "#post-" + postId, 
+                    post_id: postId
+                });
             }
         } else {
-            humane.log("Request sent already", {timeout: 3000, clickToClose: true, addnCls: 'humane-error'});
+            humane.log("Request sent already", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-error'
+            });
         }
     } else if ((obj.id).indexOf("continue-") >= 0) {
         var postIdPos = (obj.id).lastIndexOf("-") + 1;
@@ -1984,21 +2240,42 @@ function showOption(obj) {
             var comId = ((obj.id).substring(comIdPos));
             if (!$("#" + obj.id).hasClass("loaded")) {
                 $("#" + obj.id).addClass("loaded");
-                sendData("leaveJoinCommunity", {target: "", comid: comId, param: "Join"})
+                sendData("leaveJoinCommunity", {
+                    target: "", 
+                    comid: comId, 
+                    param: "Join"
+                })
             } else {
-                humane.log("Request sent already", {timeout: 3000, clickToClose: true, addnCls: 'humane-error'});
+                humane.log("Request sent already", {
+                    timeout: 3000, 
+                    clickToClose: true, 
+                    addnCls: 'humane-error'
+                });
             }
         } else {
-            sendData("leaveJoinCommunity", {target: "", comid: $("#joinleave-comid").val(), param: $("#joinleave-text").html()})
+            sendData("leaveJoinCommunity", {
+                target: "", 
+                comid: $("#joinleave-comid").val(), 
+                param: $("#joinleave-text").html()
+                })
         }
     } else if ((obj.id).indexOf("unfriend") >= 0) {
         var userIdPos = (obj.id).lastIndexOf("-") + 1;
         var userId = ((obj.id).substring(userIdPos));
         if (!$("#" + obj.id).hasClass("loaded")) {
             $("#" + obj.id).addClass("loaded");//<span id="loadImage-' + response.id + '"></span>
-            sendData("sendFriendRequest", {target: "#loadImage-" + userId, user: userId, param: $("#" + obj.id + "-text").html(), loadImage: true});
+            sendData("sendFriendRequest", {
+                target: "#loadImage-" + userId, 
+                user: userId, 
+                param: $("#" + obj.id + "-text").html(), 
+                loadImage: true
+            });
         } else {
-            humane.log("Request sent already", {timeout: 3000, clickToClose: true, addnCls: 'humane-error'});
+            humane.log("Request sent already", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-error'
+            });
         }
     } else if ((obj.id).indexOf("wink-") >= 0) {
         var userIdPos = (obj.id).lastIndexOf("-") + 1;
@@ -2006,21 +2283,44 @@ function showOption(obj) {
         if (!$("#" + obj.id).hasClass("loaded")) {
             $("#" + obj.id).addClass("loaded");
             if ((obj.id).indexOf("wink-text-") >= 0 || (obj.id).indexOf("wink-text-n-") >= 0) {
-                sendData("sendFriendRequest", {target: "#loadImage-" + userId, user: userId, param: "wink", resp: true, loadImage: true});
+                sendData("sendFriendRequest", {
+                    target: "#loadImage-" + userId, 
+                    user: userId, 
+                    param: "wink", 
+                    resp: true, 
+                    loadImage: true
+                });
             } else {
-                sendData("sendFriendRequest", {target: "#loadImage-" + userId, user: userId, param: "wink", loadImage: true});
+                sendData("sendFriendRequest", {
+                    target: "#loadImage-" + userId, 
+                    user: userId, 
+                    param: "wink", 
+                    loadImage: true
+                });
             }
         } else {
-            humane.log("Request sent already", {timeout: 3000, clickToClose: true, addnCls: 'humane-error'});
+            humane.log("Request sent already", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-error'
+            });
         }
     } else if ((obj.id).indexOf("winkIgnore-text") >= 0) {
         var userIdPos = (obj.id).lastIndexOf("-") + 1;
         var userId = ((obj.id).substring(userIdPos));
         if (!$("#" + obj.id).hasClass("loaded")) {
             $("#" + obj.id).addClass("loaded");
-            sendData("sendFriendRequest", {target: "#winkOption-" + userId, user: userId, param: "ignoreWink"});
+            sendData("sendFriendRequest", {
+                target: "#winkOption-" + userId, 
+                user: userId, 
+                param: "ignoreWink"
+            });
         } else {
-            humane.log("Request sent already", {timeout: 3000, clickToClose: true, addnCls: 'humane-error'});
+            humane.log("Request sent already", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-error'
+            });
         }
     } else if ((obj.id).indexOf("accept-frq-text") >= 0) {
         var text = $("#" + obj.id).html();
@@ -2029,18 +2329,36 @@ function showOption(obj) {
                 $("#" + obj.id).addClass("clicked");
                 var userIdPos = (obj.id).lastIndexOf("-") + 1;
                 var userId = ((obj.id).substring(userIdPos));
-                sendData("sendFriendRequest", {target: "#" + obj.id, user: userId, param: "Accept Request", loadImage: true});
+                sendData("sendFriendRequest", {
+                    target: "#" + obj.id, 
+                    user: userId, 
+                    param: "Accept Request", 
+                    loadImage: true
+                });
             } else {
-                humane.log("Request sent already", {timeout: 3000, clickToClose: true, addnCls: 'humane-error'});
+                humane.log("Request sent already", {
+                    timeout: 3000, 
+                    clickToClose: true, 
+                    addnCls: 'humane-error'
+                });
             }
         } else if (text === "Unfriend") {
             if (!$("#" + obj.id).hasClass("clicked")) {
                 $("#" + obj.id).addClass("clicked");
                 var userIdPos = (obj.id).lastIndexOf("-") + 1;
                 var userId = ((obj.id).substring(userIdPos));
-                sendData("sendFriendRequest", {target: "#" + obj.id, user: userId, param: "Unfriend", loadImage: true});
+                sendData("sendFriendRequest", {
+                    target: "#" + obj.id, 
+                    user: userId, 
+                    param: "Unfriend", 
+                    loadImage: true
+                });
             } else {
-                humane.log("Request sent already", {timeout: 3000, clickToClose: true, addnCls: 'humane-error'});
+                humane.log("Request sent already", {
+                    timeout: 3000, 
+                    clickToClose: true, 
+                    addnCls: 'humane-error'
+                });
             }
         }
     } else if ((obj.id).indexOf("frqIgnore-text-") >= 0) {
@@ -2049,9 +2367,18 @@ function showOption(obj) {
             $("#" + obj.id).addClass("clicked");
             var userIdPos = (obj.id).lastIndexOf("-") + 1;
             var userId = ((obj.id).substring(userIdPos));
-            sendData("sendFriendRequest", {target: "#" + obj.id, user: userId, param: "Ignore", loadImage: true});
+            sendData("sendFriendRequest", {
+                target: "#" + obj.id, 
+                user: userId, 
+                param: "Ignore", 
+                loadImage: true
+            });
         } else {
-            humane.log("Request sent already", {timeout: 3000, clickToClose: true, addnCls: 'humane-error'});
+            humane.log("Request sent already", {
+                timeout: 3000, 
+                clickToClose: true, 
+                addnCls: 'humane-error'
+            });
         }
 
     } else if (obj.id === "inviteMemBtn") {
@@ -2064,16 +2391,30 @@ function showOption(obj) {
             if (!$("#" + obj.id).hasClass("loaded")) {
                 $("#" + obj.id).addClass("loaded");
                 var comId = $("#joinleave-comid").val();
-                sendData("inviteFriends", {target: "#toUserInput", loadImage: true, comId: comId});
+                sendData("inviteFriends", {
+                    target: "#toUserInput", 
+                    loadImage: true, 
+                    comId: comId
+                });
             }
         }
     } else if ((obj.id).indexOf("invitationIgnore-text") >= 0 || (obj.id).indexOf("invitation-text-") >= 0) {
         var userIdPos = (obj.id).lastIndexOf("-") + 1;
         var comid = ((obj.id).substring(userIdPos));
         if ((obj.id).indexOf("invitationIgnore-text") >= 0) {
-            sendData("acceptDeclineComInvitation", {target: "#invitationtarget", loadImage: true, comId: comid, response: false});
+            sendData("acceptDeclineComInvitation", {
+                target: "#invitationtarget", 
+                loadImage: true, 
+                comId: comid, 
+                response: false
+            });
         } else {
-            sendData("acceptDeclineComInvitation", {target: "#invitationtarget", loadImage: true, comId: comid, response: true});
+            sendData("acceptDeclineComInvitation", {
+                target: "#invitationtarget", 
+                loadImage: true, 
+                comId: comid, 
+                response: true
+            });
         }
     } else {
         alert("Not implemented");
@@ -2094,7 +2435,11 @@ function readCookie(name) {
 }
 function ScaleImage(srcwidth, srcheight, targetwidth, targetheight, fLetterBox) {
 
-    var result = {width: 0, height: 0, fScaleToTargetWidth: true};
+    var result = {
+        width: 0, 
+        height: 0, 
+        fScaleToTargetWidth: true
+    };
 
     if ((srcwidth <= 0) || (srcheight <= 0) || (targetwidth <= 0) || (targetheight <= 0)) {
         return result;

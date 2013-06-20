@@ -2217,7 +2217,7 @@ body {
 
 /* line 50, style.scss */
 html {
-  font-family: "Segoe UI",Segoe,sans-serif;
+  /*font-family: "Segoe UI",Segoe,sans-serif;*/
   background: url(../images/connect.png);
 }
 @media only screen and (min-device-width: 1281px) {

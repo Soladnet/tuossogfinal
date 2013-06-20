@@ -50,9 +50,10 @@ if (isset($_COOKIE['user_auth'])) {
                     minWidth: 250
 
                 });
-                $('.noResult').hide();
+                  $('.noResult,#loadMoreFrndDiv,#loader1').hide();
                 var start, limit;
                 $('#loadMoreFrnd').click(function(){
+                   $('#loader1').show();
                     start = parseInt($(this).attr('frnd'));
                     limit = 10;
 //                    limit = 1;
