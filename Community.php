@@ -47,7 +47,7 @@ class Community {
      * @return Array An associative array is returned with the information for the user's community
      * 
      */
-    public function userComm($start, $limit, $max = FALSE, $comname = FALSE) {
+    public function userComm($start, $limit, $max = FALSE, $comname = FALSE, $newuser = FALSE) {
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
         $arr = array();
         if ($mysql->connect_errno > 0) {
@@ -57,7 +57,9 @@ class Community {
             if ($max) {
                 if ($comname) {
                     $sql = "SELECT id,creator_id,unique_name,`name`,`pix`,thumbnail100,thumbnail150,thumbnail150,`type`,description,verified FROM community WHERE unique_name='$comname'";
-                } else {
+                } else if ($newuser) {
+                   $sql = "SELECT cs.`community_id` as id,c.creator_id,c.unique_name,c.`name`,c.`pix`,c.thumbnail100,c.thumbnail150,c.thumbnail150,c.`type`,c.description,c.verified FROM community_subscribers as cs JOIN community as c ON cs.community_id=c.id  WHERE cs.`user`=$this->uid AND cs.leave_status=0 order by c.name asc LIMIT $start,$limit";
+                }else {
                     $sql = "SELECT cs.`community_id` as id,c.creator_id,c.unique_name,c.`name`,c.`pix`,c.thumbnail100,c.thumbnail150,c.thumbnail150,c.`type`,c.description,c.verified FROM community_subscribers as cs JOIN community as c ON cs.community_id=c.id  WHERE cs.`user`=$this->uid AND cs.leave_status=0 order by c.name asc LIMIT $start,$limit";
                 }
             } else {

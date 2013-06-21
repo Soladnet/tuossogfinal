@@ -1904,8 +1904,7 @@ function loadFriends(response, statusText, target) {
 
         }
     }
-    if (responseCount < 10)
-        $('#loadMoreFrndDiv').hide();
+    
 }
 
 function loadSuggestFriends(response, statusText, target) {
