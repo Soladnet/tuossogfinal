@@ -15,6 +15,7 @@ function sendData(callback, target) {
                 start: target.start,
                 limit: target.limit,
                 more: target.more,
+                newuser: target.newuser,
                 uid: target.uid
             }
         };
@@ -386,7 +387,7 @@ function loadTimeline(response, statusText, target) {
         $.each(response, function(i, response) {
             if (response.type === "post") {
                 htmlstr += '<div class="timeline-news-single">'+
-                '<a class= "fancybox " rel="profilePix" href="' + (response.photo.nophoto ? response.photo.alt : response.photo.original) + '">'+
+                '<a class= "fancybox " rel="'+response.id+'" href="' + (response.photo.nophoto ? response.photo.alt : response.photo.original) + '">'+
                 '<div class="timeline-news-profile-pic">' +   
                 '<img onload="OnImageLoad(event);" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
                 '</div></a><p><a href="user/' + response.username + '">' + (response.sender_id === readCookie("user_auth") ? "You" : response.firstname.concat(' ', response.lastname)) + '</a> posted to <a href="' + response.unique_name + '">' + response.name + '</a></p>' +

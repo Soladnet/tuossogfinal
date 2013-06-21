@@ -148,15 +148,9 @@ if (isset($_POST['param'])) {
                     if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
                         $limit = $_POST['limit'];
                     }
-//                    if (isset($_POST['newuser']) && $_POST['newuser']) {
-//                        $start =0; $limit = 5;
-//                        $user_comm = $comm->userComm($start, $limit, $_POST['max'], isset($_POST['comname']) ? ($_POST['comname'] == "" ? FALSE : $_POST['comname']) : FALSE, TRUE); //$_POST['comname'] == "" ? FALSE : $_POST['comname']
-//                        if ($user_comm['status']) {
-//                            echo json_encode($user_comm['community_list']);
-//                        } else {
-//                            displayError(404, "Not Found");
-//                        }
-//                    }
+                    if (isset($_POST['newuser']) && $_POST['newuser']) {
+                       $comm->setNewUser();
+                    }
 
                     $user_comm = $comm->userComm($start, $limit, $_POST['max'], isset($_POST['comname']) ? ($_POST['comname'] == "" ? FALSE : $_POST['comname']) : FALSE); //$_POST['comname'] == "" ? FALSE : $_POST['comname']
                     if ($user_comm['status']) {
