@@ -1437,12 +1437,17 @@ function loadCommunity(response, statusText, target) {
                 $(".joinCom").click(function(){
                     showOption(this);
                 });
-            }else{
+            }else{//welcomemsg
+                
                 if(htmlstr !== ""){
-                    if(!target.append)
+                    if(!target.append){
                         $('.community-box').html(htmlstr);
+                        $('#exploreMoreComm').show();
+                    }
+                        
                     else{
                         $('.community-box').append(htmlstr);
+                        $('#exploreMoreComm').show();
                         $('#exploreMoreComm').attr('newcomm', parseInt($('#exploreMoreComm').attr('newcomm')) + 10);
                     }
                 }
@@ -1478,14 +1483,12 @@ function loadCommunity(response, statusText, target) {
                                 addnCls: 'humane-jackedup-success'
                             });
                             $('#loadMoreComm').hide();
+                            
                         }
                     }else{
-                        humane.log("Oops! You've got it all!", {
-                            timeout: 20000, 
-                            clickToClose: true, 
-                            addnCls: 'humane-jackedup-success'
-                        });
-                         $('#exploreMoreComm').remove();
+                        $('#exploreMoreComm').hide();
+                        $('#welcome').html('You are set!');
+                        $('#welcomemsg').html('Yeap! You have joined all the Communities we seggested to. Mingle within your Communities to meet more people. Big thanks for that!.');
                     }
                 }
             } else {

@@ -50,6 +50,7 @@ if (isset($_COOKIE['user_auth'])) {
                     closeEffect: 'none',
                     minWidth: 250
                 });
+                $('#exploreMoreComm').hide();
                 $('#exploreMoreComm').click(function(){
                     var start =  parseInt($('#exploreMoreComm').attr('newcomm'));
                   sendData("loadCommunity", {target: ".community-box", loadImage: false, max: true, start: start, limit: 10,newuser:true,append:true});

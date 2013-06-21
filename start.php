@@ -3,9 +3,9 @@
         margin-top: -1.1em;
     }
 </style>
-<h1>Welcome</h1>
+<h1 id="welcome">Welcome</h1>
     <hr>
-    <div class="success">
+    <div class="success" id="welcomemsg">
         <p>Gossout is fun with more Communities and Friends. Join Communities and add Friends to start interacting. Here are some suggestions</p>
     </div>
     <div class="communities-list full-width no-padding">
