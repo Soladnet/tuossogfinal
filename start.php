@@ -12,7 +12,7 @@
         <div class="community-box">
     
         </div>
-         <button class="button float-right">Explore More Communities</button>
+         <button class="button float-right" id="exploreMoreComm" newcomm="10">Explore More Communities</button>
     </div>
 <!--    <div class="all-friends-list full-width no-padding">
 

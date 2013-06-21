@@ -43,14 +43,17 @@ if (isset($_COOKIE['user_auth'])) {
 //         
             $(document).ready(function() {
                 sendData("loadNotificationCount", {title: document.title});
-                sendData("loadCommunity", {target: ".community-box", loadImage: false, max: true, start: 0, limit: 20,newuser:true});
+                sendData("loadCommunity", {target: ".community-box", loadImage: false, max: true, start: 0, limit: 10,newuser:true});
 //                $(".chzn-select").chosen();
                 $(".fancybox").fancybox({
                     openEffect: 'none',
                     closeEffect: 'none',
                     minWidth: 250
                 });
-
+                $('#exploreMoreComm').click(function(){
+                    var start =  parseInt($('#exploreMoreComm').attr('newcomm'));
+                  sendData("loadCommunity", {target: ".community-box", loadImage: false, max: true, start: start, limit: 10,newuser:true,append:true});
+                });
                 if (Modernizr.inlinesvg) {
                     $('#logo').html('<a href="index"><img src="images/gossout-logo-text-svg.png" alt="Gossout" /></a>');
                 } else {

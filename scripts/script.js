@@ -1407,31 +1407,42 @@ function loadCommunity(response, statusText, target) {
                     '<img src="' + response.thumbnail100 + '">' +
                     '</div><div class="community-text"><div class="community-name">' +
                     '<a href="' + response.unique_name + '">' + (response.verified === "1" ? '<img src="images/gossout-verified.png" class="verified-community" title="Verified Community">' : "") + response.name + '</a> </div><hr><div class="details">' + (response.description.length > 100 ? br2nl(response.description).substring(0, 100) + "..." : br2nl(response.description)) +
-                    '</div><div class="members">' + response.type + '</div><div class="members">' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</div><div class="members">' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</div></div><div class="clear"></div></div>';
+                    '</div><div class="members">' + response.type + '</div><div class="members">' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</div><div class="members">' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</div></div>'+((target.newuser) ? '<a class="float-right">Join</a>' : "")+'<div class="clear"></div></div>';
                 }
             });
-            //             htmlstr +='<p><a href="" frnd="10" class="loadMoreFrnd" id="loadMoreFrnd">Load more > ></a>';
-            if (target.more) {
-                if (htmlstr !== "")
-                    $('.community-box').append(htmlstr);
-                if(commCount < 10){
-                    $('#loadMoreComm').hide();
-                    humane.log("Oops! You've got it all!", {
-                        timeout: 20000, 
-                        clickToClose: true, 
-                        addnCls: 'humane-jackedup-success'
-                    });
+            
+            if(!target.newuser){
+                if (target.more) {
+                    if (htmlstr !== "")
+                        $('.community-box').append(htmlstr);
+                    if(commCount < 10){
+                        $('#loadMoreComm').hide();
+                        humane.log("Oops! You've got it all!", {
+                            timeout: 20000, 
+                            clickToClose: true, 
+                            addnCls: 'humane-jackedup-success'
+                        });
+                    }
+                    else{
+                        $('#loadMoreComm').attr('comm', parseInt($('#loadMoreComm').attr('comm')) + 10);
+                    }
+                    $('#loader1').hide();
                 }
-                else{
-                    $('#loadMoreComm').attr('comm', parseInt($('#loadMoreComm').attr('comm')) + 10);
+                else{//newcomm
+                    if (htmlstr !== "")
+                        $(target.target).html(htmlstr);
+                    if(commCount >= 10)
+                        $('#loadMoreComm').show();
                 }
-                $('#loader1').hide();
-            }
-            else{
-                if (htmlstr !== "")
-                    $(target.target).html(htmlstr);
-                if(commCount >= 10)
-                    $('#loadMoreComm').show();
+            }else{
+                if(htmlstr !== ""){
+                    if(!target.append)
+                        $('.community-box').html(htmlstr);
+                    else{
+                        $('.community-box').append(htmlstr);
+                        $('#exploreMoreComm').attr('newcomm', parseInt($('#exploreMoreComm').attr('newcomm')) + 10);
+                    }
+                }
             }
         }
 
@@ -1454,18 +1465,28 @@ function loadCommunity(response, statusText, target) {
                         max: true
                     });
                 } else {
-                    if (!target.more)
-                        sendData("loadSuggestCommunity", target);
-                    else {
+                    if(!target.newuser){
+                        if (!target.more)
+                            sendData("loadSuggestCommunity", target);
+                        else {
+                            humane.log("Oops! You've got it all!", {
+                                timeout: 20000, 
+                                clickToClose: true, 
+                                addnCls: 'humane-jackedup-success'
+                            });
+                            $('#loadMoreComm').hide();
+                        }
+                    }else{
                         humane.log("Oops! You've got it all!", {
                             timeout: 20000, 
                             clickToClose: true, 
                             addnCls: 'humane-jackedup-success'
                         });
-                        $('#loadMoreComm').hide();
+                         $('#exploreMoreComm').remove();
                     }
                 }
             } else {
+           
                 $(target.target).html("<span id='noCom'>No community found!</span>");
             }
         }
