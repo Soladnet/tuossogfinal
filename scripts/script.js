@@ -385,9 +385,11 @@ function loadTimeline(response, statusText, target) {
         var TimeLineCount = response.length;
         $.each(response, function(i, response) {
             if (response.type === "post") {
-                htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
+                htmlstr += '<div class="timeline-news-single">'+
+                '<a class= "fancybox " rel="profilePix" href="' + (response.photo.nophoto ? response.photo.alt : response.photo.original) + '">'+
+                '<div class="timeline-news-profile-pic">' +   
                 '<img onload="OnImageLoad(event);" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '">' +
-                '</div><p><a href="user/' + response.username + '">' + (response.sender_id === readCookie("user_auth") ? "You" : response.firstname.concat(' ', response.lastname)) + '</a> posted to <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
+                '</div></a><p><a href="user/' + response.username + '">' + (response.sender_id === readCookie("user_auth") ? "You" : response.firstname.concat(' ', response.lastname)) + '</a> posted to <a href="' + response.unique_name + '">' + response.name + '</a></p>' +
                 '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p>';
                 if (response.post_photo) {
                     htmlstr += '<p class="timeline-photo-upload">';
@@ -413,8 +415,10 @@ function loadTimeline(response, statusText, target) {
                         toggleId += "#continue-" + response.id;
                     }
             } else if (response.type === "comcrea") {
-                htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
-                '<img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"></div>' +
+                htmlstr += '<div class="timeline-news-single">'+
+                '<a class= "fancybox " rel="profilePix" href="' + (response.photo.nophoto ? response.photo.alt : response.photo.original) + '">'+
+                '<div class="timeline-news-profile-pic">' +
+                '<img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"></div></a>' +
                 '<p><a href="user/' + response.username + '">' + (response.creator_id === readCookie("user_auth") ? "You" : response.firstname.concat(' ', response.lastname)) + '</a> created a new <a href="' + response.unique_name + '">Community</a></p>' +
                 '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p><div class="community-meta">' +
                 '<a class="fancybox" rel="gallery' + response.id + '"  href="' + response.pix + '" rel="group"><img src="' + response.thumbnail100 + '"></a>' +
@@ -428,16 +432,7 @@ function loadTimeline(response, statusText, target) {
                     }
                     toggleId += ".joinCom";
                 }
-            } /*else if (response.type === "comcrea") {
-             htmlstr += '<div class="timeline-news-single"><div class="timeline-news-profile-pic">' +
-             '<img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail45) + '"></div>' +
-             '<p><a>' + response.firstname.concat(' ', response.lastname) + '</a> created a new <a href="' + response.unique_name + '">Community</a></p>' +
-             '<p class="timeline-time timeago" title="' + response.time + '">' + response.time + '</p><div class="community-meta">' +
-             '<img src="' + response.thumbnail100 + '">' +
-             '<h3><a href="' + response.unique_name + '">' + response.name + '</a></h3>' +
-             '<p>' + response.description + '</p>' +
-             '<p><a href="">Join</a></p></div><div class="clear"></div></div>';
-             }*/
+            }
         });
         if (target.loadMore) {
             if (htmlstr !== "") {
@@ -1072,13 +1067,13 @@ function loadNotificationCount(response, statusText, target) {
                     target: "#message-individual-notification", 
                     status: "replace", 
                     mt: readCookie("m_t")
-                    });
+                });
             } else if (content !== "<center><img src='images/loading.gif' style='border:none' /></center>") {
                 sendData("loadNewMessage", {
                     target: "#message-individual-notification", 
                     status: "prepend", 
                     mt: readCookie("m_t")
-                    });
+                });
             }
         }
         $("#msg-number").html(response.msg);
@@ -1418,17 +1413,23 @@ function loadCommunity(response, statusText, target) {
             if (target.more) {
                 if (htmlstr !== "")
                     $('.community-box').append(htmlstr);
-                if(commCount < 10)
+                if(commCount < 10){
                     $('#loadMoreComm').hide();
+                    humane.log("Oops! You've got it all!", {
+                        timeout: 20000, 
+                        clickToClose: true, 
+                        addnCls: 'humane-jackedup-success'
+                    });
+                }
                 else{
                     $('#loadMoreComm').attr('comm', parseInt($('#loadMoreComm').attr('comm')) + 10);
                 }
                 $('#loader1').hide();
             }
             else{
-            if (htmlstr !== "")
-                $(target.target).html(htmlstr);
-            if(commCount >= 10)
+                if (htmlstr !== "")
+                    $(target.target).html(htmlstr);
+                if(commCount >= 10)
                     $('#loadMoreComm').show();
             }
         }
@@ -2203,7 +2204,7 @@ function showOption(obj) {
                     target: "#comment-" + postId[0], 
                     cid: postId[0], 
                     postId: postId[1]
-                    });
+                });
             } else if ((obj.id).indexOf("deletePost-") >= 0) {
                 sendData("deletePost", {
                     target: "#post-" + postId, 
@@ -2249,7 +2250,7 @@ function showOption(obj) {
                 target: "", 
                 comid: $("#joinleave-comid").val(), 
                 param: $("#joinleave-text").html()
-                })
+            })
         }
     } else if ((obj.id).indexOf("unfriend") >= 0) {
         var userIdPos = (obj.id).lastIndexOf("-") + 1;
