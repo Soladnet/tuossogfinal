@@ -9,7 +9,7 @@ if (isset($user)) {
     <div class="aside-wrapper">
         <a class= "fancybox " rel="profilePix" href="<?php echo isset($pix['original']) ? $pix['original'] : "images/user-no-pic.png" ?>">
             <span class="profile-pic">
-                <img onload="OnImageLoad(event);" src="<?php echo isset($pix['thumbnail150']) ? $pix['thumbnail150'] : "images/user-no-pic.png" ?>">
+                <img onload="OnImageLoad(event);" src="<?php echo isset($pix['original']) ? $pix['original'] : "images/user-no-pic.png" ?>">
             </span>
         </a>
         <table>
