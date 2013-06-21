@@ -6,10 +6,10 @@ if (isset($user)) {
 ?>
 <div class="aside">
     <div class="aside-wrapper">
-        <a class= "fancybox " rel="profile" href="<?php echo isset($pix['original']) ? $pix['original'] : "images/user-no-pic.png" ?>">
+        <a class= "fancybox " rel="profile" href="<?php echo isset($pix['thumbnail150']) ? $pix['thumbnail150'] : "images/user-no-pic.png" ?>">
             <span class="profile-pic">
                 <img onload="OnImageLoad(event);" class="holdam" id="profile-pic" src="<?php
-                echo isset($pix['original']) ? $pix['original'] : "images/user-no-pic.png"
+                echo isset($pix['thumbnail150']) ? $pix['thumbnail150'] : "images/user-no-pic.png"
                 ?>">
 
             </span>
