@@ -1407,7 +1407,7 @@ function loadCommunity(response, statusText, target) {
                     '<img src="' + response.thumbnail100 + '">' +
                     '</div><div class="community-text"><div class="community-name">' +
                     '<a href="' + response.unique_name + '">' + (response.verified === "1" ? '<img src="images/gossout-verified.png" class="verified-community" title="Verified Community">' : "") + response.name + '</a> </div><hr><div class="details">' + (response.description.length > 100 ? br2nl(response.description).substring(0, 100) + "..." : br2nl(response.description)) +
-                    '</div><div class="members">' + response.type + '</div><div class="members">' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</div><div class="members">' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</div></div>'+((target.newuser) ? '<a class="float-right">Join</a>' : "")+'<div class="clear"></div></div>';
+                    '</div><div class="members">' + response.type + '</div><div class="members">' + response.mem_count + ' ' + (response.mem_count > 1 ? "Members" : "Member") + '</div><div class="members">' + response.post_count + ' ' + (response.post_count > 1 ? "Posts" : "Post") + '</div></div>'+((target.newuser) ? '<a class="float-right joinCom" id="joinCom-' + response.id + '">Join</a>' : "")+'<div class="clear"></div></div>';
                 }
             });
             
@@ -1434,6 +1434,9 @@ function loadCommunity(response, statusText, target) {
                     if(commCount >= 10)
                         $('#loadMoreComm').show();
                 }
+                $(".joinCom").click(function(){
+                    showOption(this);
+                });
             }else{
                 if(htmlstr !== ""){
                     if(!target.append)
