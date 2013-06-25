@@ -1,5 +1,5 @@
 <?php
-//session_start();
+header('Content-type: text/html; charset=UTF-8');
 include_once './GossoutUser.php';
 include_once './Community.php';
 $user = new GossoutUser(0);
@@ -13,15 +13,15 @@ if (isset($_COOKIE['user_auth'])) {
     }
     if (isset($_GET['param']) && trim($_GET['param']) != "") {
         $user->setUserId(NULL);
-        if(is_numeric($_GET['param'])){
+        if (is_numeric($_GET['param'])) {
             $user->setUserId($_GET['param']);
             $id = $user->getId();
-        }else{
+        } else {
             $user->setScreenName($_GET['param']);
             $id = $user->getId();
         }
         $isValid = $user->isAvalidUser();
-        
+
         if (is_numeric($id) && $isValid['status']) {
             $user->getProfile();
             if ($user->getId() != $uid) {
@@ -58,12 +58,11 @@ if (isset($_COOKIE['user_auth'])) {
         <title>Gossout</title>
         <meta http-equiv="Pragma" http-equiv="no-cache" />
         <meta http-equiv="Expires" content="-1" />
-        <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="css/jackedup.css" />
+        <link rel="stylesheet" href="css/chosen.css" />
         <?php
         include ("head.php");
         ?>
-        <link rel="stylesheet" href="css/jackedup.css" />
-        <link rel="stylesheet" href="css/chosen.css" />
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
         <script src="scripts/test_helpers.js" type="text/javascript"></script>
         <script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
@@ -240,7 +239,7 @@ if (isset($isfriend)) {
                 ?>
                 <script>
                     $(document).ready(function() {
-                        processCom("<?php echo $comm['status'] ? json_encode($comm['community_list']) : "{}" ?>");
+                        processCom(<?php echo $comm['status'] == 1 ? json_encode($comm['community_list']) : "{}" ?>);
                     });
                 </script>
                 <?php

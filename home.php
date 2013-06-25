@@ -1,9 +1,9 @@
 <?php
-//session_start();
+header('Content-type: text/html; charset=UTF-8');
 if (isset($_COOKIE['user_auth'])) {
     include_once './encryptionClass.php';
     include_once './GossoutUser.php';
-    include_once './Community.php';
+    include_once './Gossout_Community.php';
     $encrypt = new Encryption();
     $uid = $encrypt->safe_b64decode($_COOKIE['user_auth']);
     if (is_numeric($uid)) {
@@ -25,13 +25,12 @@ if (isset($_COOKIE['user_auth'])) {
         <title>Gossout</title>
         <meta http-equiv="Pragma" http-equiv="no-cache" />
         <meta http-equiv="Expires" content="-1" />
-        <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
-        <?php
-        include ("head.php");
-        ?>
         <link rel="stylesheet" href="css/jackedup.css" />
         <link rel="stylesheet" href="css/chosen.css" />
         <link rel=" stylesheet" type="text/css" href="css/joyride-2.0.3.css">
+        <?php
+        include ("head.php");
+        ?>
         <script src="scripts/jquery.joyride-2.0.3.js"></script>
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
         <script src="scripts/test_helpers.js" type="text/javascript"></script>
@@ -109,11 +108,11 @@ if (isset($_COOKIE['user_auth'])) {
                                     if (responseText.post_photo) {
                                         htmlstr += '<p class="timeline-photo-upload">';
                                         $.each(responseText.post_photo, function(k, photo) {
-                                            htmlstr += '<a class="fancybox" rel="gallery' + id + '"  href="' + photo.original + '" rel="group"><img src="' + photo.thumbnail + '"></a>';
+                                            htmlstr += '<a href="' + photo.original + '" class="fancybox" rel="gallery' + id + '"><img src="' + photo.thumbnail + '"></a>';
                                         });
                                         htmlstr += '</p><div class="clear"></div>';
                                     }
-                                    htmlstr += '<!--<p class="post-meta"><span id="post-new-comment-show-' + id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' + '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share(20)</a></span></p>--><div class="clear"></div></div>';
+                                    htmlstr += '<!--<p class="post-meta"><span id="post-new-comment-show-' + id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' + '<span class="post-meta-gossout"><span class="icon-16-share"></span><a href="#share-123456" class="fancybox " id="inline">Share(20)</a></span></p>--><div class="clear"></div></div>';
                                 });
                                 $(".timeline-container").prepend(htmlstr);
                                 prepareDynamicDates();

@@ -1,5 +1,5 @@
 <?php
-//session_start();
+header('Content-type: text/html; charset=UTF-8');
 if (isset($_COOKIE['user_auth'])) {
     include_once './encryptionClass.php';
     include_once './GossoutUser.php';
@@ -20,11 +20,10 @@ if (isset($_COOKIE['user_auth'])) {
         include_once './webbase.php';
         ?>
         <title>Gossout - All notification</title>
-        <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="css/jackedup.css">
         <?php
         include ("head.php");
         ?>
-        <link rel="stylesheet" href="css/jackedup.css">
         <script type="text/javascript" src="scripts/humane.min.js"></script>
         <script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
@@ -170,7 +169,7 @@ if (isset($_COOKIE['user_auth'])) {
                     <span class="box" id="individual-notification-box-p" style="display: block"></span>
 
                     <div class="button" style="float:left;" id="loadMoreNotifDiv">
-                        <a href="" wink="10" comment="10" frq="10" posts="10" all="10" hold="all" class="loadMoreGossContent" id="loadMoreNotif">Load more > ></a>
+                        <a href="" all="10" class="loadMoreGossContent" comment="10" frq="10" hold="all" wink="10" id="loadMoreNotif" posts="10" >Load more > ></a>
                     </div>
                     <div id="loadMoreImg" style="display: none"><img src="images/loading.gif"/></div>
                     <script>

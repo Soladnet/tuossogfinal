@@ -8,7 +8,7 @@ include_once './Config.php';
 include_once './encryptionClass.php';
 include_once './GossoutUser.php';
 
-class Login {
+class Login extends Encryption{
 
     var $user, $pass, $rem, $uid, $timezone;
 
@@ -56,22 +56,21 @@ class Login {
                     $row['lastname'] = $this->toSentenceCase($row['lastname']);
                     $arrFetch['status'] = TRUE;
                     $arrFetch['user'] = $row['id'];
-                    $encrypt = new Encryption();
                     if ($this->rem) {
                         $expire = time() + 60 * 60 * 24 * 30 * 1;
-                        setcookie("user_auth", $encrypt->safe_b64encode($row['id']), $expire);
-                        setcookie("ro", $encrypt->safe_b64encode($encrypt->encode(md5(sha1($encrypt->safe_b64encode($row['id']))))), $expire);
-                        setcookie("tz", $encrypt->safe_b64encode($this->timezone), $expire);
+                        setcookie("user_auth", $this->safe_b64encode($row['id']), $expire);
+                        setcookie("ro", $this->safe_b64encode($this->encode(md5(sha1($this->safe_b64encode($row['id']))))), $expire);
+                        setcookie("tz", $this->safe_b64encode($this->timezone), $expire);
                     } else {
-                        setcookie("user_auth", $encrypt->safe_b64encode($row['id']), 0);
-                        setcookie("ro", $encrypt->safe_b64encode($encrypt->encode(md5(sha1($encrypt->safe_b64encode($row['id']))))), 0);
-                        setcookie("tz", $encrypt->safe_b64encode($this->timezone), 0);
+                        setcookie("user_auth", $this->safe_b64encode($row['id']), 0);
+                        setcookie("ro", $this->safe_b64encode($this->encode(md5(sha1($this->safe_b64encode($row['id']))))), 0);
+                        setcookie("tz", $this->safe_b64encode($this->timezone), 0);
                     }
                     $user = new GossoutUser($row['id']);
                     $user->getProfile();
                     $row['photo'] = $user->getPix();
                     session_regenerate_id();
-                    $row['tz'] = $encrypt->safe_b64encode($this->timezone);
+                    $row['tz'] = $this->safe_b64encode($this->timezone);
                     $_SESSION['auth'] = $row;
                 } else {
                     $arrFetch['status'] = FALSE;
@@ -153,11 +152,10 @@ class Login {
         exit;
     }
 
-    public function confirmCookies() {
-        $encrypt = new Encryption();
-        $user_auth_id = $encrypt->safe_b64decode($_COOKIE['user_auth']);
+    public function isLoggedIn() {
+        $user_auth_id = $this->safe_b64decode($_COOKIE['user_auth']);
         $ro = $_COOKIE['ro'];
-        $val = $encrypt->safe_b64encode($encrypt->encode(md5(sha1($encrypt->safe_b64encode($user_auth_id)))));
+        $val = $this->safe_b64encode($this->encode(md5(sha1($this->safe_b64encode($user_auth_id)))));
         if ($ro != $val) {
             $this->logout();
         } else {

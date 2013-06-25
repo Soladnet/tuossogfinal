@@ -111,7 +111,7 @@ if (isset($_POST['param'])) {
 //        }
 //    } 
     else if ($_POST['param'] == "community") {
-        include_once './Community.php';
+        include_once './Gossout_Community.php';
         if (isset($_POST['uid'])) {
             $id = decodeText($_POST['uid']);
             if (is_numeric($id) || $_POST['uid'] == 0) {
@@ -149,7 +149,7 @@ if (isset($_POST['param'])) {
                         $limit = $_POST['limit'];
                     }
                     if (isset($_POST['newuser']) && $_POST['newuser']) {
-                       $comm->setNewUser();
+                        $comm->setNewUser();
                     }
 
                     $user_comm = $comm->userComm($start, $limit, $_POST['max'], isset($_POST['comname']) ? ($_POST['comname'] == "" ? FALSE : $_POST['comname']) : FALSE); //$_POST['comname'] == "" ? FALSE : $_POST['comname']
@@ -468,7 +468,7 @@ if (isset($_POST['param'])) {
             displayError(400, "The request cannot be fulfilled due to bad syntax");
         }
     } else if ($_POST['param'] == "inviteFriends" || $_POST['param'] == "Send Invitation") {
-        include_once './Community.php';
+        include_once './Gossout_Community.php';
         if (isset($_POST['uid']) && isset($_POST['comid'])) {
             $id = decodeText($_POST['uid']);
             if (is_numeric($id) && is_numeric($_POST['comid'])) {
@@ -564,7 +564,7 @@ if (isset($_POST['param'])) {
                 }
             }
             if ($term == "*") {
-                include_once './Community.php';
+                include_once './Gossout_Community.php';
                 $comm = new Community();
                 $id = decodeText($_POST['uid']);
                 if (is_numeric($id)) {
@@ -647,7 +647,7 @@ if (isset($_POST['param'])) {
     } else if ($_POST['param'] == "sugcomm") {
         if (isset($_POST['uid'])) {
             $id = decodeText($_POST['uid']);
-            include_once './Community.php';
+            include_once './Gossout_Community.php';
             $limit = 5;
             if (is_numeric($id) || $_POST['uid'] == 0) {
                 $com = new Community();
@@ -701,7 +701,7 @@ if (isset($_POST['param'])) {
         }
     } else if ($_POST['param'] == "communityResult") {
         if (isset($_POST['g'])) {
-            include_once './Community.php';
+            include_once './Gossout_Community.php';
             $limit = 5;
             $start = 0;
             if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
@@ -1158,7 +1158,7 @@ if (isset($_POST['param'])) {
         if (isset($_POST['uid']) && isset($_POST['comid'])) {
             $id = decodeText($_POST['uid']);
             if (is_numeric($id) && is_numeric($_POST['comid'])) {
-                include_once './Community.php';
+                include_once './Gossout_Community.php';
                 $com = new Community();
                 $com->setCommunityId($_POST['comid']);
                 $com->setUser($id);
@@ -1330,7 +1330,7 @@ if (isset($_POST['param'])) {
         if (isset($_POST['helve']) && isset($_POST['name']) && isset($_POST['uid'])) {
             $creatorId = decodeText($_POST['uid']);
             if (is_numeric($creatorId)) {
-                include_once 'Community.php';
+                include_once './Gossout_Community.php';
                 $com = new Community();
                 if (isset($_FILES)) {
                     if (isset($_FILES['img']['tmp_name'])) {
@@ -1398,7 +1398,7 @@ if (isset($_POST['param'])) {
         if (isset($_POST['helve']) && isset($_POST['name']) && isset($_POST['creator'])) {
             $creatorId = decodeText($_POST['creator']);
             if (is_numeric($creatorId)) {
-                include_once 'Community.php';
+                include_once './Gossout_Community.php';
                 $com = new Community();
                 if (isset($_FILES)) {
                     if (isset($_FILES['img']['tmp_name'])) {
@@ -1440,6 +1440,11 @@ if (isset($_POST['param'])) {
                         if (isset($_POST['desc']) && $_POST['helve'] && $_POST['name']) {
                             $resp = $com->updateDescription(clean($_POST['desc']), clean($_POST['helve']));
                             $resp = $com->updateName(clean($_POST['name']), clean($_POST['helve']));
+                            if (isset($_POST['disablePost'])) {
+                                $resp = $com->enablePostStatus(clean($_POST['disablePost']), clean($_POST['helve']));
+                            } else {
+                                $resp = $com->enablePostStatus("1", clean($_POST['helve']));
+                            }
                             if (isset($_POST['privacy'])) {
                                 $resp = $com->updatePrivacy(clean($_POST['privacy']), clean($_POST['helve']));
                             } else {
@@ -1453,12 +1458,16 @@ if (isset($_POST['param'])) {
                 } else {
                     $resp = $com->updateDescription(clean($_POST['desc']), clean($_POST['helve']));
                     $resp = $com->updateName(clean($_POST['name']), clean($_POST['helve']));
+                    if (isset($_POST['disablePost'])) {
+                        $resp = $com->enablePostStatus(clean($_POST['disablePost']), clean($_POST['helve']));
+                    } else {
+                        $resp = $com->enablePostStatus("1", clean($_POST['helve']));
+                    }
                     if (isset($_POST['privacy'])) {
                         $resp = $com->updatePrivacy(clean($_POST['privacy']), clean($_POST['helve']));
                     } else {
                         $resp = $com->updatePrivacy("Public", clean($_POST['helve']));
                     }
-
                     echo json_encode(array("status" => $resp['status'], "message" => $resp['status'] ? "Community Updated successfully" : "Community info not updated successfully", "name" => $_POST['name'], "desc" => $_POST['desc'], "privacy" => isset($_POST['privacy']) ? "Private" : "Public"));
                 }
             } else {

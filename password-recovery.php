@@ -6,10 +6,10 @@
         ?>
         <title>Gossout - Password Reset</title>
         <link rel="shortcut icon" href="favicon.ico">
-        <link rel="stylesheet" media="screen" href="css/style.css">
+        <link rel="stylesheet" media="screen" href="css/style.min.css">
+        <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="scripts/modernizr.custom.77319.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" > 
-        <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
         <script>
             $(document).ready(function() {
                 if (Modernizr.inlinesvg) {

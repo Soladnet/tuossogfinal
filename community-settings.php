@@ -1,5 +1,5 @@
 <?php
-//session_start();
+header('Content-type: text/html; charset=UTF-8');
 if (isset($_COOKIE['user_auth'])) {
     include_once './encryptionClass.php';
     include_once './GossoutUser.php';
@@ -28,13 +28,12 @@ if (isset($_COOKIE['user_auth'])) {
         include_once './webbase.php';
         ?>
         <title>Gossout - Settings</title>
-        <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
-        <?php
-        include ("head.php");
-        ?>
         <link rel="stylesheet" href="css/validationEngine.jquery.css" type="text/css"/>
         <link rel="stylesheet" href="css/jackedup.css">
         <link rel="stylesheet" href="css/chosen.css" />
+        <?php
+        include ("head.php");
+        ?>
         <script type="text/javascript" src="scripts/humane.min.js"></script>
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
         <script src="scripts/test_helpers.js" type="text/javascript"></script>
@@ -47,7 +46,14 @@ if (isset($_COOKIE['user_auth'])) {
         if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FALSE) {
             ?>
             <script type="text/javascript">
+                var current;
                 $(document).ready(function() {
+                    var currentLocation = window.location + "";
+                    var lastChar = currentLocation.substring(currentLocation.length - 1);
+                    if (lastChar === "/") {
+                        currentLocation = currentLocation.substring(0, currentLocation.length - 1);
+                    }
+                    current = currentLocation.split("/");
                     var countDesc = 2000;
                     $("#commDescription").keyup(function() {
                         if (!($("#commDescription").val().length > countDesc)) {
@@ -183,10 +189,11 @@ if (isset($_COOKIE['user_auth'])) {
                         <div class="individual-setting">
                             <h2>Description ( <span id="countDesc">2000</span> )</h2>
                             <textarea name="desc" id="commDescription" rows="5" class="validate[required,maxSize[2000]">
-
                             </textarea>
                         </div>
-
+                        <div class="individual-setting">
+                            <h2>Disable post for members <input type="checkbox" name="disablePost" value="0" id="enablePost"/></h2>
+                        </div>
                         <div class="individual-setting">
                             <h2>Privacy</h2>
                             <p> <input type="checkbox" name="privacy" value="Private" id="privacy"> Make this community private</p>

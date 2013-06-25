@@ -1,5 +1,5 @@
 <?php
-//session_start();
+header('Content-type: text/html; charset=UTF-8');
 if (isset($_COOKIE['user_auth'])) {
     include_once './encryptionClass.php';
     include_once './GossoutUser.php';
@@ -28,12 +28,11 @@ if (isset($_COOKIE['user_auth'])) {
         include_once './webbase.php';
         ?>
         <title>Gossout - Settings</title>
-        <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="css/jackedup.css">
+        <link rel="stylesheet" href="css/validationEngine.jquery.css">
         <?php
         include ("head.php");
         ?>
-        <link rel="stylesheet" href="css/jackedup.css">
-        <link rel="stylesheet" href="css/validationEngine.jquery.css">
         <script type="text/javascript" src="scripts/humane.min.js"></script>
         <script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>

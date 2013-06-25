@@ -2,7 +2,7 @@
 
 require_once 'Config.php';
 include_once './encryptionClass.php';
-include_once './Community.php';
+include_once './Gossout_Community.php';
 include_once './Post.php';
 
 class GossoutUser {

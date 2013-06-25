@@ -1,7 +1,7 @@
 <?php
 
 require_once './Config.php';
-require_once './Community.php';
+require_once './Gossout_Community.php';
 require_once './GossoutUser.php';
 
 class Search {

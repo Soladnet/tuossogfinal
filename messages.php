@@ -1,4 +1,5 @@
 <?php
+header('Content-type: text/html; charset=UTF-8');
 if (isset($_COOKIE['user_auth'])) {
     include_once './encryptionClass.php';
     include_once './GossoutUser.php';
@@ -23,18 +24,15 @@ if (isset($_COOKIE['user_auth'])) {
         </title>
 
         <link rel="stylesheet" href="css/chosen.css" />
-        <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="css/jackedup.css">
         <?php
         include ("head.php");
         ?>
-        <link rel="stylesheet" href="css/jackedup.css">
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
         <script src="scripts/test_helpers.js" type="text/javascript"></script>
-
         <script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
         <script type="text/javascript" src="scripts/humane.min.js"></script>
         <script type="text/javascript" src="scripts/jquery.form.js"></script>
-
         <script src="scripts/chosen.jquery.min.js" type="text/javascript"></script>
         <script type="text/javascript">
             $(document).ready(function() {
@@ -101,7 +99,7 @@ if (isset($_COOKIE['user_auth'])) {
                 <div class="all-messages-list">
                     <h1 id="messageTitle">Messages</h1>
                     <span id="msgHeader">
-                        <a class="newMessage" href="#newMsg" id="new-message-btn"><input type="submit" class="button submit float-right" value="New Message">
+                        <a href="#newMsg" class="newMessage" id="new-message-btn"><input type="submit" class="button submit float-right" value="New Message">
                             <div style="display:none">
                                 <div id="newMsg" class="registration" style="width: 800">
                                     <h3>Message</h3>

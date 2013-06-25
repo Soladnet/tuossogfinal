@@ -141,7 +141,7 @@ function clean($value) {
         <meta name="author" content="Soladnet Sofwares, Zuma Communication Nigeria Limited">
         <meta charset="UTF-8">
         <link rel="shortcut icon" href="favicon.ico">
-        <link rel="stylesheet" media="screen" href="css/style.css">
+        <link rel="stylesheet" media="screen" href="css/style.min.css">
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" > 
         <link rel="stylesheet" href="css/validationEngine.jquery.css" type="text/css"/>
         <script src="scripts/jquery-1.9.1.min.js" type="text/javascript"></script>

@@ -1,9 +1,9 @@
 <?php
-//session_start();
+header('Content-type: text/html; charset=UTF-8');
 if (isset($_COOKIE['user_auth'])) {
     include_once './encryptionClass.php';
     include_once './GossoutUser.php';
-    include_once './Community.php';
+    include_once './Gossout_Community.php';
     $encrypt = new Encryption();
     $uid = $encrypt->safe_b64decode($_COOKIE['user_auth']);
     if (is_numeric($uid)) {
@@ -22,16 +22,15 @@ if (isset($_COOKIE['user_auth'])) {
         <?php
         include_once './webbase.php';
         ?>
-        <title>Gossout</title>
+        <title>Welcome to Gossout</title>
         <meta http-equiv="Pragma" http-equiv="no-cache" />
         <meta http-equiv="Expires" content="-1" />
-        <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
-        <?php
-        include ("head.php");
-        ?>
         <link rel="stylesheet" href="css/jackedup.css" />
         <link rel="stylesheet" href="css/chosen.css" />
         <link rel=" stylesheet" type="text/css" href="css/joyride-2.0.3.css">
+        <?php
+        include ("head.php");
+        ?>
         <script src="scripts/jquery.joyride-2.0.3.js"></script>
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
         <script src="scripts/test_helpers.js" type="text/javascript"></script>

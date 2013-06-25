@@ -111,7 +111,7 @@ if (isset($_GET['param'])) {
         <meta name="author" content="Soladnet Sofwares, Zuma Communication Nigeria Limited">
         <meta charset="UTF-8">
         <link rel="shortcut icon" href="favicon.ico">
-        <link rel="stylesheet" media="screen" href="css/style.css">
+        <link rel="stylesheet" media="screen" href="css/style.min.css">
         <script src="scripts/jquery-1.9.1.min.js" type="text/javascript"></script>
         <script type="text/javascript" src="scripts/modernizr.custom.77319.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" > 

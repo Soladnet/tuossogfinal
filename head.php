@@ -1,8 +1,9 @@
 
 <link rel="shortcut icon" href="favicon.ico">
-<link rel="stylesheet" media="screen" href="css/style.css">
+<link rel="stylesheet" media="screen" href="css/style.min.css">
 <link rel="stylesheet" href="css/hint.min.css">
 
+<script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
 <script src="scripts/jquery.sticky.js"></script>
 <script type="text/javascript" src="scripts/modernizr.custom.77319.js"></script>
@@ -36,4 +37,4 @@
         $("#nav-user").sticky({topSpacing:-4});
     });
 </script>
-<script type="text/javascript" src="scripts/script.js?v=1.8.2"></script>
+<script type="text/javascript" src="scripts/script.min.js"></script>
