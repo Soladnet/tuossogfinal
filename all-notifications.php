@@ -20,7 +20,6 @@ if (isset($_COOKIE['user_auth'])) {
         include_once './webbase.php';
         ?>
         <title>Gossout - All notification</title>
-        <link rel="stylesheet" href="css/jackedup.css">
         <?php
         include ("head.php");
         ?>

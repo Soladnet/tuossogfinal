@@ -13,12 +13,6 @@ if (isset($_COOKIE['user_auth'])) {
     include_once './GossoutUser.php';
     $user = new GossoutUser(0);
     $userProfile = $user->getProfile();
-//    $host = $_SERVER['HTTP_HOST'];
-//    if ($host == "localhost") {
-//        header("Location: http://$host/gossoutfinal/login");
-//    } else {
-//        header("Location: http://$host/login");
-//    }
 }
 ?>
 <!doctype html>
@@ -31,7 +25,6 @@ if (isset($_COOKIE['user_auth'])) {
         <meta http-equiv="Pragma" http-equiv="no-cache" />
         <meta http-equiv="Expires" content="-1" />
         <link rel="stylesheet" href="css/chosen.css" />
-        <link rel="stylesheet" href="css/jackedup.css">
         <link rel="stylesheet" href="css/validationEngine.jquery.css">
         <?php
         include ("head.php");

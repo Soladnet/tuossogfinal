@@ -1351,6 +1351,11 @@ if (isset($_POST['param'])) {
                             $image->save($thumbnail150);
                             move_uploaded_file($_FILES['img']['tmp_name'], $original);
                             $status = $com->create(clean($_POST['helve']), clean($_POST['name']), clean($_POST['desc']), $creatorId, $original, $thumbnail150, $thumbnail100);
+                            if (isset($_POST['disablePost'])) {
+                                $status = $com->enablePostStatus(clean($_POST['disablePost']), clean($_POST['helve']));
+                            } else {
+                                $status = $com->enablePostStatus("1", clean($_POST['helve']));
+                            }
                             if (isset($_POST['privacy'])) {
                                 $status = $com->updatePrivacy("Private", clean($_POST['helve']));
                             }
@@ -1368,7 +1373,11 @@ if (isset($_POST['param'])) {
                         } else {
                             $status = $com->create(clean($_POST['helve']), clean($_POST['name']), clean($_POST['desc']), $creatorId);
                         }
-
+                        if (isset($_POST['disablePost'])) {
+                            $status = $com->enablePostStatus(clean($_POST['disablePost']), clean($_POST['helve']));
+                        } else {
+                            $status = $com->enablePostStatus("1", clean($_POST['helve']));
+                        }
                         if ($status['status']) {
                             echo json_encode(array("status" => "success", "name" => $_POST['name'], "unique_name" => $_POST['helve']));
                         } else {
@@ -1381,7 +1390,11 @@ if (isset($_POST['param'])) {
                     } else {
                         $status = $com->create(clean($_POST['helve']), clean($_POST['name']), clean($_POST['desc']), $creatorId);
                     }
-
+                    if (isset($_POST['disablePost'])) {
+                        $status = $com->enablePostStatus(clean($_POST['disablePost']), clean($_POST['helve']));
+                    } else {
+                        $status = $com->enablePostStatus("1", clean($_POST['helve']));
+                    }
                     if ($status['status']) {
                         echo json_encode(array("status" => "success", "name" => $_POST['name'], "unique_name" => $_POST['helve']));
                     } else {
@@ -1412,10 +1425,34 @@ if (isset($_POST['param'])) {
                             $thumbnail150 = "upload/images/community_photo/" . time() . "-" . $_POST['creator'] . "-" . 2 . "_thumb.$ext";
                             $image = new SimpleImage();
                             $image->load($_FILES['img']['tmp_name']);
-                            $image->resizeToWidth(150);
-                            $image->save($thumbnail150);
-                            $image->resizeToWidth(100);
-                            $image->save($thumbnail100);
+                            list($width, $height) = getimagesize($_FILES["img"]["tmp_name"]);
+                            if ($width > $height) {
+                                if ($width > 200) {
+                                    $image->resizeToWidth(200);
+                                    $image->save($thumbnail150);
+                                } else {
+                                    copy($_FILES["img"]["tmp_name"], $thumbnail150);
+                                }
+                                if ($width > 150) {
+                                    $image->resizeToWidth(150);
+                                    $image->save($thumbnail100);
+                                } else {
+                                    copy($_FILES["img"]["tmp_name"], $thumbnail100);
+                                }
+                            } else {
+                                if ($height > 200) {
+                                    $image->resizeToHeight(200);
+                                    $image->save($thumbnail150);
+                                } else {
+                                    copy($_FILES["img"]["tmp_name"], $thumbnail150);
+                                }
+                                if ($height > 150) {
+                                    $image->resizeToHeight(150);
+                                    $image->save($thumbnail100);
+                                } else {
+                                    copy($_FILES["img"]["tmp_name"], $thumbnail100);
+                                }
+                            }
                             move_uploaded_file($_FILES['img']['tmp_name'], $original);
                             $status = $com->updatePix($original, $thumbnail100, $thumbnail150, clean($_POST['helve']));
 

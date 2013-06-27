@@ -140,9 +140,10 @@ function clean($value) {
         <meta name="keywords" content="Community,Communities,Interest,Interests,Friend,Friends,Connect,Search,Discover,Discoveries,Gossout,Gossout.com,Zuma Communication Nigeria Limited,Soladnet Software,Soladoye Ola Abdulrasheed, Muhammad Kori,Ali Sani Mohammad,Lagos,Nigeria,Nigerian,Africa,Surulere,Pictures,Picture,Video,Videos,Blog,Blogs">
         <meta name="author" content="Soladnet Sofwares, Zuma Communication Nigeria Limited">
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" > 
+        
         <link rel="shortcut icon" href="favicon.ico">
         <link rel="stylesheet" media="screen" href="css/style.min.css">
-        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" > 
         <link rel="stylesheet" href="css/validationEngine.jquery.css" type="text/css"/>
         <script src="scripts/jquery-1.9.1.min.js" type="text/javascript"></script>
         <script type="text/javascript" src="scripts/modernizr.custom.77319.js"></script>
@@ -237,7 +238,7 @@ function clean($value) {
                                         ?>" id="target">
                                     </div>
                                     <hr>
-                                    <input type="file" onchange="$('#selectedFile').html('<br/>File Name: ' + this.value)" id="fileInput" name="myfile" class="input-fields validate[required]" style="position: absolute;left: -9999px;"/>
+                                    <input type="file" onchange="$('#selectedFile').html('<br/><strong>File Name:</strong> ' + this.value);" id="fileInput" name="myfile" class="input-fields validate[required]" style="position: absolute;left: -9999px;"/>
                                     <div id="fileChookseBtn" class="button"><span class="icon-16-camera"></span> Click to choose image</div>
                                     <span id="selectedFile"></span>
                                     <p>Maximum file size of 5MB<br/>Image type of .jpg, .jpeg, .gif, and .png</p>

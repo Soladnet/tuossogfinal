@@ -27,7 +27,6 @@ if (isset($_COOKIE['user_auth'])) {
         <?php
         include ("head.php");
         ?>
-        <link rel="stylesheet" href="css/jackedup.css" type="text/css"/>
         <script src="scripts/humane.min.js"></script>
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
         <script src="scripts/test_helpers.js" type="text/javascript"></script>
@@ -122,36 +121,38 @@ if (isset($_COOKIE['user_auth'])) {
                     <hr>
                     <form method="POST" action="tuossog-api-json.php" id="creatForm">
                         <div class="individual-detail">
-                            <h2>1. Helve</h2>
+                            <h2>Helve</h2>
                             <p class="desc">Give your community a helve; example: WHO for World Health organizations</p>
                             <input type="text" class="validate[required,ajax[ajaxCommunityNameCallPhp]] text-input input-fields" name="helve"/>
                         </div>
 
                         <div class="individual-detail">
-                            <h2>2. Name</h2>
+                            <h2>Name</h2>
                             <p class="desc">This name would be used to identify the community</p>
                             <input type="text" name="name" class="validate[required,maxSize[100]] text-input input-fields">
                         </div>
 
                         <div class="individual-detail">
-                            <h2>3. About</h2>
+                            <h2>About</h2>
                             <p class="desc">Give a short description of the community ( <span id="countDesc">2000</span> )</p>
                             <textarea name="desc" class="input-fields validate[required,maxSize[2000]]" id="desc"></textarea>
                         </div>
 
 
                         <div class="individual-detail">
-                            <h2>4. Privacy</h2>
+                            <h2>Privacy</h2>
+                            <p class="desc">Disable Post for Members <input type="checkbox" name="disablePost" value="0" id="enablePost"/></p>
+                            <hr/>
                             <p class="desc">Private communities can only be accessed by members that are invited to join</p>
                             <p><input type="checkbox" value="Private" name="privacy"> Make community private</p>
                         </div>
                         <div class="individual-detail">
-                            <h2>5. Community Photo</h2>
+                            <h2>Community Photo</h2>
                             <p class="desc">Logo, Badge, whatever image that best represents your Community</p>
                             <p class="desc">Image must be of the following type: .jpg, .png or .jpeg and must not be more than 2MB of size</p>
                             <hr>
                             <label>Select an image: </label>
-                            <input type="file" name="img" class="input-fields" id="comImageField" style="position: absolute;left: -9999px;"><div class="button" id="imageSelectBtn"><span class="icon-16-camera"></span></div>
+                            <input type="file" onchange="$('#selectedFile').html('<br/><strong>File Name:</strong> ' + (this.value.substring(this.value.lastIndexOf('\\')+1)));" name="img" class="input-fields" id="comImageField" style="position: absolute;left: -9999px;"><div class="button" id="imageSelectBtn"><span class="icon-16-camera"></span></div><span id="selectedFile"></span>
                             <!--<p></p>-->
                             <!--<input type="submit" class="button" value="Upload photo">-->
                         </div>

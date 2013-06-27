@@ -28,7 +28,6 @@ if (isset($_COOKIE['user_auth'])) {
         include_once './webbase.php';
         ?>
         <title>Gossout - Settings</title>
-        <link rel="stylesheet" href="css/jackedup.css">
         <link rel="stylesheet" href="css/validationEngine.jquery.css">
         <?php
         include ("head.php");

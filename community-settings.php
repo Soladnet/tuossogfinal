@@ -29,7 +29,6 @@ if (isset($_COOKIE['user_auth'])) {
         ?>
         <title>Gossout - Settings</title>
         <link rel="stylesheet" href="css/validationEngine.jquery.css" type="text/css"/>
-        <link rel="stylesheet" href="css/jackedup.css">
         <link rel="stylesheet" href="css/chosen.css" />
         <?php
         include ("head.php");
@@ -157,15 +156,15 @@ if (isset($_COOKIE['user_auth'])) {
                     <form action="tuossog-api-json.php" method="POST" id="imageChangeForm" enctype="application/x-www-form-urlencoded">
                         <div class="individual-setting individual-detail">
                             <h2>Photo</h2>
-                            <div class="pic-user">
-                                <img src="images/no-pic.png" id="com-img">
-                            </div>
+                            <span class="pic-user">
+                                <img onload="OnImageLoad(event);" src="images/no-pic.png" id="com-img">
+                            </span>
                             <hr>
-                            <input type="file" name="img" id="fileUpload" class="input-fields validate[required]" style="position: absolute;left: -9999px;">
+                            <input type="file" onchange="$('#selectedFile').html('<br/><strong>File Name:</strong> ' + (this.value.substring(this.value.lastIndexOf('\\')+1)));" name="img" id="fileUpload" class="input-fields validate[required]" style="position: absolute;left: -9999px;">
                             <input type="hidden" name="param" value="Update Community" />
                             <input type="hidden" name="creator" value="" class="creator_field"/> 
                             <input type="hidden" name="helve" readonly="" class="validate[required] helve">
-                            <div class="button" id="uploadFileBtn"><span class="icon-16-camera"></span> Choose Photo</div>
+                            <div class="button" id="uploadFileBtn"><span class="icon-16-camera"></span> Choose Photo</div><span id="selectedFile"></span>
                             <p class="desc">Logo, Badge, whatever image that best represents your community
                                 Image must be of the following type: .jpg, .png or .jpeg and must not be more than 2MB of size</p>
                             <input type="submit" class="button" value="Upload photo">

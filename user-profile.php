@@ -1,7 +1,7 @@
 <?php
 header('Content-type: text/html; charset=UTF-8');
 include_once './GossoutUser.php';
-include_once './Community.php';
+include_once './Gossout_Community.php';
 $user = new GossoutUser(0);
 $userCommunity = new Community();
 if (isset($_COOKIE['user_auth'])) {

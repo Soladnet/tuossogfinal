@@ -1141,6 +1141,7 @@ function loadCommunity(response, statusText, target) {
                 $("#commDesc").html(response.description.length > 250 ? (nl2br(linkify(response.description.substring(0, 250)))) + "<span style='display:none' id='comdisplayMoreDesc'>" + (nl2br(linkify(response.description.substring(250)))) + "</span>" + " <a id='commViewMoreDesc'>view more...</a>" : (nl2br(linkify(response.description))));
                 if (response.description) {
                     $("#metaDescription").attr("content", response.description.substring(0, 160));
+                    alert($("#metaDescription").prop("content"));
                 } else {
                     $("#metaDescription").attr("content", "Start or join existing communities/interests on Gossout and start sharing pictures and videos. People use Gossout search, Discover and connect with communities");
                 }
@@ -1792,8 +1793,8 @@ function loadComment(response, statusText, target) {
 }
 function loadFriends(response, statusText, target) {
     if (!response.error) {
-        var htmlstr = "", unfriend = "", friendsPage = "", frndCount;
-        frndCount = response.length;
+        var htmlstr = "", unfriend = "", friendsPage = "", frndCount = response.length;
+
         $.each(response, function(i, responseItem) {
             if (target.target === "#aside-friends-list") {
                 if (target.friendPage) {
@@ -1847,8 +1848,6 @@ function loadFriends(response, statusText, target) {
                 }
             }
         });
-        //        if(target.friendPage)
-        //            alert(target.friendPage);
         if (target.target === "#toUserInput") {
             var str = '<select data-placeholder="Select friend(s)" class="chzn-select" multiple style="width:350px;" name="user[]" id="user_callup"><option value=""></option>' + htmlstr + '</select>';
             $(target.target).html(str);
@@ -1870,7 +1869,7 @@ function loadFriends(response, statusText, target) {
 
             if (target.friendPage) {
                 if (friendsPage !== "") {
-                    if (target.individualFriend) {
+                    if (!target.individualFriend) {
                         if (frndCount < 10) {
                             $(target.friendPage).append(friendsPage);
                             $('#loadMoreFrnd').attr('frnd', parseInt($('#loadMoreFrnd').attr('frnd')) + 10);
@@ -1881,13 +1880,14 @@ function loadFriends(response, statusText, target) {
                             $('#loader1').hide();
                             $('#loadMoreFrnd').attr('frnd', parseInt($('#loadMoreFrnd').attr('frnd')) + 10);
                         }
-                    }
-                    else {
+                    } else {
                         $(target.friendPage).html(friendsPage);
-                        $('#loadMoreFrndDiv').hide();
+                        if (frndCount < 10) {
+                            $('#loadMoreFrndDiv').hide();
+                        } else {
+                            $('#loadMoreFrndDiv').show();
+                        }
                     }
-                } else {
-
                 }
             }
             $(unfriend).click(function() {

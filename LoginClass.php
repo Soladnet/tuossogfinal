@@ -8,7 +8,7 @@ include_once './Config.php';
 include_once './encryptionClass.php';
 include_once './GossoutUser.php';
 
-class Login extends Encryption{
+class Login extends Encryption {
 
     var $user, $pass, $rem, $uid, $timezone;
 
@@ -168,6 +168,14 @@ class Login extends Encryption{
                     if ($result = $mysql->query($str)) {
                         if ($result->num_rows > 0 && $result->num_rows == 1) {
                             $row = $result->fetch_assoc();
+
+                            $user = new GossoutUser($row['id']);
+                            $pix = $user->getProfilePix();
+                            if ($pix['status']) {
+                                $row['photo'] = $pix['pix'];
+                            } else {
+                                $row['photo'] = array("nophoto" => TRUE, "alt" => $pix['alt']);
+                            }
                             $_SESSION['auth'] = $row;
                         }
                     }

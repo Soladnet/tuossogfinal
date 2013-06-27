@@ -30,32 +30,56 @@ if ($type == 'xml') {
             $image = new SimpleImage();
             $image->load($_FILES["myfile"]["tmp_name"]);
             list($width, $height) = getimagesize($_FILES["myfile"]["tmp_name"]);
-//            $image->resize(150, 150);
-//            $image->save($thumbnail150);
-//            $image->resize(75, 75);
-//            $image->save($thumbnail75);
-//            $image->resize(50, 50);
-//            $image->save($thumbnail50);
-//            $image->resize(45, 45);
-//            $image->save($thumbnail45);
             if ($width > $height) {
-                $image->resizeToWidth(150);
-                $image->save($thumbnail150);
-                $image->resizeToWidth(75);
-                $image->save($thumbnail75);
-                $image->resizeToWidth(50);
-                $image->save($thumbnail50);
-                $image->resizeToWidth(45);
-                $image->save($thumbnail45);
+                if ($width > 200) {
+                    $image->resizeToWidth(200);
+                    $image->save($thumbnail150);
+                } else {
+                    copy($_FILES["myfile"]["tmp_name"], $thumbnail150);
+                }
+                if ($width > 100) {
+                    $image->resizeToWidth(100);
+                    $image->save($thumbnail75);
+                } else {
+                    copy($_FILES["myfile"]["tmp_name"], $thumbnail75);
+                }
+                if ($width > 75) {
+                    $image->resizeToWidth(75);
+                    $image->save($thumbnail50);
+                } else {
+                    copy($_FILES["myfile"]["tmp_name"], $thumbnail50);
+                }
+                if ($width > 50) {
+                    $image->resizeToWidth(50);
+                    $image->save($thumbnail45);
+                } else {
+                    copy($_FILES["myfile"]["tmp_name"], $thumbnail45);
+                }
             } else {
-                $image->resizeToHeight(150);
-                $image->save($thumbnail150);
-                $image->resizeToHeight(75);
-                $image->save($thumbnail75);
-                $image->resizeToHeight(50);
-                $image->save($thumbnail50);
-                $image->resizeToHeight(45);
-                $image->save($thumbnail45);
+                if ($height > 200) {
+                    $image->resizeToHeight(200);
+                    $image->save($thumbnail150);
+                } else {
+                    copy($_FILES["myfile"]["tmp_name"], $thumbnail150);
+                }
+                if ($height > 100) {
+                    $image->resizeToHeight(100);
+                    $image->save($thumbnail75);
+                } else {
+                    copy($_FILES["myfile"]["tmp_name"], $thumbnail75);
+                }
+                if ($height > 75) {
+                    $image->resizeToHeight(75);
+                    $image->save($thumbnail50);
+                } else {
+                    copy($_FILES["myfile"]["tmp_name"], $thumbnail50);
+                }
+                if ($height > 50) {
+                    $image->resizeToHeight(50);
+                    $image->save($thumbnail45);
+                } else {
+                    copy($_FILES["myfile"]["tmp_name"], $thumbnail45);
+                }
             }
             move_uploaded_file($_FILES["myfile"]["tmp_name"], $newPath);
             include_once './GossoutUser.php';
