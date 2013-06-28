@@ -11,7 +11,7 @@
                     <input name="g" class="input-fields" placeholder="Search" type="text" required />
                     <input type="submit" class="button" value="Search"/>
                     <?php
-                    include("search-pop-out.php");
+//                    include("search-pop-out.php");
                     ?>
                 </form>
             </div>

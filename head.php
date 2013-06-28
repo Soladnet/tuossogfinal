@@ -38,4 +38,4 @@
         $("#nav-user").sticky({topSpacing:-4});
     });
 </script>
-<script type="text/javascript" src="scripts/script.js"></script>
+<script type="text/javascript" src="scripts/script.min.js"></script>

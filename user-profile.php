@@ -29,23 +29,35 @@ if (isset($_COOKIE['user_auth'])) {
                 $isfriend['uid'] = $user->encodeData($user->getId());
             }
         } else {
-            header("HTTP/1.0 404 Not Found");
+            include_once './404.php';
             exit;
         }
     }
 } else {
     if (isset($_GET['param']) && trim($_GET['param']) != "") {
         $user->setUserId(NULL);
-        $user->setScreenName($_GET['param']);
-        $id = $user->getId();
-        if (is_numeric($id)) {
-            $user->getProfile();
+        if (is_numeric($_GET['param'])) {
+            $user->setUserId($_GET['param']);
+            $id = $user->getId();
         } else {
-            header("HTTP/1.0 404 Not Found");
+            $user->setScreenName($_GET['param']);
+            $id = $user->getId();
+        }
+        $isValid = $user->isAvalidUser();
+
+        if (is_numeric($id) && $isValid['status']) {
+            $user->getProfile();
+            if ($user->getId() != $uid) {
+                $isfriend = ($user->isAfriend($uid));
+                $isfriend['uid'] = $user->encodeData($user->getId());
+            }
+        } else {
+            include_once './404.php';
             exit;
         }
     } else {
-        header("Location: login");
+        include_once './404.php';
+        exit;
     }
 }
 ?>
