@@ -48,7 +48,7 @@ if (isset($_COOKIE['user_auth'])) {
                     minWidth: 250
 
                 });
-                $('.noResult,#loader1').hide();
+                $('.noResult,#loader1,#loadMoreFrndDiv').hide();
                 var start, limit;
                 $('#loadMoreFrnd').click(function(){
                     $('#loader1').show();
@@ -130,7 +130,7 @@ if (isset($_COOKIE['user_auth'])) {
                     <span id="individual-friend-box"></span>
                     <!--<div class="clear">&nbsp;</div>-->
                     <div class="clear" style="height:5px;"></div>
-                    <div class="button" style="float:left;" id="loadMoreFrndDiv" style="display:none;">
+                    <div class="button" style="float:left;" id="loadMoreFrndDiv">
                         <a href="" frnd="20" class="loadMoreFrnd" id="loadMoreFrnd">Load more > ></a>
                     </div>&nbsp;<img src='images/loading.gif' style='border:none' id="loader1"/>
                 </div>

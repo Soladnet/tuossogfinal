@@ -1141,7 +1141,7 @@ function loadCommunity(response, statusText, target) {
                 $("#commDesc").html(response.description.length > 250 ? (nl2br(linkify(response.description.substring(0, 250)))) + "<span style='display:none' id='comdisplayMoreDesc'>" + (nl2br(linkify(response.description.substring(250)))) + "</span>" + " <a id='commViewMoreDesc'>view more...</a>" : (nl2br(linkify(response.description))));
                 if (response.description) {
                     $("#metaDescription").attr("content", response.description.substring(0, 160));
-                    alert($("#metaDescription").prop("content"));
+//                    alert($("#metaDescription").prop("content"));
                 } else {
                     $("#metaDescription").attr("content", "Start or join existing communities/interests on Gossout and start sharing pictures and videos. People use Gossout search, Discover and connect with communities");
                 }
@@ -1870,16 +1870,22 @@ function loadFriends(response, statusText, target) {
             if (target.friendPage) {
                 if (friendsPage !== "") {
                     if (target.individualFriend) {
-                         $(target.friendPage).append(friendsPage);
-                         $('#loadMoreFrnd').attr('frnd', parseInt($('#loadMoreFrnd').attr('frnd')) + 10);
-                        if (frndCount < 10) { 
+                        $(target.friendPage).append(friendsPage);
+                        $('#loadMoreFrnd').attr('frnd', parseInt($('#loadMoreFrnd').attr('frnd')) + 10);
+                        if (frndCount < 10) {
                             $('#loadMoreFrndDiv,#loader1').hide();
+                            humane.log("Opps! you've got it all!", {
+                                timeout: 3000,
+                                clickToClose: true,
+                                addnCls: 'humane-jackedup-success'
+                            });
                         } else {
 //                            $(target.friendPage).append(friendsPage);
-                            ('#loadMoreFrndDiv').show();
+                            $('#loadMoreFrndDiv').show();
                             $('#loader1').hide();
 //                            $('#loadMoreFrnd').attr('frnd', parseInt($('#loadMoreFrnd').attr('frnd')) + 10);
                         }
+
                     } else {
                         $(target.friendPage).html(friendsPage);
                         if (frndCount < 20) {
@@ -2431,7 +2437,7 @@ function showOption(obj) {
             });
         }
     } else {
-        alert("Not implemented");
+//        alert("Not implemented");
     }
 }
 function readCookie(name) {
