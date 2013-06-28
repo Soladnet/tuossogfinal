@@ -77,7 +77,7 @@ if (isset($user)) {
                         $(document).ready(function() {
                             var user = readCookie('user_auth');
                             if (user !== 0) {
-                                sendData("loadFriends", {target: "#aside-friends-list", start: 0, limit: 20, loadImage: true <?php echo isset($_GET['page']) ? $_GET['page'] == "friends" ? ",friendPage:'#individual-friend-box'" : ""  : "" ?>});
+                                sendData("loadFriends", {target: "#aside-friends-list", start: 0, limit: 18, loadImage: true <?php echo isset($_GET['page']) ? $_GET['page'] == "friends" ? ",friendPage:'#individual-friend-box'" : ""  : "" ?>});
                                 sendData("loadCommunity", {target: "#aside-community-list", loadImage: true, max: "", start: 0, limit: 5});
                             }
                         });

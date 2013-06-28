@@ -1888,7 +1888,7 @@ function loadFriends(response, statusText, target) {
 
                     } else {
                         $(target.friendPage).html(friendsPage);
-                        if (frndCount < 20) {
+                        if (frndCount < 18) {
                             $('#loadMoreFrndDiv').hide();
                         } else {
                             $('#loadMoreFrndDiv').show();
