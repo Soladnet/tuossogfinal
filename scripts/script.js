@@ -1869,20 +1869,20 @@ function loadFriends(response, statusText, target) {
 
             if (target.friendPage) {
                 if (friendsPage !== "") {
-                    if (!target.individualFriend) {
-                        if (frndCount < 10) {
-                            $(target.friendPage).append(friendsPage);
-                            $('#loadMoreFrnd').attr('frnd', parseInt($('#loadMoreFrnd').attr('frnd')) + 10);
+                    if (target.individualFriend) {
+                         $(target.friendPage).append(friendsPage);
+                         $('#loadMoreFrnd').attr('frnd', parseInt($('#loadMoreFrnd').attr('frnd')) + 10);
+                        if (frndCount < 10) { 
                             $('#loadMoreFrndDiv,#loader1').hide();
                         } else {
-                            $(target.friendPage).append(friendsPage);
+//                            $(target.friendPage).append(friendsPage);
                             ('#loadMoreFrndDiv').show();
                             $('#loader1').hide();
-                            $('#loadMoreFrnd').attr('frnd', parseInt($('#loadMoreFrnd').attr('frnd')) + 10);
+//                            $('#loadMoreFrnd').attr('frnd', parseInt($('#loadMoreFrnd').attr('frnd')) + 10);
                         }
                     } else {
                         $(target.friendPage).html(friendsPage);
-                        if (frndCount < 10) {
+                        if (frndCount < 20) {
                             $('#loadMoreFrndDiv').hide();
                         } else {
                             $('#loadMoreFrndDiv').show();

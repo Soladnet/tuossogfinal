@@ -48,16 +48,16 @@ if (isset($_COOKIE['user_auth'])) {
                     minWidth: 250
 
                 });
-                  $('.noResult,#loadMoreFrndDiv,#loader1').hide();
+                $('.noResult,#loader1').hide();
                 var start, limit;
                 $('#loadMoreFrnd').click(function(){
-                   $('#loader1').show();
+                    $('#loader1').show();
                     start = parseInt($(this).attr('frnd'));
                     limit = 10;
-//                    limit = 1;
-                sendData("loadFriends", {target: "#aside-friends-list", loadImage: true,friendPage:'#individual-friend-box',individualFriend:true,start:start,limit:limit,targetLoader:'#individual-friend-box'});
-                return false;
-                    });
+                    //                    limit = 1;
+                    sendData("loadFriends", {target: "#aside-friends-list", friendPage:'#individual-friend-box',individualFriend:true,start:start,limit:limit,targetLoader:'#individual-friend-box'});
+                    return false;
+                });
                 $("#searchForm").validationEngine();
                 $("#searchForm").ajaxForm({
                     beforeSend: function() {
@@ -73,18 +73,18 @@ if (isset($_COOKIE['user_auth'])) {
                             if (responseText.people) {
                                 $.each(responseText.people, function(i, response) {
                                     htmlstr += '<div class="individual-friend-box"><a class= "fancybox " id="inline" href="#' + response.username + '">' +
-                                            '<div class="friend-image"><img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"></div><div class="friend-text">' +
-                                            '<div class="friend-name">' + response.firstname.concat(" ", response.lastname) + '</div>' +
-                                            '<div class="friend-location">' + response.location + '</div></div>' +
-                                            '<div style="display:none"><div id="' + response.username + '"><div class="aside-wrapper"><div class="profile-pic"><img class="holdam" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail150) + '"></div>' +
-                                            '<table><tr><td></td><td><h3>' + response.firstname.concat(" ", response.lastname) + '</h3></td></tr>' +
-                                            '<tr><td><span class="icon-16-map"></span></td><td class="profile-meta"> ' + response.location + '</td></tr>' +
-                                            '<tr><td><span class="icon-16-' + (response.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta">' + (response.gender === "M" ? "Male" : "Female") + '</td></tr>' +
-                                            '</table><div class="clear"></div>' +
-                                            '<div class="profile-meta-functions button" id="wink-f-' + response.id + '"><span class="icon-16-eye"></span> Wink</div>' +
-                                            '<div class="profile-meta-functions button"><a href="messages/' + response.username + '"><span class="icon-16-mail"></span> Send Message</a></div>' +
-                                            '<div class="profile-meta-functions button" id="unfriend-f-' + response.id + '"><span class="icon-16-checkmark"></span> <span id="unfriend-f-' + response.id + '-text">Unfriend</a></div><span id="friend-action-loading"></span>' +
-                                            '<div class="clear"></div></div></div></div></a></div>';
+                                        '<div class="friend-image"><img src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail50) + '"></div><div class="friend-text">' +
+                                        '<div class="friend-name">' + response.firstname.concat(" ", response.lastname) + '</div>' +
+                                        '<div class="friend-location">' + response.location + '</div></div>' +
+                                        '<div style="display:none"><div id="' + response.username + '"><div class="aside-wrapper"><div class="profile-pic"><img class="holdam" src="' + (response.photo.nophoto ? response.photo.alt : response.photo.thumbnail150) + '"></div>' +
+                                        '<table><tr><td></td><td><h3>' + response.firstname.concat(" ", response.lastname) + '</h3></td></tr>' +
+                                        '<tr><td><span class="icon-16-map"></span></td><td class="profile-meta"> ' + response.location + '</td></tr>' +
+                                        '<tr><td><span class="icon-16-' + (response.gender === "M" ? "male" : "female") + '"></span></td><td class="profile-meta">' + (response.gender === "M" ? "Male" : "Female") + '</td></tr>' +
+                                        '</table><div class="clear"></div>' +
+                                        '<div class="profile-meta-functions button" id="wink-f-' + response.id + '"><span class="icon-16-eye"></span> Wink</div>' +
+                                        '<div class="profile-meta-functions button"><a href="messages/' + response.username + '"><span class="icon-16-mail"></span> Send Message</a></div>' +
+                                        '<div class="profile-meta-functions button" id="unfriend-f-' + response.id + '"><span class="icon-16-checkmark"></span> <span id="unfriend-f-' + response.id + '-text">Unfriend</a></div><span id="friend-action-loading"></span>' +
+                                        '<div class="clear"></div></div></div></div></a></div>';
                                 });
                                 $("#individual-friend-box").html(htmlstr);
                             } else {
@@ -129,10 +129,10 @@ if (isset($_COOKIE['user_auth'])) {
                     <div class="clear"></div>
                     <span id="individual-friend-box"></span>
                     <!--<div class="clear">&nbsp;</div>-->
-                   
-                     <div class="button" style="float:left;" id="loadMoreFrndDiv">
-                        <a href="" frnd="10" class="loadMoreFrnd" id="loadMoreFrnd">Load more > ></a>
-                    </div>
+                    <div class="clear" style="height:5px;"></div>
+                    <div class="button" style="float:left;" id="loadMoreFrndDiv" style="display:none;">
+                        <a href="" frnd="20" class="loadMoreFrnd" id="loadMoreFrnd">Load more > ></a>
+                    </div>&nbsp;<img src='images/loading.gif' style='border:none' id="loader1"/>
                 </div>
 
                 <?php
