@@ -31,12 +31,16 @@ if (isset($_COOKIE['user_auth'])) {
             var limit = 10;
             function doSeparatGoss(pointer) {
                 var hold = $('#current-notification');
+                $('#loadMoreNotifDiv').hide();
                 $('.noResult').click(function() {
                     $('#loadMoreNotifDiv').hide();
                 });
                 if (pointer === 'wink-notification-icon') {
                     if ($("#" + pointer).hasClass("clicked")) {
                         $("#individual-notification-box-w").show();
+                         $('.loadMoreGossContent').attr('hold', 'Wink');
+                        if($("#" + pointer).hasClass("showmore"))
+                            $('#loadMoreNotifDiv').show();
                     } else {
                         $("#" + pointer).addClass("clicked");
                         sendData("loadWink", {target: "#individual-notification-box-w", loadImage: true, start: 0, limit: 10});
@@ -48,6 +52,9 @@ if (isset($_COOKIE['user_auth'])) {
                     hold.text('Comment');
                     if ($("#" + pointer).hasClass("clicked")) {
                         $("#individual-notification-box-c").show();
+                        $('.loadMoreGossContent').attr('hold', 'Comment');
+                        if($("#" + pointer).hasClass("showmore"))
+                            $('#loadMoreNotifDiv').show();
                     } else {
                         $("#" + pointer).addClass("clicked");
                         sendData("loadGossComment", {target: "#individual-notification-box-c", loadImage: true, start: 0, limit: 10});
@@ -57,8 +64,12 @@ if (isset($_COOKIE['user_auth'])) {
 
                 } else if (pointer === 'frq-notification-icon') {
                     hold.text('Friend Request');
+                    
                     if ($("#" + pointer).hasClass("clicked")) {
                         $("#individual-notification-box-f").show();
+                        $('.loadMoreGossContent').attr('hold', 'Frq');
+                        if($("#" + pointer).hasClass("showmore"))
+                            $('#loadMoreNotifDiv').show();
                     } else {
                         $("#" + pointer).addClass("clicked");
                         sendData("loadGossFrq", {target: "#individual-notification-box-f", loadImage: true, start: 0, limit: 10});
@@ -69,6 +80,9 @@ if (isset($_COOKIE['user_auth'])) {
                     hold.text('Post');
                     if ($("#" + pointer).hasClass("clicked")) {
                         $("#individual-notification-box-p").show();
+                         $('.loadMoreGossContent').attr('hold', 'Post');
+                        if($("#" + pointer).hasClass("showmore"))
+                            $('#loadMoreNotifDiv').show();
                     } else {
                         $("#" + pointer).addClass("clicked");
                         sendData("loadGossPost", {target: "#individual-notification-box-p", loadImage: true, start: 0, limit: 10});
@@ -79,9 +93,12 @@ if (isset($_COOKIE['user_auth'])) {
                     hold.text('All Notifications');
                     if ($("#" + pointer).hasClass("clicked")) {
                         $("#individual-notification-box-a").show();
+                        $('.loadMoreGossContent').attr('hold', 'all');
+                        if($("#" + pointer).hasClass("showmore"))
+                            $('#loadMoreNotifDiv').show();
                     } else {
                         $("#" + pointer).addClass("clicked");
-//                            sendData("loadGossPost", {target: "#individual-notification-box-a", loadImage: true, start: 0, limit: 3});
+                        
                         $('.loadMoreGossContent').attr('hold', 'all');
                         $("#individual-notification-box-a").show();
                     }
@@ -101,9 +118,7 @@ if (isset($_COOKIE['user_auth'])) {
                     $(".box").hide();
                     doSeparatGoss($(this).attr('id'));
                 });
-                $('.gossbag-separation-icons').click(function() {
-                    $('#loadMoreNotifDiv').hide();
-                });
+               
                 $('#loadMoreNotifDiv').hide();
                 $('.loadMoreGossContent').click(function() {
                     var hold = $(this).attr('hold');
@@ -170,7 +185,7 @@ if (isset($_COOKIE['user_auth'])) {
                     <div class="button" style="float:left;" id="loadMoreNotifDiv">
                         <a href="" all="10" class="loadMoreGossContent" comment="10" frq="10" hold="all" wink="10" id="loadMoreNotif" posts="10" >Load more > ></a>
                     </div>
-                    <div id="loadMoreImg" style="display: none"><img src="images/loading.gif"/></div>
+                    <div id="loadMoreImg" style="display: none">&nbsp;<img src="images/loading.gif"/></div>
                     <script>
                         $(document).ready(function() {
                             sendData("loadGossbag", {target: "#individual-notification-box-a", loadImage: true, start: 0, limit: 10});
