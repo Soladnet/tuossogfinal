@@ -391,7 +391,7 @@ function loadTimeline(response, statusText, target) {
                     htmlstr += '</p><div class="clear"></div>';
                 }
                 if (response.post) {
-                    htmlstr += '<p>' + (response.post.length > 200 ? response.post.substring(0, 200) + '<span style="display:none" id="continuereading-' + response.id + '">' + response.post.substring(200) + '</span> <a id="continue-' + response.id + '">continue reading...</a>' : response.post) + '</p>' +
+                    htmlstr += '<p>' + linkify(response.post.length > 200 ? response.post.substring(0, 200) + '<span style="display:none" id="continuereading-' + response.id + '">' + response.post.substring(200) + '</span> <a id="continue-' + response.id + '">continue reading...</a>' : response.post) + '</p>' +
                             '<!--<p class="post-meta"><span id="post-new-comment-show-' + response.id + '" class=""><span class="icon-16-comment"></span>Comment(20)</span>' +
                             '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share(20)</a></span></p>--><div class="clear"></div></div>';
                 } else {

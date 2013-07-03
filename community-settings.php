@@ -31,6 +31,9 @@ if (isset($_COOKIE['user_auth'])) {
         <link rel="stylesheet" href="css/validationEngine.jquery.css" type="text/css"/>
         <link rel="stylesheet" href="css/chosen.css" />
         <?php
+        if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FALSE) {
+            
+        }
         include ("head.php");
         ?>
         <script type="text/javascript" src="scripts/humane.min.js"></script>
@@ -44,6 +47,8 @@ if (isset($_COOKIE['user_auth'])) {
         <?php
         if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FALSE) {
             ?>
+        <script type="text/javascript" src="scripts/jquery-ui.1.8.20.min.js"></script>
+        <script type="text/javascript" src="scripts/tagit.js"></script>
             <script type="text/javascript">
                 var current;
                 $(document).ready(function() {
