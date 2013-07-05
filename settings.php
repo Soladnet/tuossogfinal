@@ -29,9 +29,13 @@ if (isset($_COOKIE['user_auth'])) {
         ?>
         <title>Gossout - Settings</title>
         <link rel="stylesheet" href="css/validationEngine.jquery.css">
+        <link rel="stylesheet" href="css/jquery-ui-base-1.8.20.css"/>
+        <link rel="stylesheet" href="css/tagit-dark-grey.css"/>
         <?php
         include ("head.php");
         ?>
+        <script type="text/javascript" src="scripts/jquery-ui.1.8.20.min.js"></script>
+        <script type="text/javascript" src="scripts/tagit.js"></script>
         <script type="text/javascript" src="scripts/humane.min.js"></script>
         <script type="text/javascript" src="scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
         <script src="scripts/jquery.timeago.js" type="text/javascript"></script>
@@ -41,6 +45,7 @@ if (isset($_COOKIE['user_auth'])) {
         <script src="scripts/languages/jquery.validationEngine-en.js" type="text/javascript"></script>
         <script>
             $(document).ready(function() {
+                $('#communityTag').tagit({select: true});
                 sendData("loadNotificationCount", {title: document.title});
                 $(".fancybox").fancybox({
                     openEffect: 'none',
@@ -57,7 +62,7 @@ if (isset($_COOKIE['user_auth'])) {
                 var bar = $('.bar');
                 var percent = $('.percent');
                 $("#imageUploadForm").ajaxForm({
-                    beforeSend: function() {
+                    beforeSubmit: function() {
                         $("#photoProgress").show();
                         var percentVal = '0%';
                         bar.width(percentVal)
@@ -189,6 +194,20 @@ if (isset($_COOKIE['user_auth'])) {
                         <div class="individual-setting">
                             <h2>Email</h2>
                             <input type="text" id="email" name="email" class="input-fields validate[required]" placeholder="Enter email here" readonly="" value="<?php echo $user->getEmail() ?>">
+                        </div>
+                        <div class="individual-setting">
+                            <h2>Interests and Tags</h2>
+                            <p class="desc">Add tags to help other users discover you more quickly</p>
+                            <ul id="communityTag" data-name="comTag[]">
+                                <?php
+                                if (trim($user->getInterestTag()) != "") {
+                                    $tags = explode(',', $user->getInterestTag());
+                                    foreach ($tags as $tag) {
+                                        echo "<li data-value='$tag'>$tag</li>";
+                                    }
+                                }
+                                ?>
+                            </ul>
                         </div>
                         <div class="individual-setting">
                             <h2>Password</h2>

@@ -56,11 +56,11 @@ class Community {
             $encrypt = new Encryption();
             if ($max) {
                 if ($comname) {
-                    $sql = "SELECT id,creator_id,unique_name,`name`,`pix`,thumbnail100,thumbnail150,thumbnail150,`type`,description,verified,`enableMemberPost` FROM community WHERE unique_name='$comname'";
+                    $sql = "SELECT id,creator_id,unique_name,`name`,category,`pix`,thumbnail100,thumbnail150,thumbnail150,`type`,description,verified,`enableMemberPost` FROM community WHERE unique_name='$comname'";
                 } else if ($this->newuser) {
-                    $sql = "SELECT DISTINCT cs.`community_id` as id,c.creator_id,c.unique_name,c.`name`,c.`pix`,c.thumbnail100,c.thumbnail150,c.thumbnail150,c.`type`,c.description,c.verified,`enableMemberPost` FROM community_subscribers as cs, community as c  WHERE c.id = cs.community_id AND cs.community_id NOT IN (SELECT community_id FROM `community_subscribers` WHERE user = $this->uid AND leave_status = 0) order by c.name asc LIMIT $start, $limit";
+                    $sql = "SELECT DISTINCT cs.`community_id` as id,c.creator_id,c.unique_name,c.`name`,category,c.`pix`,c.thumbnail100,c.thumbnail150,c.thumbnail150,c.`type`,c.description,c.verified,`enableMemberPost` FROM community_subscribers as cs, community as c  WHERE c.id = cs.community_id AND cs.community_id NOT IN (SELECT community_id FROM `community_subscribers` WHERE user = $this->uid AND leave_status = 0) order by c.name asc LIMIT $start, $limit";
                 } else {
-                    $sql = "SELECT cs.`community_id` as id,c.creator_id,c.unique_name,c.`name`,c.`pix`,c.thumbnail100,c.thumbnail150,c.thumbnail150,c.`type`,c.description,c.verified,`enableMemberPost` FROM community_subscribers as cs JOIN community as c ON cs.community_id=c.id  WHERE cs.`user`=$this->uid AND cs.leave_status=0 order by c.name asc LIMIT $start,$limit";
+                    $sql = "SELECT cs.`community_id` as id,c.creator_id,c.unique_name,c.`name`,category,c.`pix`,c.thumbnail100,c.thumbnail150,c.thumbnail150,c.`type`,c.description,c.verified,`enableMemberPost` FROM community_subscribers as cs JOIN community as c ON cs.community_id=c.id  WHERE cs.`user`=$this->uid AND cs.leave_status=0 order by c.name asc LIMIT $start,$limit";
                 }
             } else {
                 if ($comname) {
@@ -496,6 +496,22 @@ class Community {
             throw new Exception("Connection to server failed!");
         } else {
             $sql = "UPDATE community SET `enableMemberPost`='$param' WHERE unique_name='$comHelve'";
+            if ($mysql->query($sql)) {
+                $arr['status'] = TRUE;
+            } else {
+                $arr['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arr;
+    }
+    public function updateCommunityTag($param, $comHelve) {
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        $arr = array();
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "UPDATE community SET category='$param' WHERE unique_name='$comHelve'";
             if ($mysql->query($sql)) {
                 $arr['status'] = TRUE;
             } else {

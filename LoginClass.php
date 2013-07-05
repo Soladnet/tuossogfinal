@@ -47,7 +47,7 @@ class Login extends Encryption {
         if ($mysql->connect_errno > 0) {
             throw new Exception("Connection to server failed!");
         } else {
-            $str = "SELECT l.id, p.email, l.activated,p.dateJoined,  p.firstname, p.lastname, p.gender, p.dob,p.relationship_status,p.phone,p.url,p.bio,p.favquote,p.location,p.likes,p.dislikes,p.works FROM user_login_details AS l JOIN user_personal_info AS p ON p.id = l.id WHERE p.email = '$this->user' AND l.password = '$this->pass' AND l.id=p.id";
+            $str = "SELECT l.id, p.email, l.activated,p.dateJoined,  p.firstname, p.lastname, p.gender, p.dob,p.relationship_status,p.phone,p.url,p.bio,p.favquote,p.location,p.likes,p.works FROM user_login_details AS l JOIN user_personal_info AS p ON p.id = l.id WHERE p.email = '$this->user' AND l.password = '$this->pass' AND l.id=p.id";
 
             if ($result = $mysql->query($str)) {
                 if ($result->num_rows > 0 && $result->num_rows == 1) {
@@ -164,7 +164,7 @@ class Login extends Encryption {
                 if ($mysql->connect_errno > 0) {
                     throw new Exception("Connection to server failed!");
                 } else {
-                    $str = "SELECT l.id, p.email, l.activated,p.dateJoined,  p.firstname, p.lastname, p.gender, p.dob,p.relationship_status,p.phone,p.url,p.bio,p.favquote,p.location,p.likes,p.dislikes,p.works FROM user_login_details AS l JOIN user_personal_info AS p ON p.id = l.id WHERE l.id=$user_auth_id";
+                    $str = "SELECT l.id, p.email, l.activated,p.dateJoined,  p.firstname, p.lastname, p.gender, p.dob,p.relationship_status,p.phone,p.url,p.bio,p.favquote,p.location,p.likes,p.works FROM user_login_details AS l JOIN user_personal_info AS p ON p.id = l.id WHERE l.id=$user_auth_id";
                     if ($result = $mysql->query($str)) {
                         if ($result->num_rows > 0 && $result->num_rows == 1) {
                             $row = $result->fetch_assoc();

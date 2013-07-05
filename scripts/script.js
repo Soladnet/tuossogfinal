@@ -1297,6 +1297,19 @@ function loadCommunity(response, statusText, target) {
                 } else {
                     $("#metaDescription").attr("content", "Start or join existing communities/interests on Gossout and start sharing pictures and videos. People use Gossout search, Discover and connect with communities");
                 }
+                if ($("#communityTag").length) {
+                    var tag = "";
+                    if (response.category) {
+                        if (response.category.length > 0) {
+                            var token = response.category.split(',');
+                            $.each(token, function(i, val) {
+                                tag += "<li data-value='" + val + "'>" + val + "</li>";
+                            });
+                        }
+                    }
+                    $("#communityTag").html(tag);
+                    $('#communityTag').tagit({select: true});
+                }
                 var keywords = response.description.split();
                 keywords.unshift(target.comname + "," + response.name);
                 $("#metaKeywords").attr("content", keywords.join());

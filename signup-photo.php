@@ -141,17 +141,45 @@ function clean($value) {
         <meta name="author" content="Soladnet Sofwares, Zuma Communication Nigeria Limited">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" > 
-        
         <link rel="shortcut icon" href="favicon.ico">
+
         <link rel="stylesheet" media="screen" href="css/style.min.css">
-        <link rel="stylesheet" href="css/validationEngine.jquery.css" type="text/css"/>
+        <!--<link rel="stylesheet" href="css/validationEngine.jquery.css" type="text/css"/>-->
+        <link rel="stylesheet" href="css/jquery-ui-base-1.8.20.css"/>
+        <link rel="stylesheet" href="css/tagit-dark-grey.css"/>
+
         <script src="scripts/jquery-1.9.1.min.js" type="text/javascript"></script>
+        <script type="text/javascript" src="scripts/jquery-ui.1.8.20.min.js"></script>
+        <script type="text/javascript" src="scripts/tagit.js"></script>
         <script type="text/javascript" src="scripts/modernizr.custom.77319.js"></script>
-        <script src="scripts/languages/jquery.validationEngine-en.js" type="text/javascript"></script>
-        <script src="scripts/jquery.validationEngine.js" type="text/javascript"></script>
-        <script src="scripts/jquery.form.js"></script>
+        <!--<script src="scripts/languages/jquery.validationEngine-en.js" type="text/javascript"></script>-->
+        <!--<script src="scripts/jquery.validationEngine.js" type="text/javascript"></script>-->
+        <script type="text/javascript" src="scripts/jquery.form.js"></script>
         <script>
+            function showTags(tags) {
+                var string = "";
+                for (var i in tags) {
+                    if (string.length > 0) {
+                        string += ",";
+                    }
+                    string += tags[i].value;
+                }
+                return string;
+            }
+            function readCookie(name) {
+                var nameEQ = name + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) === ' ')
+                        c = c.substring(1, c.length);
+                    if (c.indexOf(nameEQ) === 0)
+                        return c.substring(nameEQ.length, c.length);
+                }
+                return 0;
+            }
             $(document).ready(function() {
+                $('#communityTag').tagit({select: true});
                 if (Modernizr.inlinesvg) {
                     $('#logo').html('<a href="index"><img src="images/gossout-logo-text-and-image-svg.svg" alt="Gossout" /></a>');
                 } else {
@@ -159,44 +187,50 @@ function clean($value) {
                 }
                 var bar = $('.bar');
                 var percent = $('.percent');
-                $("#uploadForm").validationEngine();
                 $("#fileChookseBtn").click(function() {
                     $("#fileInput").focus().trigger('click');
                 });
-                $('#uploadForm').ajaxForm({
-                    beforeSend: function() {
+                $("#uploadForm").ajaxForm({
+                    beforeSubmit: function() {
                         $(".progress").show();
                         var percentVal = '0%';
                         bar.width(percentVal)
                         percent.html(percentVal);
-                    },
-                    uploadProgress: function(event, position, total, percentComplete) {
+                        var tags = showTags($('#communityTag').tagit("tags"));
+                        var fileSelect = $("#selectedFile").html();
+                        if (tags.length === 0 && (fileSelect === "")) {
+                            $(".progress").hide();
+                            return false;
+                        }
+                    }, uploadProgress: function(event, position, total, percentComplete) {
                         var percentVal = percentComplete + '%';
                         bar.width(percentVal);
                         var value = percentVal;
                         if (percentComplete > 99) {
                             percent.html("Finalizing...");
-                        }else{
+                        } else {
                             percent.html(percentVal);
                         }
-                    },
-                    success: function(responseText, statusText, xhr, $form) {
+                    }, success: function(responseText, statusText, xhr, $form) {
                         var percentVal = '100%';
                         bar.width(percentVal)
                         percent.html(percentVal);
                         if (!responseText.error) {
                             document.getElementById("target").src = responseText.thumb;
                         }
-//                        alert(document.getElementById("target").src);
-                    },
-                    complete: function(xhr, textStatus) {
+                    }, complete: function(xhr) {
                         var response = JSON.parse(xhr.responseText);
+                        $("#status").show();
                         if (!response.error) {
-                            status.html("Upload Successful");
+                            $("#status").removeClass("error").addClass("success");
+                            $("#status").html("Upload Successful");
                         } else {
-                            status.html("Upload Failed. " + response.error.message);
+                            $("#status").html("Upload Failed. " + response.error.message);
                         }
                         $(".progress").hide();
+                    },
+                    data: {
+                        uid: readCookie("user_auth")
                     }
                 });
 
@@ -238,18 +272,32 @@ function clean($value) {
                                         ?>" id="target">
                                     </div>
                                     <hr>
-                                    <input type="file" onchange="$('#selectedFile').html('<br/><strong>File Name:</strong> ' + this.value);" id="fileInput" name="myfile" class="input-fields validate[required]" style="position: absolute;left: -9999px;"/>
+                                    <input type="file" onchange="$('#selectedFile').html('<br/><strong>File Name:</strong> ' + this.value);" id="fileInput" name="myfile" class="" style="position: absolute;left: -9999px;"/>
                                     <div id="fileChookseBtn" class="button"><span class="icon-16-camera"></span> Click to choose image</div>
                                     <span id="selectedFile"></span>
                                     <p>Maximum file size of 5MB<br/>Image type of .jpg, .jpeg, .gif, and .png</p>
-                                    <input type="submit" class="button" value="Upload photo">
                                 </center>
                                 <hr>
+                                <h2>Interests and Tags</h2>
+                                <p class="desc">Add tags to help other users discover you more quickly</p>
+                                <ul id="communityTag" data-name="comTag[]">
+                                    <?php
+                                    if (isset($userReg)) {
+                                        $tags = explode(',', $userReg->getInterestTag());
+                                        foreach ($tags as $tag) {
+                                            echo "<li data-value='$tag'>$tag</li>";
+                                        }
+                                    }
+                                    ?>
+                                </ul>
+                                <hr/>
+                                <center><input type="submit" class="button" value="Save Changes"></center>
+                                <hr/>
                                 <div class="progress" style="display: none">
                                     <div class="bar"></div >
                                     <div class="percent">0%</div >
                                 </div>
-                                <div id="status"></div>
+                                <div id="status" class="error" style="display: none"></div>
                                 </li>
                             </ul>
                             <br>
@@ -264,7 +312,7 @@ function clean($value) {
             <div class="index-shadow-bottom"></div>
             <div class="index-content-wrapper">
                 <?php
-                include("footer.php");
+//                include("footer.php");
                 ?>
             </div>
 

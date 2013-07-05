@@ -1207,7 +1207,8 @@ if (isset($_POST['param'])) {
                         if (trim($_POST['fname']) != "" && trim($_POST['lname']) != "") {
                             $x = $user->updateFirstname(clean($_POST['fname']));
                             $y = $user->updateLastname(clean($_POST['lname']));
-                            if ($x['status'] || $y['status']) {
+                            $z = $user->updateInterestTag(clean(implode(',', $_POST['comTag'])));
+                            if ($x['status'] || $y['status'] || $z['status']) {
                                 $status['status'] = TRUE;
                             } else {
                                 $status['status'] = FALSE;
@@ -1378,6 +1379,9 @@ if (isset($_POST['param'])) {
                         } else {
                             $status = $com->enablePostStatus("1", clean($_POST['helve']));
                         }
+                        if (isset($_POST['comTag'])) {
+                            $status = $com->updateCommunityTag(clean(implode(',', $_POST['comTag'])), clean($_POST['helve']));
+                        }
                         if ($status['status']) {
                             echo json_encode(array("status" => "success", "name" => $_POST['name'], "unique_name" => $_POST['helve']));
                         } else {
@@ -1395,6 +1399,9 @@ if (isset($_POST['param'])) {
                     } else {
                         $status = $com->enablePostStatus("1", clean($_POST['helve']));
                     }
+                    if (isset($_POST['comTag'])) {
+                        $status = $com->updateCommunityTag(clean(implode(',', $_POST['comTag'])), clean($_POST['helve']));
+                    }
                     if ($status['status']) {
                         echo json_encode(array("status" => "success", "name" => $_POST['name'], "unique_name" => $_POST['helve']));
                     } else {
@@ -1408,6 +1415,7 @@ if (isset($_POST['param'])) {
             displayError(400, "The request cannot be fulfilled due to bad syntax");
         }
     } else if ($_POST['param'] == "Update Community") {
+
         if (isset($_POST['helve']) && isset($_POST['name']) && isset($_POST['creator'])) {
             $creatorId = decodeText($_POST['creator']);
             if (is_numeric($creatorId)) {
@@ -1431,13 +1439,13 @@ if (isset($_POST['param'])) {
                                     $image->resizeToWidth(200);
                                     $image->save($thumbnail150);
                                 } else {
-                                    copy($_FILES["img"]["tmp_name"], $thumbnail150);
+                                    @copy($_FILES["img"]["tmp_name"], $thumbnail150);
                                 }
                                 if ($width > 150) {
                                     $image->resizeToWidth(150);
                                     $image->save($thumbnail100);
                                 } else {
-                                    copy($_FILES["img"]["tmp_name"], $thumbnail100);
+                                    @copy($_FILES["img"]["tmp_name"], $thumbnail100);
                                 }
                             } else {
                                 if ($height > 200) {
@@ -1450,20 +1458,20 @@ if (isset($_POST['param'])) {
                                     $image->resizeToHeight(150);
                                     $image->save($thumbnail100);
                                 } else {
-                                    copy($_FILES["img"]["tmp_name"], $thumbnail100);
+                                    @copy($_FILES["img"]["tmp_name"], $thumbnail100);
                                 }
                             }
-                            move_uploaded_file($_FILES['img']['tmp_name'], $original);
+                            @move_uploaded_file($_FILES['img']['tmp_name'], $original);
                             $status = $com->updatePix($original, $thumbnail100, $thumbnail150, clean($_POST['helve']));
 
                             if ($status['status']) {
                                 if ($status['com_pix']['pix'] != "images/no-pic.png") {
                                     if (file_exists($status['com_pix']['pix']))
-                                        unlink($status['com_pix']['pix']);
+                                        @unlink($status['com_pix']['pix']);
                                     if (file_exists($status['com_pix']['thumbnail100']))
-                                        unlink($status['com_pix']['thumbnail100']);
+                                        @unlink($status['com_pix']['thumbnail100']);
                                     if (file_exists($status['com_pix']['thumbnail150']))
-                                        unlink($status['com_pix']['thumbnail150']);
+                                        @unlink($status['com_pix']['thumbnail150']);
                                 }
                                 echo json_encode(array("status" => TRUE, "message" => "Community image was changed successfully", "thumb" => $thumbnail150));
                             } else {
@@ -1482,6 +1490,9 @@ if (isset($_POST['param'])) {
                             } else {
                                 $resp = $com->enablePostStatus("1", clean($_POST['helve']));
                             }
+                            if (isset($_POST['comTag'])) {
+                                $resp = $com->updateCommunityTag(clean(implode(',', $_POST['comTag'])), clean($_POST['helve']));
+                            }
                             if (isset($_POST['privacy'])) {
                                 $resp = $com->updatePrivacy(clean($_POST['privacy']), clean($_POST['helve']));
                             } else {
@@ -1499,6 +1510,9 @@ if (isset($_POST['param'])) {
                         $resp = $com->enablePostStatus(clean($_POST['disablePost']), clean($_POST['helve']));
                     } else {
                         $resp = $com->enablePostStatus("1", clean($_POST['helve']));
+                    }
+                    if (isset($_POST['comTag'])) {
+                        $resp = $com->updateCommunityTag(clean(implode(',', $_POST['comTag'])), clean($_POST['helve']));
                     }
                     if (isset($_POST['privacy'])) {
                         $resp = $com->updatePrivacy(clean($_POST['privacy']), clean($_POST['helve']));

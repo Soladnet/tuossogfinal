@@ -32,7 +32,10 @@ if (isset($_COOKIE['user_auth'])) {
         <link rel="stylesheet" href="css/chosen.css" />
         <?php
         if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FALSE) {
-            
+            ?>
+            <link rel="stylesheet" href="css/jquery-ui-base-1.8.20.css"/>
+            <link rel="stylesheet" href="css/tagit-dark-grey.css"/>
+            <?php
         }
         include ("head.php");
         ?>
@@ -47,8 +50,8 @@ if (isset($_COOKIE['user_auth'])) {
         <?php
         if (isset($_GET['param']) ? $_GET['param'] != "" ? $_GET['param'] : FALSE  : FALSE) {
             ?>
-        <script type="text/javascript" src="scripts/jquery-ui.1.8.20.min.js"></script>
-        <script type="text/javascript" src="scripts/tagit.js"></script>
+            <script type="text/javascript" src="scripts/jquery-ui.1.8.20.min.js"></script>
+            <script type="text/javascript" src="scripts/tagit.js"></script>
             <script type="text/javascript">
                 var current;
                 $(document).ready(function() {
@@ -165,7 +168,7 @@ if (isset($_COOKIE['user_auth'])) {
                                 <img onload="OnImageLoad(event);" src="images/no-pic.png" id="com-img">
                             </span>
                             <hr>
-                            <input type="file" onchange="$('#selectedFile').html('<br/><strong>File Name:</strong> ' + (this.value.substring(this.value.lastIndexOf('\\')+1)));" name="img" id="fileUpload" class="input-fields validate[required]" style="position: absolute;left: -9999px;">
+                            <input type="file" onchange="$('#selectedFile').html('<br/><strong>File Name:</strong> ' + (this.value.substring(this.value.lastIndexOf('\\') + 1)));" name="img" id="fileUpload" class="input-fields validate[required]" style="position: absolute;left: -9999px;">
                             <input type="hidden" name="param" value="Update Community" />
                             <input type="hidden" name="creator" value="" class="creator_field"/> 
                             <input type="hidden" name="helve" readonly="" class="validate[required] helve">
@@ -194,6 +197,17 @@ if (isset($_COOKIE['user_auth'])) {
                             <h2>Description ( <span id="countDesc">2000</span> )</h2>
                             <textarea name="desc" id="commDescription" rows="5" class="validate[required,maxSize[2000]">
                             </textarea>
+                        </div>
+                        <div class="individual-setting">
+                            <div class="desc">Add more tags to help other users discover your community more quickly</div>
+                            <ul id="communityTag" data-name="comTag[]">
+                                <!--                                <li data-value="here">here</li>
+                                                                <li data-value="are">are</li>
+                                                                <li data-value="some...">some</li>
+                                                                 notice that this tag is setting a different value :) 
+                                                                <li data-value="initial">initial</li>
+                                                                <li data-value="tags">tags</li>-->
+                            </ul>
                         </div>
                         <div class="individual-setting">
                             <h2>Disable post for members <input type="checkbox" name="disablePost" value="0" id="enablePost"/></h2>

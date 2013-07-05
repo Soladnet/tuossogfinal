@@ -7,7 +7,7 @@ include_once './Post.php';
 
 class GossoutUser {
 
-    var $id, $fname, $lname, $fullname, $location, $gender, $url, $tel, $email, $screenName = "", $dob, $pix = array(), $tz, $start = 0, $limit = 5;
+    var $id, $fname, $lname, $fullname, $location, $gender, $url, $like, $tel, $email, $screenName = "", $dob, $pix = array(), $tz, $start = 0, $limit = 5;
 
     /**
      * @author Soladnet Software
@@ -203,6 +203,13 @@ class GossoutUser {
     }
 
     /**
+     * @return String The url of $this user is returned
+     */
+    public function getInterestTag() {
+        return $this->like;
+    }
+
+    /**
      * @return String The Phone number of $this user is returned
      */
     public function getTel() {
@@ -309,6 +316,23 @@ class GossoutUser {
         return $arrFetch;
     }
 
+    public function updateInterestTag($param) {
+        $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
+        $arr = array();
+        if ($mysql->connect_errno > 0) {
+            throw new Exception("Connection to server failed!");
+        } else {
+            $sql = "UPDATE user_personal_info SET likes='$param' WHERE id=$this->id";
+            if ($mysql->query($sql)) {
+                $arr['status'] = TRUE;
+            } else {
+                $arr['status'] = FALSE;
+            }
+        }
+        $mysql->close();
+        return $arr;
+    }
+
     public function getLastUpdate() {
         $arrFetch = array();
         $mysql = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE_NAME);
@@ -407,7 +431,7 @@ class GossoutUser {
             throw new Exception("Connection to server failed!");
         } else {
             // Make the variable a sql statement if the visitor is a registered and logged in user else make the variable hold the vlaue geust
-            $sql = "SELECT id,firstname,lastname,email,username,gender,dob,phone,url,location FROM `user_personal_info` WHERE id = $this->id OR username = '$this->screenName'";
+            $sql = "SELECT id,firstname,lastname,email,username,gender,dob,phone,url,location,likes FROM `user_personal_info` WHERE id = $this->id OR username = '$this->screenName'";
 
             //the condition will return true. if the id is not zero, then run query and enter block else enter block
             if ($result = $mysql->query($sql)) {
@@ -425,6 +449,7 @@ class GossoutUser {
                     $this->gender = $arr['gender'];
                     $this->location = $arr['location'];
                     $this->url = $arr['url'];
+                    $this->like = $arr['likes'];
                     $this->tel = $arr['phone'];
                     $this->email = $arr['email'];
                     $this->screenName = $arr['username'];
