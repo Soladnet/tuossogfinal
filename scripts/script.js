@@ -311,7 +311,7 @@ function sendData(callback, target) {
         };
     } else if (callback === "deleteComment") {
         option = {
-            beforeSend: function() {
+            before: function() {
                 showuidfeedback(target);
             },
             success: function(response, statusText, xhr) {
@@ -346,6 +346,20 @@ function sendData(callback, target) {
             data: {
                 param: target.param,
                 comid: target.comid
+            }
+        };
+    } else if (callback === "likePost") {
+        option = {
+            beforeSend: function() {
+                showuidfeedback(target);
+            },
+            success: function(response, statusText, xhr) {
+                likePost(response, statusText, target);
+            },
+            data: {
+                param: "likePost",
+                action: target.action,
+                postId: target.postId
             }
         };
     } else if (callback === "logError") {
@@ -898,12 +912,12 @@ function loadGossbag(response, statusText, target) {
             if (countGossBag  == 10){
                 if(!($('#all-notification-icon').hasClass('showmore')))
                     $('#all-notification-icon').addClass('showmore');
-                  $('#loadMoreNotifDiv').show();
+                $('#loadMoreNotifDiv').show();
             }
               
             else{
                 $('#loadMoreNotifDiv').hide(); 
-//               
+            //               
             }
         }
         $(accept_frq_text).click(function() {
@@ -1308,7 +1322,9 @@ function loadCommunity(response, statusText, target) {
                         }
                     }
                     $("#communityTag").html(tag);
-                    $('#communityTag').tagit({select: true});
+                    $('#communityTag').tagit({
+                        select: true
+                    });
                 }
                 var keywords = response.description.split();
                 keywords.unshift(target.comname + "," + response.name);
@@ -1375,7 +1391,7 @@ function loadCommunity(response, statusText, target) {
                                         addnCls: 'humane-jackedup-success'
                                     });
                                 } else {
-                                    humane.log("Your invitation was not sent successfully due to invalid friend", {
+                                    humane.log("Your invitation was not sent successfully due to invalid parameters", {
                                         timeout: 20000,
                                         clickToClose: true,
                                         addnCls: 'humane-jackedup-error'
@@ -1738,6 +1754,18 @@ function loadSuggestCommunity(response, statusText, target) {
         }
     }
 }
+function likePost(response, statusText, target){
+    $(target.target).hide();
+    var holdLike = $("#likeAction-"+target.postId).html();
+    $("#likeAction-"+target.postId).html( holdLike==='Like' ? 'Unlike' : 'Like');
+    
+    (holdLike==='Like') ? $('#likeCount-'+target.postId).html(parseInt($('#likeCount-'+target.postId).html())+1) : $('#likeCount-'+target.postId).html(parseInt($('#likeCount-'+target.postId).html())-1);
+    if(holdLike==='Unlike'){
+        watchLike(target.postId);
+    }
+    $(".hideLikeCount#likeAction-showCount-"+target.postId).show();
+  
+}
 function loadPost(response, statusText, target) {
     if (!response.error) {
         var htmlstr = "";
@@ -1755,17 +1783,30 @@ function loadPost(response, statusText, target) {
                 });
             }
             htmlstr += '<hr><h3 class="name"><img onload="OnImageLoad(event);" class="post-profile-pic" src="' + (responseItem.photo.nophoto ? responseItem.photo.alt : responseItem.photo.thumbnail45) + '"><a href="user/' + responseItem.username + '">' + responseItem.firstname.concat(' ', responseItem.lastname) + '</a>' +
-            '<div class="float-right"><span class="post-time"><span class="icon-16-comment"></span><span id="numComnt-' + responseItem.id + '">' + responseItem.numComnt + '</span> </span>' +
+            '<div class="float-right">';
+            if(responseItem.likeCount == 0){
+                htmlstr += '<span class="post-time '+responseItem.id+ ' hideLikeCount" id="likeAction-showCount-'+responseItem.id+'"><span class="icon-16-heart post='+responseItem.id+'"></span><span id="likeCount-' + responseItem.id + '">' + responseItem.likeCount + '</span> </span>&nbsp;';
+            }
+            else{
+                htmlstr += '<span class="post-time '+responseItem.id+ '" id="likeAction-showCount-'+responseItem.id+'"><span class="icon-16-heart post='+responseItem.id+'"></span><span id="likeCount-' + responseItem.id + '">' + responseItem.likeCount + '</span> </span>&nbsp;';
+            }
+            //             '<span class="post-time"><span class="icon-16-heart like-item" post='+responseItem.id+'> ' + responseItem.numComnt +' </span></span>' +
+            htmlstr +='<span class="post-time"><span class="icon-16-comment"></span><span id="numComnt-' + responseItem.id + '">' + responseItem.numComnt + '</span> </span>&nbsp;' +
+           
             //                    '<span class="post-time"><span class="icon-16-share"></span>24</span>' +
             '<span class="post-time"><span class="icon-16-clock"></span><span class="timeago" title="' + responseItem.time + '">' + responseItem.time + '</span></span>' +
-            '</div></h3></div><hr><div class="post-meta">' +
-            '<span id="post-new-comment-show-' + responseItem.id + '" class=""><span class="icon-16-comment"></span>Comment </span>';
+            '</div></h3></div><hr><div class="post-meta">';
+            if (target.uid !== 0) {
+                htmlstr += '<span class="post-meta-delete like-icon"><span class="icon-16-heart like-item" post='+responseItem.id+'></span><hold class="likeAction" id="likeAction-' + responseItem.id + '">'+(responseItem.isLike ? 'Unlike' : 'Like')+'</hold></span>&nbsp';
+            }
+            //            (target.uid !== 0) ? '<span class="post-meta-delete"><span class="icon-16-heart"></span>Like </span>&nbsp' : "" +
+            htmlstr += '<span id="post-new-comment-show-' + responseItem.id + '" class=""><span class="icon-16-comment"></span>Comment </span>';
             //                    '<span class="post-meta-gossout"><span class="icon-16-share"></span><a class="fancybox " id="inline" href="#share-123456">Share</a></span>' +
             if (target.uid === 0) {
                 htmlstr += '<span class="post-meta-gossout"><span class="icon-16-dot"></span><a href="login">Login</a> or <a href="signup-personal">sign-up</a> to add posts or comments</span>';
             }
             if (target.uid === responseItem.sender_id) {
-                htmlstr += '<span class="post-meta-delete" id="deletePost-' + responseItem.id + '"><span class="icon-16-trash"></span>Delete</span>';
+                htmlstr += '<span class="post-meta-delete" id="deletePost-' + responseItem.id + '"><span class="icon-16-trash"></span>Delete</span> &nbsp;<span class="likeLoader" id="likeLoader-'+responseItem.id+'" style="float:right;margin-top:-7px;"></span>';
             }
             htmlstr += '<div class="post-comments" id="post-comments-' + responseItem.id + '">' +
             '</div><div class="post-new-comment" id="post-new-comment-' + responseItem.id + '">';
@@ -1859,6 +1900,18 @@ function loadPost(response, statusText, target) {
         });
         $(toggleId).click(function() {
             showOption(this);
+        });
+        $('.hideLikeCount').hide();
+        $('.like-icon').click(function(){
+            var postId = $(this).children('.like-item').attr('post');
+            var targetLoad = "#likeLoader-"+postId;
+            var doWhat = $(this).children('.likeAction').html();
+            sendData("likePost", {
+                target: targetLoad, 
+                action:doWhat, 
+                loadImage: true, 
+                postId:postId
+            });
         });
     } else {
         if (target.append) {
@@ -2718,4 +2771,11 @@ function linkify(inputText) {
     replacedText = replacedText.replace(replacePattern3, '<a href="mailto:$1">$1</a>');
 
     return replacedText;
+}
+
+function watchLike(realId){
+   var check = parseInt($('#likeCount-'+realId).html());
+   if(check === 0)
+         $("#likeAction-showCount-"+realId).hide();
+//alert(check);
 }

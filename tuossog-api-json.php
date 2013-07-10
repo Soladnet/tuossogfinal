@@ -813,6 +813,30 @@ if (isset($_POST['param'])) {
         } else {
             displayError(400, "The request cannot be fulfilled due to bad syntax");
         }
+    } else if ($_POST['param'] == "likePost") {
+//        $doLike = false;
+        $action = $_POST['action'];
+        if (isset($_POST['uid']) && isset($_POST['postId'])) {
+            $post_id = $_POST['postId'];
+            $id = decodeText($_POST['uid']);
+            if (is_numeric($id) && $id != 0 && is_numeric($_POST['postId']) && $_POST['postId'] != 0) {
+                include_once './Post.php';
+                $post = new Post();
+                if (isset($_COOKIE['tz'])) {
+                    $tz = decodeText($_COOKIE['tz']);
+                } else if (isset($_SESSION['auth']['tz'])) {
+                    $tz = decodeText($_SESSION['auth']['tz']);
+                } else {
+                    $tz = "Africa/Lagos";
+                }
+                $doLike = $post->manageLikePost($action, $post_id, $id);
+                echo json_encode($doLike);
+            } else {
+                displayError(404, "Not Found");
+            }
+        } else {
+            displayError(400, "The request cannot be fulfilled due to bad syntax");
+        }
     } else if ($_POST['param'] == "deletePost") {
         if (isset($_POST['uid'])) {
             $id = decodeText($_POST['uid']);
